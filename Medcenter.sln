@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Service.Interface", "Service\Medcenter.Service.Interface\Medcenter.Service.Interface.csproj", "{0ED96ED9-AD4D-4965-A563-0C92A159381C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Service.Model", "Service\Medcenter.Service.Model\Medcenter.Service.Model.csproj", "{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{EB07F6E5-343D-420A-BD9F-9F2553FD39B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Service.MVC5", "Service\Medcenter.Service.MVC5\Medcenter.Service.MVC5.csproj", "{CD86012D-881F-4484-81D2-284CA11E1D1A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Desktop", "Desktop", "{86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Infrastructure", "Desktop\Medcenter.Desktop.Infrastructure\Medcenter.Desktop.Infrastructure.csproj", "{E108FB46-A0FA-46C8-9545-0FF99AA1490F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Wpf", "Desktop\Medcenter.Desktop.Wpf\Medcenter.Desktop.Wpf.csproj", "{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CD86012D-881F-4484-81D2-284CA11E1D1A} = {CD86012D-881F-4484-81D2-284CA11E1D1A}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.LoginModule", "Desktop\Modules\Medcenter.Desktop.Modules.LoginModule\Medcenter.Desktop.Modules.LoginModule.csproj", "{B2534544-4596-4D21-B56D-DB63B8783245}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.UsersManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.UsersManagerModule\Medcenter.Desktop.Modules.UsersManagerModule.csproj", "{2446041B-2CB1-441D-9A09-8D1410BC51DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD86012D-881F-4484-81D2-284CA11E1D1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD86012D-881F-4484-81D2-284CA11E1D1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD86012D-881F-4484-81D2-284CA11E1D1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD86012D-881F-4484-81D2-284CA11E1D1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E108FB46-A0FA-46C8-9545-0FF99AA1490F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E108FB46-A0FA-46C8-9545-0FF99AA1490F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E108FB46-A0FA-46C8-9545-0FF99AA1490F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E108FB46-A0FA-46C8-9545-0FF99AA1490F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2534544-4596-4D21-B56D-DB63B8783245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2534544-4596-4D21-B56D-DB63B8783245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2534544-4596-4D21-B56D-DB63B8783245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2534544-4596-4D21-B56D-DB63B8783245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2446041B-2CB1-441D-9A09-8D1410BC51DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2446041B-2CB1-441D-9A09-8D1410BC51DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2446041B-2CB1-441D-9A09-8D1410BC51DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2446041B-2CB1-441D-9A09-8D1410BC51DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
+		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
+		{CD86012D-881F-4484-81D2-284CA11E1D1A} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
+		{F0F723AC-FFB1-40C9-B5FC-369B0477AAEA} = {86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}
+		{E108FB46-A0FA-46C8-9545-0FF99AA1490F} = {86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}
+		{3E118DDD-1E84-4188-B2BD-016F3FA0FF65} = {86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}
+		{B2534544-4596-4D21-B56D-DB63B8783245} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
+		{2446041B-2CB1-441D-9A09-8D1410BC51DD} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
+	EndGlobalSection
+EndGlobal

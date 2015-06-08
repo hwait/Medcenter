@@ -1,0 +1,11 @@
+﻿<Window x:Class="Medcenter.Desktop.Wpf.Shell"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://www.codeplex.com/prism"
+        xmlns:infrastructure="clr-namespace:Medcenter.Desktop.Infrastructure;assembly=Medcenter.Desktop.Infrastructure"
+        Title="Shell">
+  <DockPanel LastChildFill="True">
+        <ItemsControl DockPanel.Dock="Left" x:Name="ToolbarItemsControl" prism:RegionManager.RegionName="{x:Static infrastructure:RegionNames.ToolbarRegion}" Margin="5" Padding="5" Width="48" />
+        <ContentControl prism:RegionManager.RegionName="{x:Static infrastructure:RegionNames.MainRegion}"/>
+  </DockPanel>
+</Window>
