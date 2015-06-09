@@ -27,7 +27,7 @@ namespace Medcenter.Desktop.Wpf
     {
         private const string LoginModuleName = "LoginModule";
         private static readonly Uri LoginViewUri = new Uri("/LoginFormView", UriKind.Relative);
-     
+        
         public Shell()
         {
             InitializeComponent();
@@ -53,6 +53,7 @@ namespace Medcenter.Desktop.Wpf
                     RegionNames.MainRegion,
                     LoginViewUri);
             }
+            
         }
     }
 }

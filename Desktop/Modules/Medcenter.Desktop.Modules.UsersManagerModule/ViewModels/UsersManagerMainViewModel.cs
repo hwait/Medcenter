@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using Medcenter.Desktop.Infrastructure;
-using Medcenter.Service.Model;
+using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
+using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
 using ServiceStack;
 
@@ -26,6 +27,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
     {
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
+        private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }  
         private readonly DelegateCommand<object> _newUserCommand;
         private readonly DelegateCommand<object> _removeUserCommand;
@@ -49,8 +51,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             set { SetProperty(ref _users, value); }
         }
 
-        private List<ErrorMessage> _errors;
-        public List<ErrorMessage> Errors
+        private List<ResultMessage> _errors;
+        public List<ResultMessage> Errors
         {
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
@@ -89,7 +91,11 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         public User CurrentUser
         {
             get { return _currentUser; }
-            set { _currentUser = value; }
+            set
+            {
+                SetProperty(ref _currentUser, value);
+                SetCheckersToCurrent(_currentUser);
+            }
         }
         private bool _busyIndicator;
         
@@ -101,11 +107,12 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             set { SetProperty(ref _busyIndicator, value); }
         }
         [ImportingConstructor]
-        public UsersManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient)
+        public UsersManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
             
             _regionManager = regionManager;
             _jsonClient = jsonClient;
+            _eventAggregator = eventAggregator;
             _newUserCommand=new DelegateCommand<object>(NewUser);
             _removeUserCommand = new DelegateCommand<object>(RemoveUser);
             _saveUserCommand = new DelegateCommand<object>(SaveUser);
@@ -119,7 +126,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                 BusyIndicator = false;
                 Users = r.Users;
                 UsersFiltered = new ListCollectionView(Users);
-                SetCheckersToCurrent((User)UsersFiltered.CurrentItem);
+                
                 UsersFiltered.CurrentChanged += UsersFiltered_CurrentChanged;
             })
             .Error(ex =>
@@ -132,24 +139,29 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private void SaveUser(object obj)
         {
             User user;
-            bool isNew = UsersFiltered.CurrentAddItem != null;
-            user = isNew ? (User) UsersFiltered.CurrentAddItem : (User) UsersFiltered.CurrentItem;
-
-            user.Roles = RolesDictionary.RolesKeys;
-            user.Permissions = PermissionsDictionary.PermissionsKeys;
-            Errors = user.Validate();
+            bool isNew = CurrentUser.UserId==0;
+            CurrentUser.Roles = RolesDictionary.RolesKeys;
+            CurrentUser.Permissions = PermissionsDictionary.PermissionsKeys;
+            Errors = CurrentUser.Validate();
             if (Errors.Count == 0)
             {
                 BusyIndicator = true;
-                _jsonClient.PostAsync(new UserSave {User = user})
+                _jsonClient.PostAsync(new UserSave {User = CurrentUser})
                     .Success(r =>
                     {
                         BusyIndicator = false;
-                        user.UserId = r.UserId;
-                        user.ClearPassword();
-                        if (isNew) UsersFiltered.CommitNew();
+                        CurrentUser.UserId = r.UserId;
+                        CurrentUser.Password = "";
+                        CurrentUser.Password1 = "";
+                        //CurrentUser.ClearPassword();
+                        if (isNew)
+                        {
+                            UsersFiltered.AddNewItem(CurrentUser);
+                            UsersFiltered.CommitNew();
+                        }
                         UsersFiltered.Refresh();
-                        
+                        r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     })
                     .Error(ex =>
                     {
@@ -160,9 +172,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
 
         private void RemoveUser(object obj)
         {
-            User user;
-            bool isNew = UsersFiltered.CurrentAddItem != null;
-            user = isNew ? (User)UsersFiltered.CurrentAddItem : (User)UsersFiltered.CurrentItem;
+            bool isNew = CurrentUser.UserId == 0;
             ConfirmationRequest.Raise(
                 new Confirmation { Content = "Пользователь будет удалён! Вы уверены?", Title = "Удаление пользователя." },
                 c =>
@@ -172,26 +182,17 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                         BusyIndicator = true;
                         if (isNew)
                         {
-                            UsersFiltered = new ListCollectionView(Users);
-                            UsersFiltered.Refresh();
+                            CurrentUser=new User(); 
                         }
                         else
                         {
-                            _jsonClient.GetAsync(new UserDelete {Id = user.UserId})
+                            _jsonClient.GetAsync(new UserDelete { Id = CurrentUser.UserId })
                                 .Success(r =>
                                 {
                                     BusyIndicator = false;
-                                    var u = Users.SingleOrDefault(i => i.UserName == user.UserName);
-                                    if (u!=null) 
-                                        Users.Remove(u);
-                                    //UsersFiltered.CurrentChanged
-                                    UsersFiltered.Refresh();
-                                    UsersFiltered = new ListCollectionView(Users);
-                                    //user.ClearAll();
-                                    //UsersFiltered.Remove(UsersFiltered.CurrentItem);
-                                    UsersFiltered.MoveCurrentToFirst();
-                                    UsersFiltered.Refresh();
-
+                                    UsersFiltered.Remove(UsersFiltered.CurrentItem);
+                                    r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
+                                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                                 })
                                 .Error(ex =>
                                 {
@@ -204,8 +205,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
 
         private void NewUser(object obj)
         {
-            var user = new User();
-            UsersFiltered.AddNewItem(user);
+            CurrentUser = new User();
+            //UsersFiltered.AddNewItem(user);
 
         }
 
@@ -217,7 +218,9 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
 
         void UsersFiltered_CurrentChanged(object sender, EventArgs e)
         {
-            SetCheckersToCurrent((User)UsersFiltered.CurrentItem);
+
+            CurrentUser = UsersFiltered.CurrentItem != null ? (User) UsersFiltered.CurrentItem : new User();
+            //SetCheckersToCurrent(CurrentUser);
             //SetProperty(ref _busyIndicator, RolesDictionary);
         }
 

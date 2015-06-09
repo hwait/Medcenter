@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
 using ServiceStack;
@@ -22,11 +23,20 @@ namespace Medcenter.Service.Interface.Services
         //private IDbConnection _db;
         public UserSelectResponse Get(UserSelect req)
         {
-           // var db = HostContext.Resolve<IDbConnectionFactory>().Open();
-
-            var rows = Db.SqlList<string>("EXEC sp_UsersNames_select");
-            //Db.SqlList<CustomerDTO>("EXEC sp_getcustomers @Name", new { request.Name });
-            var users = rows.ToList();
+            
+            List<string> users=new List<string>();
+            ResponseStatus status=new ResponseStatus();
+            try
+            {
+                var rows = Db.SqlList<string>("EXEC sp_UsersNames_select");
+                //Db.SqlList<CustomerDTO>("EXEC sp_getcustomers @Name", new { request.Name });
+                users = rows.ToList();
+            }
+            catch (Exception e)
+            {
+                //_message=new ResultMessage(2,e.Source, e.Message);
+            }
+            
 
             return new UserSelectResponse { Users = new ObservableCollection<string>(users) };
         }
@@ -44,62 +54,89 @@ namespace Medcenter.Service.Interface.Services
         }
         public UserSaveResponse Post(UserSave req)
         {
+            int uid = 0;
+            ResultMessage _message;
             IUserAuth user;
             IUserAuthRepository rep = base.TryResolve<IUserAuthRepository>();
             if (req.User.UserId > 0) // User exists so we're saving 
             {
-                user = rep.GetUserAuth(req.User.UserId.ToString());
-                user.FirstName = req.User.FirstName;
-                user.LastName = req.User.LastName;
-                user.DisplayName = req.User.DisplayName;
-                user.Roles = req.User.Roles.ToList();
-                user.Permissions = req.User.Permissions.ToList();
-            
-                if (string.IsNullOrEmpty(req.User.Password))
+                try
                 {
-                    rep.SaveUserAuth(user);
+                    user = rep.GetUserAuth(req.User.UserId.ToString());
+                    user.FirstName = req.User.FirstName;
+                    user.LastName = req.User.LastName;
+                    user.DisplayName = req.User.DisplayName;
+                    user.Roles = req.User.Roles.ToList();
+                    user.Permissions = req.User.Permissions.ToList();
+
+                    if (string.IsNullOrEmpty(req.User.Password))
+                    {
+                        rep.SaveUserAuth(user);
+                    }
+                    else // Password reset
+                    {
+                        rep.UpdateUserAuth(user, user, req.User.Password);
+                    }
+                    uid = user.Id;
+                    _message = new ResultMessage(0, "Сервис", OperationResults.UserSave);
                 }
-                else // Password reset
+                catch (Exception e)
                 {
-                    rep.UpdateUserAuth(user,user,req.User.Password);
+                    _message = new ResultMessage(2, e.Source, OperationErrors.UserSave);
+                    throw;
                 }
             }
             else //New user
             {
-                user = rep.CreateUserAuth(new UserAuth
+                try
                 {
-                    FirstName = req.User.FirstName,
-                    UserName = req.User.UserName,
-                    LastName = req.User.LastName,
-                    DisplayName = req.User.DisplayName,
-                    Roles = req.User.Roles.ToList(),
-                    Permissions = req.User.Permissions.ToList()
+                    user = rep.CreateUserAuth(new UserAuth
+                    {
+                        FirstName = req.User.FirstName,
+                        UserName = req.User.UserName,
+                        LastName = req.User.LastName,
+                        DisplayName = req.User.DisplayName,
+                        Roles = req.User.Roles.ToList(),
+                        Permissions = req.User.Permissions.ToList()
 
-                }, req.User.Password);
+                    }, req.User.Password);
+                    uid = user.Id;
+                    _message = new ResultMessage(0, "Сервис", OperationResults.UserCreate);
+                }
+                catch (Exception e)
+                {
+                    _message = new ResultMessage(2, e.Source, OperationErrors.UserCreate);
+                    throw;
+                }
+                
             }
-            //string roles = string.Format("[{0}]",string.Join(",", req.User.Roles));
-            //string permissions = string.Format("[{0}]",string.Join(",", req.User.Permissions));
-            //List<int> res = Db.SqlList<int>("EXEC sp_User_save @uid, @UserName, @FirstName, @LastName, @DisplayName,@Roles,@Permissions", new
-            //{
-            //    uid=req.User.UserId,
-            //    UserName = req.User.UserName,
-            //    FirstName=req.User.FirstName,
-            //    LastName=req.User.LastName,
-            //    DisplayName=req.User.DisplayName,
-            //    Roles=roles,
-            //    Permissions=permissions
-            //});
-            return new UserSaveResponse { UserId = user.Id };
+            
+            return new UserSaveResponse
+            {
+                UserId = user.Id,
+                Message=_message
+            };
         }
        
         public UserDeleteResponse Get(UserDelete  req)
         {
-            var res = Db.SqlList<int>("EXEC sp_User_delete @uid", new
+            ResultMessage _message;
+            try
             {
-                uid = req.Id
-            });
+                var res = Db.SqlList<int>("EXEC sp_User_delete @uid", new
+                {
+                    uid = req.Id
+                });
+                _message = new ResultMessage(0, "Сервис", OperationResults.UserRemove);
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.UserRemove);
+                throw;
+            }
+            
 
-            return new UserDeleteResponse {  };
+            return new UserDeleteResponse { Message = _message };
         }
     }
 }

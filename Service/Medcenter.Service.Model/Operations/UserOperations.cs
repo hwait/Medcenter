@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Types;
 using ServiceStack;
 
@@ -53,6 +54,7 @@ namespace Medcenter.Service.Model.Operations
         {
             ResponseStatus = new ResponseStatus();
         }
+        public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         public ObservableCollection<User> Users { get; set; }
 
@@ -69,6 +71,7 @@ namespace Medcenter.Service.Model.Operations
         {
             ResponseStatus = new ResponseStatus();
         }
+        public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         public int UserId { get; set; }
 
@@ -85,6 +88,7 @@ namespace Medcenter.Service.Model.Operations
         {
             ResponseStatus = new ResponseStatus();
         }
+        public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
     }
 }

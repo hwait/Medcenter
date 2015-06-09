@@ -21,7 +21,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
     {
         private static Uri welcomeViewUri = new Uri("WelcomeMainView", UriKind.Relative);
         private static Uri loginFormViewUri = new Uri("LoginFormView", UriKind.Relative);
-
+        private static readonly Uri StatusbarViewUri = new Uri("StatusbarView", UriKind.Relative);
         private readonly IRegionManager _regionManager;
         private readonly IUserRepository _userRepository;
         private readonly IEventAggregator _eventAggregator;
@@ -52,6 +52,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             if (user != null)
             {
                 _regionManager.RegisterViewWithRegion(RegionNames.ToolbarRegion, typeof (LogoutToolbarView));
+                _regionManager.RequestNavigate(RegionNames.StatusbarRegion, StatusbarViewUri);
                 _regionManager.RequestNavigate(RegionNames.MainRegion, welcomeViewUri);
             }
             else

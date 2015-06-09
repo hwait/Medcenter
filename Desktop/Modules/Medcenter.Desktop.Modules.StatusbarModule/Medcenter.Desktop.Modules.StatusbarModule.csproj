@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E108FB46-A0FA-46C8-9545-0FF99AA1490F}</ProjectGuid>
+    <ProjectGuid>{B911FAD2-8C2D-4B38-B737-116C38E21A08}</ProjectGuid>
     <OutputType>library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Medcenter.Desktop.Infrastructure</RootNamespace>
-    <AssemblyName>Medcenter.Desktop.Infrastructure</AssemblyName>
+    <RootNamespace>Medcenter.Desktop.Modules.StatusbarModule</RootNamespace>
+    <AssemblyName>Medcenter.Desktop.Modules.StatusbarModule</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <ExpressionBlendVersion>12.0.51020.0</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,36 +33,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.Prism.Composition, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.Composition.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Prism.Composition">
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.Composition.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Interactivity">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.MefExtensions">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.MefExtensions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Mvvm">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.Mvvm.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.Mvvm.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.Mvvm.Desktop">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.Mvvm.Desktop.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.Mvvm.Desktop.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Prism.PubSubEvents, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Prism.PubSubEvents">
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.PubSubEvents.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism.SharedInterfaces">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.Prism.SharedInterfaces.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.Prism.SharedInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\..\lib\Prism\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\..\lib\Prism\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,11 +73,14 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorsContainer.cs" />
-    <Compile Include="Events.cs" />
-    <Compile Include="GlobalCommands.cs" />
-    <Compile Include="IUserRepository.cs" />
-    <Compile Include="ObjectToVisibilityConverter.cs" />
+    <Compile Include="SampleData\DesignData.cs" />
+    <Compile Include="StatusbarModue.cs" />
+    <Compile Include="ViewModels\StatusbarViewModel.cs" />
+    <Compile Include="Views\StatusbarView.xaml.cs">
+      <DependentUpon>StatusbarView.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -94,10 +94,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RegionNames.cs" />
-    <Compile Include="UserRepository.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="ValidatableBindableBase.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -109,13 +105,31 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Page Include="Views\StatusbarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Service\Medcenter.Service.Model\Medcenter.Service.Model.csproj">
-      <Project>{516014F5-CF33-4A89-8D6F-CF7AFDE2514D}</Project>
+    <ProjectReference Include="..\..\..\Service\Medcenter.Service.Model\Medcenter.Service.Model.csproj">
+      <Project>{516014f5-cf33-4a89-8d6f-cf7afde2514d}</Project>
       <Name>Medcenter.Service.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Medcenter.Desktop.Infrastructure\Medcenter.Desktop.Infrastructure.csproj">
+      <Project>{e108fb46-a0fa-46c8-9545-0ff99aa1490f}</Project>
+      <Name>Medcenter.Desktop.Infrastructure</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\NotificationError.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\NotificationOk.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\NotificationWarning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

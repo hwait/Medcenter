@@ -3,6 +3,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Windows;
 using Medcenter.Desktop.Infrastructure;
 using Medcenter.Desktop.Modules.LoginModule;
+using Medcenter.Desktop.Modules.StatusbarModule;
 using Medcenter.Desktop.Modules.UsersManagerModule;
 using Microsoft.Practices.Prism.MefExtensions;
 using Microsoft.Practices.Prism.Modularity;
@@ -26,6 +27,7 @@ namespace Medcenter.Desktop.Wpf
             base.ConfigureAggregateCatalog();
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof (Bootstrapper).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(LoginModule).Assembly));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(StatusbarModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(UsersManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IUserRepository).Assembly));
         }
@@ -37,6 +39,8 @@ namespace Medcenter.Desktop.Wpf
         {
             var loginModuleType = typeof(LoginModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = loginModuleType.Name, ModuleType = loginModuleType.AssemblyQualifiedName,});
+            var statusbarModuleType = typeof(StatusbarModule);
+            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = statusbarModuleType.Name, ModuleType = statusbarModuleType.AssemblyQualifiedName, });
             var usersManagerModuleType = typeof(UsersManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = usersManagerModuleType.Name, ModuleType = usersManagerModuleType.AssemblyQualifiedName, });
         }

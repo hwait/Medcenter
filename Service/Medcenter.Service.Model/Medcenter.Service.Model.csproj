@@ -50,8 +50,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorMessage.cs" />
-    <Compile Include="ErrorMessages.cs" />
+    <Compile Include="Messaging\ResultMessage.cs" />
+    <Compile Include="Messaging\MessagesText.cs" />
     <Compile Include="Hello.cs" />
     <Compile Include="Operations\DoctorOperations.cs" />
     <Compile Include="Operations\UserOperations.cs" />

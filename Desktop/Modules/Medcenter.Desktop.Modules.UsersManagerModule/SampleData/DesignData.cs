@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
-using Medcenter.Service.Model;
+using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Types;
 
 namespace Medcenter.Desktop.Modules.UsersManagerModule.SampleData
@@ -31,12 +31,12 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.SampleData
                 };
             } 
         }
-        public List<ErrorMessage> Errors
+        public List<ResultMessage> Errors
         {
-            get { return new List<ErrorMessage>
+            get { return new List<ResultMessage>
             {
-                new ErrorMessage("Фамилия:",ErrorMessages.EmptyString),
-                new ErrorMessage("Пароль:",ErrorMessages.PasswordMismatch)
+                new ResultMessage(2,"Фамилия:",OperationErrors.EmptyString),
+                new ResultMessage(2,"Пароль:",OperationErrors.PasswordMismatch)
             }; }
         }
         private readonly ObservableCollection<User> _usersFiltered = new ObservableCollection<User>  

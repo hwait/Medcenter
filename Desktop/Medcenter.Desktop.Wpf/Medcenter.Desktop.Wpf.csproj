@@ -141,6 +141,10 @@
       <Project>{b2534544-4596-4d21-b56d-db63b8783245}</Project>
       <Name>Medcenter.Desktop.Modules.LoginModule</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.StatusbarModule\Medcenter.Desktop.Modules.StatusbarModule.csproj">
+      <Project>{b911fad2-8c2d-4b38-b737-116c38e21a08}</Project>
+      <Name>Medcenter.Desktop.Modules.StatusbarModule</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.UsersManagerModule\Medcenter.Desktop.Modules.UsersManagerModule.csproj">
       <Project>{2446041b-2cb1-441d-9a09-8d1410bc51dd}</Project>
       <Name>Medcenter.Desktop.Modules.UsersManagerModule</Name>

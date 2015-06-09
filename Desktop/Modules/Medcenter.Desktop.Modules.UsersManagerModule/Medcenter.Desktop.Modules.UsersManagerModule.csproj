@@ -118,11 +118,7 @@
     </Compile>
     <Compile Include="SampleData\DesignData.cs" />
     <Compile Include="UsersManagerModule.cs" />
-    <Compile Include="ViewModels\UserEditViewModel.cs" />
     <Compile Include="ViewModels\UsersManagerMainViewModel.cs" />
-    <Compile Include="Views\UserEdit.xaml.cs">
-      <DependentUpon>UserEdit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\UsersManagerMainView.xaml.cs">
       <DependentUpon>UsersManagerMainView.xaml</DependentUpon>
     </Compile>
@@ -155,10 +151,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <ContainsDataSources>True</ContainsDataSources>
-    </Page>
-    <Page Include="Views\UserEdit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UsersManagerMainView.xaml">
       <SubType>Designer</SubType>

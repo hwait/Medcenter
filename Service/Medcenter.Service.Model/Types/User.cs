@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Messaging;
 using ServiceStack.Auth;
 
 namespace Medcenter.Service.Model.Types
@@ -45,16 +46,16 @@ namespace Medcenter.Service.Model.Types
             }
         }
 
-        public List<ErrorMessage> Validate()
+        public List<ResultMessage> Validate()
         {
-            List<ErrorMessage> em = new List<ErrorMessage>();
-            if (string.IsNullOrEmpty(FirstName)) em.Add(new ErrorMessage("Имя, отчество:",ErrorMessages.EmptyString));
-            if (string.IsNullOrEmpty(LastName)) em.Add(new ErrorMessage("Фамилия:", ErrorMessages.EmptyString));
-            if (string.IsNullOrEmpty(DisplayName)) em.Add(new ErrorMessage("Отображаемое имя:", ErrorMessages.EmptyString));
-            if (UserId == 0 && string.IsNullOrEmpty(Password)) em.Add(new ErrorMessage("Пароль:", ErrorMessages.EmptyString));
-            if (UserId == 0 && string.IsNullOrEmpty(Password1)) em.Add(new ErrorMessage("Повтор пароля:", ErrorMessages.EmptyString));
-            if (string.IsNullOrEmpty(UserName)) em.Add(new ErrorMessage("Логин:", ErrorMessages.EmptyString));
-            if (!string.IsNullOrEmpty(Password) && Password != Password1) em.Add(new ErrorMessage("Пароль:", ErrorMessages.PasswordMismatch));
+            List<ResultMessage> em = new List<ResultMessage>();
+            if (string.IsNullOrEmpty(FirstName)) em.Add(new ResultMessage(2,"Имя, отчество:",OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(LastName)) em.Add(new ResultMessage(2, "Фамилия:", OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(DisplayName)) em.Add(new ResultMessage(2, "Отображаемое имя:", OperationErrors.EmptyString));
+            if (UserId == 0 && string.IsNullOrEmpty(Password)) em.Add(new ResultMessage(2, "Пароль:", OperationErrors.EmptyString));
+            if (UserId == 0 && string.IsNullOrEmpty(Password1)) em.Add(new ResultMessage(2, "Повтор пароля:", OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(UserName)) em.Add(new ResultMessage(2, "Логин:", OperationErrors.EmptyString));
+            if (!string.IsNullOrEmpty(Password) && Password != Password1) em.Add(new ResultMessage(2, "Пароль:", OperationErrors.PasswordMismatch));
             return em;
         }
 

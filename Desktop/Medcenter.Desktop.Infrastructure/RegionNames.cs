@@ -10,5 +10,6 @@ namespace Medcenter.Desktop.Infrastructure
     {
         public static string MainRegion = "MainRegion";
         public static string ToolbarRegion = "ToolbarRegion";
+        public static string StatusbarRegion = "StatusbarRegion";
     }
 }
