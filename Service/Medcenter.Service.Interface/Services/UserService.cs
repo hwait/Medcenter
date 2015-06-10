@@ -34,7 +34,7 @@ namespace Medcenter.Service.Interface.Services
             }
             catch (Exception e)
             {
-                //_message=new ResultMessage(2,e.Source, e.Message);
+                Logger.Log("UserSelectResponse", e);
             }
             
 
@@ -79,10 +79,12 @@ namespace Medcenter.Service.Interface.Services
                     }
                     uid = user.Id;
                     _message = new ResultMessage(0, "Сервис", OperationResults.UserSave);
+                    Logger.Log("UserSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.UserSave);
+                    Logger.Log("UserSaveResponse.Saving", e);
                     throw;
                 }
             }
@@ -102,10 +104,12 @@ namespace Medcenter.Service.Interface.Services
                     }, req.User.Password);
                     uid = user.Id;
                     _message = new ResultMessage(0, "Сервис", OperationResults.UserCreate);
+                    Logger.Log("UserSaveResponse.NewUser");
                 }
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.UserCreate);
+                    Logger.Log("UserSaveResponse.NewUser", e);
                     throw;
                 }
                 
@@ -128,10 +132,12 @@ namespace Medcenter.Service.Interface.Services
                     uid = req.Id
                 });
                 _message = new ResultMessage(0, "Сервис", OperationResults.UserRemove);
+                Logger.Log("UserDeleteResponse");
             }
             catch (Exception e)
             {
                 _message = new ResultMessage(2, e.Source, OperationErrors.UserRemove);
+                Logger.Log("UserDeleteResponse", e);
                 throw;
             }
             

@@ -37,6 +37,12 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
 
             LoginCommand = new DelegateCommand<object>(TryLogin, CanLogin);
             JsonClient = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.MVC5/api/");
+
+            RefreshData();
+        }
+
+        private void RefreshData()
+        {
             BusyIndicator = true;
             JsonClient.GetAsync(new UserSelect())
             .Success(r =>
@@ -46,7 +52,6 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             })
             .Error(ex => { throw ex; });
         }
-
         private void UserLogin(User user)
         {
             if (user != null)
@@ -60,6 +65,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
                 _regionManager.Regions[RegionNames.ToolbarRegion].Remove(ServiceLocator.Current.GetInstance<LogoutToolbarView>());
                 _regionManager.RequestNavigate(RegionNames.MainRegion, loginFormViewUri);
                 Password = "";
+                RefreshData();
             }
         }
         private bool _busyIndicator;

@@ -190,8 +190,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                                 .Success(r =>
                                 {
                                     BusyIndicator = false;
-                                    UsersFiltered.Remove(UsersFiltered.CurrentItem);
                                     r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
+                                    UsersFiltered.Remove(UsersFiltered.CurrentItem);
                                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                                 })
                                 .Error(ex =>

@@ -16,7 +16,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.Views
         [Import]
         public LoginFormViewModel ViewModel
         {
-            get { return (LoginFormViewModel)DataContext; }
+            get { return (LoginFormViewModel) DataContext; }
             set { DataContext = value; }
         }
     }
