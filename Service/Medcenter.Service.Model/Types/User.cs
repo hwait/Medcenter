@@ -55,6 +55,7 @@ namespace Medcenter.Service.Model.Types
             if (UserId == 0 && string.IsNullOrEmpty(Password)) em.Add(new ResultMessage(2, "Пароль:", OperationErrors.EmptyString));
             if (UserId == 0 && string.IsNullOrEmpty(Password1)) em.Add(new ResultMessage(2, "Повтор пароля:", OperationErrors.EmptyString));
             if (string.IsNullOrEmpty(UserName)) em.Add(new ResultMessage(2, "Логин:", OperationErrors.EmptyString));
+            if (UserName.Length<3) em.Add(new ResultMessage(2, "Логин:", OperationErrors.UserNameTooShort));
             if (!string.IsNullOrEmpty(Password) && Password != Password1) em.Add(new ResultMessage(2, "Пароль:", OperationErrors.PasswordMismatch));
             return em;
         }

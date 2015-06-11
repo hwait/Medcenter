@@ -9,6 +9,7 @@ using System.Web.Routing;
 using Funq;
 using Medcenter.Service.Interface;
 using Medcenter.Service.Interface.Services;
+using Medcenter.Service.Model.Misc;
 using ServiceStack;
 using ServiceStack.Auth;
 using ServiceStack.Caching;
@@ -51,6 +52,7 @@ namespace Medcenter.Service.MVC5
             container.Register<IUserAuthRepository>(authRepo);
             authRepo.InitSchema();
             //container.Register(new MemoryCacheClient());
+            container.RegisterAs<LogAuthEvents, IAuthEvents>();
             Plugins.Add(authFeature);
             Plugins.Add(new CustomRegistrationValidator.CustomRegistrationFeature());
             Plugins.Add(new PostmanFeature());

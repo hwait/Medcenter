@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Windows.Threading;
 using Medcenter.Desktop.Infrastructure;
 using Medcenter.Desktop.Modules.LoginModule.Views;
 using Medcenter.Service.Model.Operations;
@@ -25,6 +26,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IUserRepository _userRepository;
         private readonly IEventAggregator _eventAggregator;
+        DispatcherTimer _dispatcherTimer = new DispatcherTimer();
         [Export(typeof(JsonServiceClient))]
         public JsonServiceClient JsonClient;
         [ImportingConstructor]
@@ -34,12 +36,18 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             _userRepository = userRepository;
             _eventAggregator = eventAggregator;
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
+            
+            _dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
+            _dispatcherTimer.Interval = new TimeSpan(0, 0, Utils.TimerShowMessage);
+            
 
             LoginCommand = new DelegateCommand<object>(TryLogin, CanLogin);
             JsonClient = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.MVC5/api/");
 
             RefreshData();
         }
+
+        
 
         private void RefreshData()
         {
@@ -65,6 +73,8 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
                 _regionManager.Regions[RegionNames.ToolbarRegion].Remove(ServiceLocator.Current.GetInstance<LogoutToolbarView>());
                 _regionManager.RequestNavigate(RegionNames.MainRegion, loginFormViewUri);
                 Password = "";
+                CurrentUser = null;
+                JsonClient.Post(new Authenticate { provider = AuthenticateService.LogoutAction });
                 RefreshData();
             }
         }
@@ -94,7 +104,12 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             get { return _password; }
             set { SetProperty(ref _password, value); }
         }
-
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set { SetProperty(ref _errorMessage, value); }
+        }
        
         public DelegateCommand<object> LoginCommand { get; set; }
         
@@ -106,33 +121,49 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
 
         private void TryLogin(object obj)
         {
+            try
+            {
+                var authResponse = JsonClient.Send(new Authenticate
+                {
+                    provider = CredentialsAuthProvider.Name,
+                    UserName = LoginSelected,
+                    Password = _password,
+                    //RememberMe = true,
+                });
+                CurrentUser = new User();
+                CurrentUser.UserName = LoginSelected;
+                CurrentUser.UserId = int.Parse(authResponse.UserId);
+                CurrentUser.DisplayName = authResponse.DisplayName;
+                CurrentUser.SessionId = authResponse.SessionId;
+                //CurrentUser.Roles=authResponse.
+                JsonClient.GetAsync(new RolesSelect { DeviceId = "Dev1" })
+                .Success(r =>
+                {
+                    CurrentUser.Roles = r.Roles;
+                    _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+            catch (WebServiceException webEx)
+            {
+                ErrorMessage = "Ошибка авторизации. Неправильный пароль или пользователь заблокирован.";
+                _dispatcherTimer.Start();
+            }
+            
 
-            var authResponse = JsonClient.Send(new Authenticate
-            {
-                provider = CredentialsAuthProvider.Name,
-                UserName = LoginSelected,
-                Password = _password,
-                RememberMe = true,
-            });
-            CurrentUser = new User();
-            CurrentUser.UserName = LoginSelected;
-            CurrentUser.UserId = int.Parse(authResponse.UserId);
-            CurrentUser.DisplayName = authResponse.DisplayName;
-            CurrentUser.SessionId = authResponse.SessionId;
-            //CurrentUser.Roles=authResponse.
-            JsonClient.GetAsync(new RolesSelect())
-            .Success(r =>
-            {
-                CurrentUser.Roles = r.Roles;
-                _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
             // Get User from repo, with Roles 
             //CurrentUser.Roles = "Manager";
             //if (authResponse.ResponseStatus.ErrorCode=="") _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            ErrorMessage = "";
+            Password = "";
+            (sender as DispatcherTimer).Stop();
         }
     }
 }

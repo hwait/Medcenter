@@ -94,8 +94,8 @@
 			<ListBox Height="120" Margin="40,5,5,5" ItemTemplate="{DynamicResource ErrorMessageTemplate1}" ItemsSource="{Binding Errors}"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="0,5" Orientation="Horizontal" HorizontalAlignment="Right">
-        	<Button Content="{DynamicResource IconButtons.UserAdd}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewUserCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,5,0" />
-        	<Button Content="{DynamicResource IconButtons.UserDelete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveUserCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,5,0"/>
+        	<Button Content="{DynamicResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewUserCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,5,0" />
+        	<Button Content="{DynamicResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveUserCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,5,0"/>
         	<Button Content="{DynamicResource IconButtons.Save}" HorizontalAlignment="Left" Margin="0,0,5,0" VerticalAlignment="Top" Command="{Binding SaveUserCommand}" Style="{DynamicResource LocalButtonStyle}"/>
         </StackPanel>
     </Grid>

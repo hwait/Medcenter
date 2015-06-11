@@ -26,10 +26,10 @@ namespace Medcenter.Service.Model.Operations
 
     }
     [Authenticate]
-    [Route("/users/roles", "GET")]
+    [Route("/users/roles/{DeviceId}", "GET")]
     public class RolesSelect : IReturn<RolesSelectResponse>
     {
-
+        public string DeviceId { get; set; }
     }
     public class RolesSelectResponse : IHasResponseStatus
     {

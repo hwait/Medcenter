@@ -18,5 +18,7 @@ namespace Medcenter.Desktop.Infrastructure
 
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(source));
         }
+
+        public static int TimerShowMessage = 4;
     }
 }

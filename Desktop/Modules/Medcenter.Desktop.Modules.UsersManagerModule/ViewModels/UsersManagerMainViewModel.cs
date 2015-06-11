@@ -32,19 +32,26 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private readonly DelegateCommand<object> _newUserCommand;
         private readonly DelegateCommand<object> _removeUserCommand;
         private readonly DelegateCommand<object> _saveUserCommand;
+
+        #region Properties
+
         public ICommand NewUserCommand
         {
             get { return this._newUserCommand; }
         }
+
         public ICommand SaveUserCommand
         {
             get { return this._saveUserCommand; }
         }
+
         public ICommand RemoveUserCommand
         {
             get { return this._removeUserCommand; }
         }
+
         private ObservableCollection<User> _users;
+
         public ObservableCollection<User> Users
         {
             get { return _users; }
@@ -52,53 +59,50 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         }
 
         private List<ResultMessage> _errors;
+
         public List<ResultMessage> Errors
         {
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
+
         public ListCollectionView UsersFiltered
         {
             get { return _usersFiltered; }
             set { SetProperty(ref _usersFiltered, value); }
         }
+
         private RolesCollection _rolesDictionary;
+
         public RolesCollection RolesDictionary
         {
-            get
-            {
-                return _rolesDictionary;
-            }
-            set
-            {
-                SetProperty(ref _rolesDictionary, value);
-            }
+            get { return _rolesDictionary; }
+            set { SetProperty(ref _rolesDictionary, value); }
         }
+
         private PermissionsCollection _permissionsDictionary;
+
         public PermissionsCollection PermissionsDictionary
         {
-            get
-            {
-                return _permissionsDictionary;
-            }
-            set
-            {
-                SetProperty(ref _permissionsDictionary, value);
-            }
+            get { return _permissionsDictionary; }
+            set { SetProperty(ref _permissionsDictionary, value); }
         }
 
         private User _currentUser;
+
         public User CurrentUser
         {
             get { return _currentUser; }
             set
             {
                 SetProperty(ref _currentUser, value);
+                _newUserCommand.RaiseCanExecuteChanged();
                 SetCheckersToCurrent(_currentUser);
             }
         }
+
         private bool _busyIndicator;
-        
+
         private ListCollectionView _usersFiltered;
 
         public bool BusyIndicator
@@ -106,6 +110,9 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             get { return _busyIndicator; }
             set { SetProperty(ref _busyIndicator, value); }
         }
+
+        #endregion
+
         [ImportingConstructor]
         public UsersManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
@@ -113,7 +120,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _newUserCommand=new DelegateCommand<object>(NewUser);
+            _newUserCommand=new DelegateCommand<object>(NewUser, CanAddUser);
             _removeUserCommand = new DelegateCommand<object>(RemoveUser);
             _saveUserCommand = new DelegateCommand<object>(SaveUser);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
@@ -134,6 +141,11 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                 throw ex;
             });
             
+        }
+
+        private bool CanAddUser(object arg)
+        {
+            return CurrentUser == null || CurrentUser.UserId != 0;
         }
 
         private void SaveUser(object obj)
@@ -162,6 +174,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                         UsersFiltered.Refresh();
                         r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        _newUserCommand.RaiseCanExecuteChanged();
                     })
                     .Error(ex =>
                     {
@@ -182,7 +195,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                         BusyIndicator = true;
                         if (isNew)
                         {
-                            CurrentUser=new User(); 
+                            CurrentUser=new User();
+                            _newUserCommand.RaiseCanExecuteChanged();
                         }
                         else
                         {
@@ -193,6 +207,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                                     r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
                                     UsersFiltered.Remove(UsersFiltered.CurrentItem);
                                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                    _newUserCommand.RaiseCanExecuteChanged();
                                 })
                                 .Error(ex =>
                                 {

@@ -23,7 +23,6 @@ namespace Medcenter.Service.Interface.Services
         //private IDbConnection _db;
         public UserSelectResponse Get(UserSelect req)
         {
-            
             List<string> users=new List<string>();
             ResponseStatus status=new ResponseStatus();
             try
@@ -42,6 +41,13 @@ namespace Medcenter.Service.Interface.Services
         }
         public RolesSelectResponse Get(RolesSelect req)
         {
+            IAuthSession session = GetSession();
+            var id = Db.Single<int>("EXEC sp_UserSessions_login @DeviceId, @SessionId, @UserId", new
+            {
+                DeviceId = req.DeviceId,
+                SessionId = session.Id,
+                UserId = session.UserAuthId
+            });
             return new RolesSelectResponse { Roles = new ObservableCollection<string>(base.GetSession().Roles) };
         }
         public UsersSelectResponse Get(UsersSelect req)
