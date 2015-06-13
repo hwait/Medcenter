@@ -1,15 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Types;
 using ServiceStack;
+using ServiceStack.Web;
 
 namespace Medcenter.Service.Model.Operations
 {
+    [Route("/users/{UserId}/foto", "POST")]
+    public class UserFotoUpload : IReturn<UserFotoUploadResponse>
+    {
+        public int UserId { get; set; }
+    }
+    public class UserFotoUploadResponse : IHasResponseStatus
+    {
+        public UserFotoUploadResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Route("/users/{UserId}/foto", "GET")]
+    public class UserFotoDownload : IReturn<UserFotoDownloadResponse>
+    {
+        public int UserId { get; set; }
+    }
+    public class UserFotoDownloadResponse : IHasResponseStatus
+    {
+        public UserFotoDownloadResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public byte[] FotoStream { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
     [Route("/users/logins", "GET")]
     public class UserSelect : IReturn<UserSelectResponse>
     {

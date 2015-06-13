@@ -76,6 +76,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PathToImageConverter.cs" />
     <Compile Include="ErrorsContainer.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="GlobalCommands.cs" />
@@ -109,6 +110,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Converters\" />
     <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>

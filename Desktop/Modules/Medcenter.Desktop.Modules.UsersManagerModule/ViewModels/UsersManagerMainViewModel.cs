@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -18,6 +20,7 @@ using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
+using Microsoft.Win32;
 using ServiceStack;
 
 namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
@@ -28,18 +31,24 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
-        public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }  
+        public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
+        private readonly DelegateCommand<object> _userFotoChooseCommand;
         private readonly DelegateCommand<object> _newUserCommand;
         private readonly DelegateCommand<object> _removeUserCommand;
         private readonly DelegateCommand<object> _saveUserCommand;
-
+        private bool _isFotoChanged = false;
+        private readonly string _defaultImagePath = AppDomain.CurrentDomain.BaseDirectory + "\\Fotos\\NoUserFoto.png";
         #region Properties
 
         public ICommand NewUserCommand
         {
             get { return this._newUserCommand; }
         }
-
+        public ICommand UserFotoChooseCommand
+        {
+            get { return this._userFotoChooseCommand; }
+        }
+        
         public ICommand SaveUserCommand
         {
             get { return this._saveUserCommand; }
@@ -87,7 +96,16 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             get { return _permissionsDictionary; }
             set { SetProperty(ref _permissionsDictionary, value); }
         }
+        private string _imagePath;
 
+        public string ImagePath
+        {
+            get { return _imagePath; }
+            set
+            {
+                SetProperty(ref _imagePath, value);
+            }
+        }
         private User _currentUser;
 
         public User CurrentUser
@@ -116,10 +134,11 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         [ImportingConstructor]
         public UsersManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
-            
+            ImagePath = GetUserFotoPath("NoUserFoto.png");
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
+            _userFotoChooseCommand = new DelegateCommand<object>(UserFotoChoose);
             _newUserCommand=new DelegateCommand<object>(NewUser, CanAddUser);
             _removeUserCommand = new DelegateCommand<object>(RemoveUser);
             _saveUserCommand = new DelegateCommand<object>(SaveUser);
@@ -142,6 +161,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             });
             
         }
+
+       
 
         private bool CanAddUser(object arg)
         {
@@ -233,11 +254,70 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
 
         void UsersFiltered_CurrentChanged(object sender, EventArgs e)
         {
-
-            CurrentUser = UsersFiltered.CurrentItem != null ? (User) UsersFiltered.CurrentItem : new User();
+            CurrentUser = UsersFiltered.CurrentItem != null ? (User)UsersFiltered.CurrentItem : new User();
+            ShowUserFoto(CurrentUser.UserId);
+            
             //SetCheckersToCurrent(CurrentUser);
             //SetProperty(ref _busyIndicator, RolesDictionary);
         }
+         private void UserFotoChoose(object obj)
+        {
+            string path = GetUserFotoPath(CurrentUser.UserId);
+            _isFotoChanged = true;
+            ImagePath = GetUserFotoPath("NoUserFoto.png");
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                using (var fileStream = File.OpenRead(openFileDialog.FileName))
+                {
+                    var r=_jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserId = CurrentUser.UserId });
+                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                    using (var file = File.Create(path))
+                    {
+                        fileStream.Seek(0, SeekOrigin.Begin);
+                        fileStream.CopyTo(file);
+                    }
+                }
+            }
+             ShowUserFoto(CurrentUser.UserId);
+        }
+        private void ShowUserFoto(int userId)
+        {
+            string path = GetUserFotoPath(userId);
+            if (CurrentUser.UserId == 0) return;
+            if (!File.Exists(path))
+            {
+                _jsonClient.GetAsync(new UserFotoDownload { UserId = CurrentUser.UserId })
+                .Success(r =>
+                {
+                    if (r.FotoStream != null)
+                    {
+                        File.WriteAllBytes(path, r.FotoStream);
+                        ImagePath = path;
+                    }
+                    else
+                    {
+                        ImagePath = _defaultImagePath;
+                    }
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+            else
+            {
+                ImagePath = path;
+            }
+        }
 
+        private string GetUserFotoPath(int userId)
+        {
+            return string.Format("{0}Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, userId);
+        }
+        private string GetUserFotoPath(string file)
+        {
+            return string.Format("{0}Fotos\\{1}", AppDomain.CurrentDomain.BaseDirectory, file);
+        }
     }
 }

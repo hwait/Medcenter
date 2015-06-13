@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,8 +36,6 @@ namespace Medcenter.Service.Interface.Services
             {
                 Logger.Log("UserSelectResponse", e);
             }
-            
-
             return new UserSelectResponse { Users = new ObservableCollection<string>(users) };
         }
         public RolesSelectResponse Get(RolesSelect req)
@@ -127,7 +126,6 @@ namespace Medcenter.Service.Interface.Services
                 Message=_message
             };
         }
-       
         public UserDeleteResponse Get(UserDelete  req)
         {
             ResultMessage _message;
@@ -146,9 +144,59 @@ namespace Medcenter.Service.Interface.Services
                 Logger.Log("UserDeleteResponse", e);
                 throw;
             }
-            
-
             return new UserDeleteResponse { Message = _message };
+        }
+
+        public UserFotoUploadResponse Post(UserFotoUpload request)
+        {
+            ResultMessage _message;
+            string curop = "Загрузка фото";
+            string path = GetFotosPath(request.UserId);
+            if (Request.Files == null || Request.Files.Length == 0)
+                _message = new ResultMessage(1, curop, OperationErrors.UserFotoIsMissing);
+
+            // Save the file
+            try
+            {
+                Request.Files[0].SaveTo(path);
+                _message = new ResultMessage(0, curop, OperationResults.UserFotoUpload);
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, curop, OperationErrors.UserFileSave);
+                Logger.Log("UserFotoUploadResponse", e);
+                throw;
+            }
+            return new UserFotoUploadResponse { Message = _message };
+        }
+
+        private string GetFotosPath(int userId)
+        {
+            return string.Format("{0}Resources\\Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory,userId);
+        }
+
+        public UserFotoDownloadResponse Get(UserFotoDownload request)
+        {
+            byte[] fileStream;
+            try
+            {
+                string path = GetFotosPath(request.UserId);
+                if (File.Exists(path))
+                {
+                    fileStream = File.ReadAllBytes(path);
+                }
+                else
+                {
+                    fileStream = null;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("UserFotoDownloadResponse", e);
+                throw;
+            }
+
+            return new UserFotoDownloadResponse { FotoStream=fileStream };
         }
     }
 }

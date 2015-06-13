@@ -45,7 +45,7 @@ namespace Medcenter.Service.Model.Messaging
 
     public static class Logger
     {
-        private static bool IsLogging = false;
+        private static bool IsLogging = true;
         public static void Log(string caller, Exception e)
         {
             var log = new LogMessage(caller, e);
