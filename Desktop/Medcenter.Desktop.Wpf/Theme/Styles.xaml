@@ -2,9 +2,36 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                    xmlns:infrastructure="clr-namespace:Medcenter.Desktop.Infrastructure;assembly=Medcenter.Desktop.Infrastructure"
                     mc:Ignorable="d" 
                     xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing">
-    <Style x:Key="MainViewRadioButtonStyle" TargetType="ToggleButton">
+    <Style x:Key="ButtonMenuStyle" TargetType="{x:Type Button}">
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="{x:Type Button}">
+    				<Grid>
+    					<Grid.ColumnDefinitions>
+    						<ColumnDefinition Width="*"/>
+    						<ColumnDefinition Width="7*"/>
+    					</Grid.ColumnDefinitions>
+    					<Rectangle x:Name="rectangle" Fill="#FF3939C5" Stroke="{x:Null}" Grid.ColumnSpan="2"/>
+                        <ContentControl Content="{Binding (infrastructure:ButtonExtender.Icon), RelativeSource={RelativeSource TemplatedParent}}" x:Name="IconContent" Margin="3" />
+						<TextBlock x:Name="textBlock" Margin="4" TextWrapping="Wrap" Text="{TemplateBinding Content}" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1" Foreground="White" FontSize="13.333"/>
+    				</Grid>
+    				<ControlTemplate.Triggers>
+    					<Trigger Property="IsFocused" Value="True"/>
+    					<Trigger Property="IsDefaulted" Value="True"/>
+    					<Trigger Property="IsMouseOver" Value="True">
+    						<Setter Property="Fill" TargetName="rectangle" Value="#FF6B6BA2"/>
+    					</Trigger>
+    					<Trigger Property="IsPressed" Value="True"/>
+    					<Trigger Property="IsEnabled" Value="False"/>
+    				</ControlTemplate.Triggers>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
+	<Style x:Key="MainViewRadioButtonStyle" TargetType="ToggleButton">
         <Setter Property="Background" Value="{x:Null}"/>
         <Setter Property="Foreground" Value="#FF0E233E"/>
         <Setter Property="Padding" Value="3"/>

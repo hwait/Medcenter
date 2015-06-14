@@ -20,5 +20,14 @@ namespace Medcenter.Desktop.Infrastructure
         }
 
         public static int TimerShowMessage = 4;
+
+        public static string GetUserFotoPath(int userId)
+        {
+            return string.Format("{0}Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, userId);
+        }
+        public static string GetUserFotoPath(string file)
+        {
+            return string.Format("{0}Fotos\\{1}", AppDomain.CurrentDomain.BaseDirectory, file);
+        }
     }
 }

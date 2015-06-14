@@ -52,7 +52,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
         private void RefreshData()
         {
             BusyIndicator = true;
-            JsonClient.GetAsync(new UserSelect())
+            JsonClient.GetAsync(new LoginsSelect())
             .Success(r =>
             {
                 BusyIndicator = false;
@@ -130,17 +130,21 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
                     Password = _password,
                     //RememberMe = true,
                 });
-                CurrentUser = new User();
-                CurrentUser.UserName = LoginSelected;
-                CurrentUser.UserId = int.Parse(authResponse.UserId);
-                CurrentUser.DisplayName = authResponse.DisplayName;
-                CurrentUser.SessionId = authResponse.SessionId;
-                //CurrentUser.Roles=authResponse.
-                JsonClient.GetAsync(new RolesSelect { DeviceId = "Dev1" })
-                .Success(r =>
+                JsonClient.GetAsync(new UserSelect { UserId = int.Parse(authResponse.UserId) })
+                .Success(ru =>
                 {
-                    CurrentUser.Roles = r.Roles;
-                    _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
+                    CurrentUser = ru.User;
+                    CurrentUser.SessionId = authResponse.SessionId;
+                    JsonClient.GetAsync(new RolesSelect { DeviceId = "Dev1" })
+                    .Success(r =>
+                    {
+                        CurrentUser.Roles = r.Roles;
+                        _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
                 })
                 .Error(ex =>
                 {

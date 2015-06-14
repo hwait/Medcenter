@@ -22,7 +22,7 @@ namespace Medcenter.Service.Interface.Services
     {
         //IDbConnectionFactory _db = HostContext.TryResolve<IDbConnectionFactory>();
         //private IDbConnection _db;
-        public UserSelectResponse Get(UserSelect req)
+        public LoginsSelectResponse Get(LoginsSelect req)
         {
             List<string> users=new List<string>();
             ResponseStatus status=new ResponseStatus();
@@ -34,9 +34,9 @@ namespace Medcenter.Service.Interface.Services
             }
             catch (Exception e)
             {
-                Logger.Log("UserSelectResponse", e);
+                Logger.Log("LoginsSelectResponse", e);
             }
-            return new UserSelectResponse { Users = new ObservableCollection<string>(users) };
+            return new LoginsSelectResponse { Users = new ObservableCollection<string>(users) };
         }
         public RolesSelectResponse Get(RolesSelect req)
         {
@@ -57,6 +57,65 @@ namespace Medcenter.Service.Interface.Services
 
             return new UsersSelectResponse { Users = new ObservableCollection<User>(rows) };
         }
+        public UserSelectResponse Get(UserSelect req)
+        {
+            List<User> users;
+            try
+            {
+                var rows = Db.SqlList<User>("EXEC sp_User_select @uid", new
+                {
+                    uid = req.UserId
+                });
+                users = rows.ToList();
+            }
+            catch (Exception e)
+            {
+                Logger.Log("UserSelectResponse", e);
+                throw;
+            }
+            return new UserSelectResponse { User =users[0] };
+        }
+
+        public UserSaveResponse Post(UserUpdateInfo req)
+        {
+            int uid = 0;
+            ResultMessage _message;
+            IUserAuth user;
+            IUserAuthRepository rep = base.TryResolve<IUserAuthRepository>();
+            try
+            {
+                user = rep.GetUserAuth(req.User.UserId.ToString());
+                user.FirstName = req.User.FirstName;
+                user.LastName = req.User.LastName;
+                user.DisplayName = req.User.DisplayName;
+                user.Roles = req.User.Roles.ToList();
+                user.Permissions = req.User.Permissions.ToList();
+
+                if (string.IsNullOrEmpty(req.User.Password))
+                {
+                    rep.SaveUserAuth(user);
+                }
+                else // Password reset
+                {
+                    rep.UpdateUserAuth(user, user, req.User.Password);
+                }
+                uid = user.Id;
+                _message = new ResultMessage(0, "Сервис", OperationResults.UserSave);
+                Logger.Log("UserUpdateInfo.Saving");
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.UserSave);
+                Logger.Log("UserUpdateInfo.Saving", e);
+                throw;
+            }
+            return new UserSaveResponse
+            {
+                UserId = user.Id,
+                Message = _message
+            };
+        }
+
         public UserSaveResponse Post(UserSave req)
         {
             int uid = 0;

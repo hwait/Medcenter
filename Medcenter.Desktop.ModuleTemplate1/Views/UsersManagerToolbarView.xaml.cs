@@ -16,10 +16,10 @@ using System.Windows.Shapes;
 using Medcenter.Desktop.Infrastructure;
 using Microsoft.Practices.Prism.Regions;
 
-namespace Medcenter.Desktop.Modules.UsersManagerModule.Views
+namespace Medcenter.Desktop.ModuleTemplate1.Views
 {
     [Export]
-    [ViewSortHint("02")]
+    [ViewSortHint("01")]
     public partial class UsersManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
         private static readonly Uri UsersManagerMainViewUri = new Uri("UsersManagerMainView", UriKind.Relative);
@@ -53,8 +53,8 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.Views
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            
-           
+
+
             _regionManager.RequestNavigate(RegionNames.MainRegion, UsersManagerMainViewUri);
         }
     }

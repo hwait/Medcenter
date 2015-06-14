@@ -8,6 +8,10 @@ namespace Medcenter.Desktop.Infrastructure
     {
         
     }
+    public class UserInfoEvent : PubSubEvent<User>
+    {
+
+    }
     public class OperationResultEvent : PubSubEvent<ResultMessage>
     {
 

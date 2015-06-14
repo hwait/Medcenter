@@ -43,13 +43,13 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
     }
     [Route("/users/logins", "GET")]
-    public class UserSelect : IReturn<UserSelectResponse>
+    public class LoginsSelect : IReturn<LoginsSelectResponse>
     {
 
     }
-    public class UserSelectResponse : IHasResponseStatus
+    public class LoginsSelectResponse : IHasResponseStatus
     {
-        public UserSelectResponse()
+        public LoginsSelectResponse()
         {
             ResponseStatus = new ResponseStatus();
         }
@@ -91,9 +91,30 @@ namespace Medcenter.Service.Model.Operations
         public ObservableCollection<User> Users { get; set; }
 
     }
+    [Route("/user/{UserId}", "GET")]
+    public class UserSelect : IReturn<UserSelectResponse>
+    {
+        public int UserId { get; set; }
+    }
+    public class UserSelectResponse : IHasResponseStatus
+    {
+        public UserSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public User User { get; set; }
+
+    }
     [RequiredRole("Admin")]
     [Route("/users/save", "POST")]
     public class UserSave : IReturn<UserSaveResponse>
+    {
+        public User User { get; set; }
+    }
+    [Route("/users/update", "POST")]
+    public class UserUpdateInfo : IReturn<UserSaveResponse>
     {
         public User User { get; set; }
     }

@@ -23,10 +23,10 @@ using Microsoft.Practices.Prism.Regions;
 using Microsoft.Win32;
 using ServiceStack;
 
-namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
+namespace Medcenter.Desktop.ModuleTemplate1.ViewModels
 {
     [Export]
-    public class UsersManagerMainViewModel: BindableBase
+    public class UsersManagerMainViewModel : BindableBase
     {
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
@@ -37,7 +37,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private readonly DelegateCommand<object> _removeUserCommand;
         private readonly DelegateCommand<object> _saveUserCommand;
         private bool _isFotoChanged = false;
-        
+        private readonly string _defaultImagePath = AppDomain.CurrentDomain.BaseDirectory + "\\Fotos\\NoUserFoto.png";
         #region Properties
 
         public ICommand NewUserCommand
@@ -48,7 +48,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         {
             get { return this._userFotoChooseCommand; }
         }
-        
+
         public ICommand SaveUserCommand
         {
             get { return this._saveUserCommand; }
@@ -134,12 +134,12 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         [ImportingConstructor]
         public UsersManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
-            ImagePath = Utils.GetUserFotoPath("NoUserFoto.png");
+            ImagePath = GetUserFotoPath("NoUserFoto.png");
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
             _userFotoChooseCommand = new DelegateCommand<object>(UserFotoChoose);
-            _newUserCommand=new DelegateCommand<object>(NewUser, CanAddUser);
+            _newUserCommand = new DelegateCommand<object>(NewUser, CanAddUser);
             _removeUserCommand = new DelegateCommand<object>(RemoveUser);
             _saveUserCommand = new DelegateCommand<object>(SaveUser);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
@@ -152,17 +152,17 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                 BusyIndicator = false;
                 Users = r.Users;
                 UsersFiltered = new ListCollectionView(Users);
-                
+
                 UsersFiltered.CurrentChanged += UsersFiltered_CurrentChanged;
             })
             .Error(ex =>
             {
                 throw ex;
             });
-            
+
         }
 
-       
+
 
         private bool CanAddUser(object arg)
         {
@@ -172,14 +172,14 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private void SaveUser(object obj)
         {
             User user;
-            bool isNew = CurrentUser.UserId==0;
+            bool isNew = CurrentUser.UserId == 0;
             CurrentUser.Roles = RolesDictionary.RolesKeys;
             CurrentUser.Permissions = PermissionsDictionary.PermissionsKeys;
             Errors = CurrentUser.Validate();
             if (Errors.Count == 0)
             {
                 BusyIndicator = true;
-                _jsonClient.PostAsync(new UserSave {User = CurrentUser})
+                _jsonClient.PostAsync(new UserSave { User = CurrentUser })
                     .Success(r =>
                     {
                         BusyIndicator = false;
@@ -216,7 +216,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                         BusyIndicator = true;
                         if (isNew)
                         {
-                            CurrentUser=new User();
+                            CurrentUser = new User();
                             _newUserCommand.RaiseCanExecuteChanged();
                         }
                         else
@@ -256,21 +256,21 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         {
             CurrentUser = UsersFiltered.CurrentItem != null ? (User)UsersFiltered.CurrentItem : new User();
             ShowUserFoto(CurrentUser.UserId);
-            
+
             //SetCheckersToCurrent(CurrentUser);
             //SetProperty(ref _busyIndicator, RolesDictionary);
         }
-         private void UserFotoChoose(object obj)
+        private void UserFotoChoose(object obj)
         {
-            string path = Utils.GetUserFotoPath(CurrentUser.UserId);
+            string path = GetUserFotoPath(CurrentUser.UserId);
             _isFotoChanged = true;
-            ImagePath = Utils.GetUserFotoPath("NoUserFoto.png");
+            ImagePath = GetUserFotoPath("NoUserFoto.png");
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
                 using (var fileStream = File.OpenRead(openFileDialog.FileName))
                 {
-                    var r=_jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserId = CurrentUser.UserId });
+                    var r = _jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserId = CurrentUser.UserId });
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     using (var file = File.Create(path))
                     {
@@ -279,15 +279,15 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                     }
                 }
             }
-             ShowUserFoto(CurrentUser.UserId);
+            ShowUserFoto(CurrentUser.UserId);
         }
         private void ShowUserFoto(int userId)
         {
-            string path = Utils.GetUserFotoPath(userId);
-            if (userId == 0) return;
+            string path = GetUserFotoPath(userId);
+            if (CurrentUser.UserId == 0) return;
             if (!File.Exists(path))
             {
-                _jsonClient.GetAsync(new UserFotoDownload { UserId = userId })
+                _jsonClient.GetAsync(new UserFotoDownload { UserId = CurrentUser.UserId })
                 .Success(r =>
                 {
                     if (r.FotoStream != null)
@@ -297,7 +297,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                     }
                     else
                     {
-                        ImagePath = Utils.GetUserFotoPath("NoUserFoto.png"); ;
+                        ImagePath = _defaultImagePath;
                     }
                 })
                 .Error(ex =>
@@ -311,13 +311,13 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             }
         }
 
-        //private string GetUserFotoPath(int userId)
-        //{
-        //    return string.Format("{0}Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, userId);
-        //}
-        //private string GetUserFotoPath(string file)
-        //{
-        //    return string.Format("{0}Fotos\\{1}", AppDomain.CurrentDomain.BaseDirectory, file);
-        //}
+        private string GetUserFotoPath(int userId)
+        {
+            return string.Format("{0}Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, userId);
+        }
+        private string GetUserFotoPath(string file)
+        {
+            return string.Format("{0}Fotos\\{1}", AppDomain.CurrentDomain.BaseDirectory, file);
+        }
     }
 }
