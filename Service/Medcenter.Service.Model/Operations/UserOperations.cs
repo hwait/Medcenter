@@ -70,10 +70,22 @@ namespace Medcenter.Service.Model.Operations
             ResponseStatus = new ResponseStatus();
         }
         public ResponseStatus ResponseStatus { get; set; }
-        public ObservableCollection<string> Roles { get; set; }
-
+        public List<string> Roles { get; set; }
     }
-
+    [Authenticate]
+    [Route("/users/permissions", "GET")]
+    public class PermissionsSelect : IReturn<PermissionsSelectResponse>
+    {
+    }
+    public class PermissionsSelectResponse : IHasResponseStatus
+    {
+        public PermissionsSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<string> Permissions { get; set; }
+    }
     [RequiredRole("Admin")]
     [Route("/users/all", "GET")]
     public class UsersSelect : IReturn<UsersSelectResponse>

@@ -20,7 +20,7 @@ using Microsoft.Practices.Prism.Regions;
 namespace Medcenter.Desktop.Modules.LoginModule.Views
 {
     [Export]
-    [ViewSortHint("03")]
+    [ViewSortHint("10")]
     public partial class LogoutToolbarView : UserControl
     {
         [Import]

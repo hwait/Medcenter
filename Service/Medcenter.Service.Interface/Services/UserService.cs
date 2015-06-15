@@ -28,7 +28,7 @@ namespace Medcenter.Service.Interface.Services
             ResponseStatus status=new ResponseStatus();
             try
             {
-                var rows = Db.SqlList<string>("EXEC sp_UsersNames_select");
+                var rows = Db.SqlList<string>("EXEC sp_UsersNames_Select");
                 //Db.SqlList<CustomerDTO>("EXEC sp_getcustomers @Name", new { request.Name });
                 users = rows.ToList();
             }
@@ -38,20 +38,27 @@ namespace Medcenter.Service.Interface.Services
             }
             return new LoginsSelectResponse { Users = new ObservableCollection<string>(users) };
         }
+        
         public RolesSelectResponse Get(RolesSelect req)
         {
             IAuthSession session = GetSession();
-            var id = Db.Single<int>("EXEC sp_UserSessions_login @DeviceId, @SessionId, @UserId", new
+            var id = Db.Single<int>("EXEC sp_UserSessions_Login @DeviceId, @SessionId, @UserId", new
             {
                 DeviceId = req.DeviceId,
                 SessionId = session.Id,
                 UserId = session.UserAuthId
             });
-            return new RolesSelectResponse { Roles = new ObservableCollection<string>(base.GetSession().Roles) };
+
+            return new RolesSelectResponse { Roles = base.GetSession().Roles };
+        }
+        public PermissionsSelectResponse Get(PermissionsSelect req)
+        {
+            IAuthSession session = GetSession();
+            return new PermissionsSelectResponse { Permissions = base.GetSession().Permissions };
         }
         public UsersSelectResponse Get(UsersSelect req)
         {
-            var rows = Db.SqlList<User>("EXEC sp_Users_select");
+            var rows = Db.SqlList<User>("EXEC sp_Users_Select");
             //Db.SqlList<CustomerDTO>("EXEC sp_getcustomers @Name", new { request.Name });
             //var users = rows.ToList();
 
@@ -62,7 +69,7 @@ namespace Medcenter.Service.Interface.Services
             List<User> users;
             try
             {
-                var rows = Db.SqlList<User>("EXEC sp_User_select @uid", new
+                var rows = Db.SqlList<User>("EXEC sp_User_Select @uid", new
                 {
                     uid = req.UserId
                 });
@@ -190,7 +197,7 @@ namespace Medcenter.Service.Interface.Services
             ResultMessage _message;
             try
             {
-                var res = Db.SqlList<int>("EXEC sp_User_delete @uid", new
+                var res = Db.SqlList<int>("EXEC sp_User_Delete @uid", new
                 {
                     uid = req.Id
                 });

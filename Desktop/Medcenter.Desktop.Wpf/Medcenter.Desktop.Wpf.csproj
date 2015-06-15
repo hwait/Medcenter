@@ -137,6 +137,10 @@
       <Project>{e108fb46-a0fa-46c8-9545-0ff99aa1490f}</Project>
       <Name>Medcenter.Desktop.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.InspectionsManagerModule.csproj">
+      <Project>{789e597c-9c24-4d11-b181-87ea153f78e0}</Project>
+      <Name>Medcenter.Desktop.Modules.InspectionsManagerModule</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.LoginModule\Medcenter.Desktop.Modules.LoginModule.csproj">
       <Project>{b2534544-4596-4d21-b56d-db63b8783245}</Project>
       <Name>Medcenter.Desktop.Modules.LoginModule</Name>
@@ -154,7 +158,9 @@
       <Name>Medcenter.Desktop.Modules.UsersManagerModule</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Fotos\NoUserFoto.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

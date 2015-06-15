@@ -135,16 +135,26 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
                 {
                     CurrentUser = ru.User;
                     CurrentUser.SessionId = authResponse.SessionId;
-                    JsonClient.GetAsync(new RolesSelect { DeviceId = "Dev1" })
-                    .Success(r =>
-                    {
-                        CurrentUser.Roles = r.Roles;
-                        _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
-                    })
-                    .Error(ex =>
-                    {
-                        throw ex;
-                    });
+                    JsonClient.GetAsync(new RolesSelect {DeviceId = "Dev1"})
+                        .Success(rr =>
+                        {
+                            CurrentUser.Roles = new ObservableCollection<string>(rr.Roles);
+                            JsonClient.GetAsync(new PermissionsSelect {})
+                                .Success(rp =>
+                                {
+                                    CurrentUser.Permissions = new ObservableCollection<string>(rp.Permissions);
+                                    _eventAggregator.GetEvent<UserLoginEvent>().Publish(CurrentUser);
+                                })
+                                .Error(ex =>
+                                {
+                                    throw ex;
+                                });
+                        })
+                        .Error(ex =>
+                        {
+                            throw ex;
+                        });
+
                 })
                 .Error(ex =>
                 {

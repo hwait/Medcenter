@@ -20,6 +20,7 @@ namespace Medcenter.Desktop.Infrastructure
         }
 
         public static int TimerShowMessage = 4;
+        public static int MinimalDuration = 5;
 
         public static string GetUserFotoPath(int userId)
         {
