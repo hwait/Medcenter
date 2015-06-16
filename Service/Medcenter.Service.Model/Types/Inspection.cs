@@ -22,6 +22,8 @@ namespace Medcenter.Service.Model.Types
         public int InspectionGroupId { get; set; }
         [DataMember]
         public int Cost { get; set; }
+        [DataMember]
+        public List<int> InspectionGroupIds { get; set; }
         public bool IsChanged { get; set; }
         public bool IsRemoved { get; set; }
     }

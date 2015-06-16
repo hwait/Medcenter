@@ -18,10 +18,13 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string ShortName { get; set; }
         [DataMember]
-        public int Row { get; set; }
+        public byte Row { get; set; }
         [DataMember]
         public string Color { get; set; }
+        [DataMember]
+        public List<int> InspectionIds { get; set; }
         public bool IsChanged { get; set; }
+
         public bool IsRemoved { get; set; }
     }
 }

@@ -201,12 +201,12 @@ namespace Medcenter.Service.Interface.Services
                 {
                     uid = req.Id
                 });
-                _message = new ResultMessage(0, "Сервис", OperationResults.UserRemove);
+                _message = new ResultMessage(0, "Сервис", OperationResults.UserDelete);
                 Logger.Log("UserDeleteResponse");
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.UserRemove);
+                _message = new ResultMessage(2, e.Source, OperationErrors.UserDelete);
                 Logger.Log("UserDeleteResponse", e);
                 throw;
             }

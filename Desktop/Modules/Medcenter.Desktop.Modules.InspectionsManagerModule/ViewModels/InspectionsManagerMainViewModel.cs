@@ -132,69 +132,186 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             _eventAggregator = eventAggregator;
             _removeInspectionFromGroupCommand = new DelegateCommand<object>(RemoveInspectionFromGroup);
             _addInspectionToGroupCommand = new DelegateCommand<object>(AddInspectionToGroup);
-            _newInspectionCommand = new DelegateCommand<object>(NewInspection);
+            _newInspectionCommand = new DelegateCommand<object>(NewInspection, CanAddInspection);
             _removeInspectionCommand = new DelegateCommand<object>(RemoveInspection);
             _saveInspectionCommand = new DelegateCommand<object>(SaveInspection);
-            _newInspectionGroupCommand = new DelegateCommand<object>(NewInspectionGroup);
+            _newInspectionGroupCommand = new DelegateCommand<object>(NewInspectionGroup, CanAddInspectionGroup);
             _removeInspectionGroupCommand = new DelegateCommand<object>(RemoveInspectionGroup);
             _saveInspectionGroupCommand = new DelegateCommand<object>(SaveInspectionGroup);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
-
+            CurrentInspection=new Inspection();
+            CurrentInspectionGroup=new InspectionGroup();
             BusyIndicator = true;
-            //_jsonClient.GetAsync(new UsersSelect())
-            //.Success(r =>
-            //{
-            //    //RolesDictionary=new RolesCollection();
-            //    BusyIndicator = false;
-            //    Users = r.Users;
-            //    UsersFiltered = new ListCollectionView(Users);
+            _jsonClient.GetAsync(new InspectionsSelect())
+            .Success(ri =>
+            {
+                BusyIndicator = false;
 
-            //    UsersFiltered.CurrentChanged += UsersFiltered_CurrentChanged;
-            //})
-            //.Error(ex =>
-            //{
-            //    throw ex;
-            //});
+                Inspections = new ListCollectionView(ri.Inspections);
+                Inspections.CurrentChanged += Inspections_CurrentChanged;
+                _jsonClient.GetAsync(new InspectionGroupsSelect())
+                .Success(rig =>
+                {
+                    BusyIndicator = false;
+
+                    InspectionGroups = new ListCollectionView(rig.InspectionGroups);
+                    InspectionGroups.CurrentChanged += InspectionGroups_CurrentChanged;
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+                })
+            .Error(ex =>
+            {
+                throw ex;
+            });
 
         }
 
-        
+
+
+        private void InspectionGroups_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentInspectionGroup = InspectionGroups.CurrentItem != null ? (InspectionGroup)InspectionGroups.CurrentItem : new InspectionGroup();
+        }
+
+        private void Inspections_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentInspection = Inspections.CurrentItem != null ? (Inspection)Inspections.CurrentItem : new Inspection();
+        }
 
         #region InspectionGroup
 
         private void NewInspectionGroup(object obj)
         {
-            throw new NotImplementedException();
+            CurrentInspectionGroup=new InspectionGroup();
         }
 
         private void SaveInspectionGroup(object obj)
         {
-            throw new NotImplementedException();
+            bool isNew = CurrentInspectionGroup.Id <= 0;
+            BusyIndicator = true;
+            _jsonClient.PostAsync(new InspectionGroupSave { InspectionGroup = CurrentInspectionGroup })
+            .Success(r =>
+            {
+                BusyIndicator = false;
+                CurrentInspectionGroup.Id = r.InspectionGroupId;
+                if (isNew) InspectionGroups.AddNewItem(CurrentInspectionGroup);
+                r.Message.Message = string.Format(r.Message.Message, CurrentInspectionGroup.Name);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _newInspectionGroupCommand.RaiseCanExecuteChanged();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
         private void RemoveInspectionGroup(object obj)
         {
-            throw new NotImplementedException();
+            bool isNew = CurrentInspectionGroup.Id == 0;
+            ConfirmationRequest.Raise(
+                new Confirmation { Content = "Группа будет удалёна! Вы уверены?", Title = "Удаление группы инспекций." },
+                c =>
+                {
+                    if (c.Confirmed)
+                    {
+                        BusyIndicator = true;
+                        if (isNew)
+                        {
+                            CurrentInspectionGroup = new InspectionGroup();
+                            _newInspectionGroupCommand.RaiseCanExecuteChanged();
+                        }
+                        else
+                        {
+                            _jsonClient.GetAsync(new InspectionGroupDelete { InspectionGroupId = CurrentInspectionGroup.Id })
+                            .Success(r =>
+                            {
+                                BusyIndicator = false;
+                                r.Message.Message = string.Format(r.Message.Message, CurrentInspectionGroup.Name);
+                                InspectionGroups.Remove(InspectionGroups.CurrentItem);
+                                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                _newInspectionGroupCommand.RaiseCanExecuteChanged();
+                            })
+                            .Error(ex =>
+                            {
+                                throw ex;
+                            });
+                        }
+                    }
+                });
         }
-
+        private bool CanAddInspectionGroup(object arg)
+        {
+            return CurrentInspectionGroup == null || CurrentInspectionGroup.Id != 0;
+        }
         #endregion
-
 
         #region Inspection
 
+        private void NewInspection(object obj)
+        {
+            CurrentInspection = new Inspection();
+        }
+
         private void SaveInspection(object obj)
         {
-            throw new NotImplementedException();
+            bool isNew = CurrentInspection.Id <= 0;
+            BusyIndicator = true;
+            _jsonClient.PostAsync(new InspectionSave { Inspection = CurrentInspection })
+            .Success(r =>
+            {
+                BusyIndicator = false;
+                CurrentInspection.Id = r.InspectionId;
+                if (isNew) Inspections.AddNewItem(CurrentInspection);
+                r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _newInspectionCommand.RaiseCanExecuteChanged();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
         private void RemoveInspection(object obj)
         {
-            throw new NotImplementedException();
+            bool isNew = CurrentInspection.Id == 0;
+            ConfirmationRequest.Raise(
+                new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
+                c =>
+                {
+                    if (c.Confirmed)
+                    {
+                        BusyIndicator = true;
+                        if (isNew)
+                        {
+                            CurrentInspection = new Inspection();
+                            _newInspectionCommand.RaiseCanExecuteChanged();
+                        }
+                        else
+                        {
+                            _jsonClient.GetAsync(new InspectionDelete { InspectionId = CurrentInspection.Id })
+                            .Success(r =>
+                            {
+                                BusyIndicator = false;
+                                r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
+                                Inspections.Remove(Inspections.CurrentItem);
+                                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                _newInspectionCommand.RaiseCanExecuteChanged();
+                            })
+                            .Error(ex =>
+                            {
+                                throw ex;
+                            });
+                        }
+                    }
+                });
         }
-
-        private void NewInspection(object obj)
+        private bool CanAddInspection(object arg)
         {
-            throw new NotImplementedException();
+            return CurrentInspection == null || CurrentInspection.Id != 0;
         }
 
         #endregion
@@ -203,85 +320,37 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
 
         private void AddInspectionToGroup(object obj)
         {
-            throw new NotImplementedException();
+            BusyIndicator = true;
+            _jsonClient.PostAsync(new InspectionsGroupsBind { InspectionId = CurrentInspection.Id,InspectionGroupId = CurrentInspectionGroup.Id })
+            .Success(r =>
+            {
+                BusyIndicator = false;
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
         private void RemoveInspectionFromGroup(object obj)
         {
-            throw new NotImplementedException();
+            BusyIndicator = true;
+            _jsonClient.PostAsync(new InspectionsGroupsUnbind { InspectionId = CurrentInspection.Id,InspectionGroupId = CurrentInspectionGroup.Id })
+            .Success(r =>
+            {
+                BusyIndicator = false;
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
         #endregion
 
 
-        //private void SaveUser(object obj)
-        //{
-        //    User user;
-        //    bool isNew = CurrentUser.UserId == 0;
-        //    CurrentUser.Roles = RolesDictionary.RolesKeys;
-        //    CurrentUser.Permissions = PermissionsDictionary.PermissionsKeys;
-        //    Errors = CurrentUser.Validate();
-        //    if (Errors.Count == 0)
-        //    {
-        //        BusyIndicator = true;
-        //        _jsonClient.PostAsync(new UserSave { User = CurrentUser })
-        //            .Success(r =>
-        //            {
-        //                BusyIndicator = false;
-        //                CurrentUser.UserId = r.UserId;
-        //                CurrentUser.Password = "";
-        //                CurrentUser.Password1 = "";
-        //                //CurrentUser.ClearPassword();
-        //                if (isNew)
-        //                {
-        //                    UsersFiltered.AddNewItem(CurrentUser);
-        //                    UsersFiltered.CommitNew();
-        //                }
-        //                UsersFiltered.Refresh();
-        //                r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
-        //                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-        //                _newUserCommand.RaiseCanExecuteChanged();
-        //            })
-        //            .Error(ex =>
-        //            {
-        //                throw ex;
-        //            });
-        //    }
-        //}
-
-        //private void RemoveUser(object obj)
-        //{
-        //    bool isNew = CurrentUser.UserId == 0;
-        //    ConfirmationRequest.Raise(
-        //        new Confirmation { Content = "Пользователь будет удалён! Вы уверены?", Title = "Удаление пользователя." },
-        //        c =>
-        //        {
-        //            if (c.Confirmed)
-        //            {
-        //                BusyIndicator = true;
-        //                if (isNew)
-        //                {
-        //                    CurrentUser = new User();
-        //                    _newUserCommand.RaiseCanExecuteChanged();
-        //                }
-        //                else
-        //                {
-        //                    _jsonClient.GetAsync(new UserDelete { Id = CurrentUser.UserId })
-        //                    .Success(r =>
-        //                    {
-        //                        BusyIndicator = false;
-        //                        r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
-        //                        UsersFiltered.Remove(UsersFiltered.CurrentItem);
-        //                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-        //                        _newUserCommand.RaiseCanExecuteChanged();
-        //                    })
-        //                    .Error(ex =>
-        //                    {
-        //                        throw ex;
-        //                    });
-        //                }
-        //            }
-        //        });
-        //}
+      
     }
 }

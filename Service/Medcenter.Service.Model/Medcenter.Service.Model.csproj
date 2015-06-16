@@ -64,6 +64,7 @@
     <Compile Include="Hello.cs" />
     <Compile Include="Misc\LogAuthEvents.cs" />
     <Compile Include="Operations\DoctorOperations.cs" />
+    <Compile Include="Operations\InspectionOperations.cs" />
     <Compile Include="Operations\UserOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Doctor.cs" />

@@ -25,17 +25,17 @@
 		</DataTemplate>
 		<DataTemplate x:Key="InspectionGroupTemplate">
 			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-				<Rectangle Width="20">
+				<Rectangle Width="30">
 					<Rectangle.Fill>
 						<SolidColorBrush Color="{Binding Color}" />
 					</Rectangle.Fill>
 				</Rectangle>
-				<TextBlock Text="{Binding Name}" Margin="5,0,0,0"/>
+				<TextBlock Text="{Binding Name}" Margin="5,0,0,0" FontSize="16"/>
 			</StackPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="InspectionTemplate">
 			<StackPanel Margin="5,5,0,0">
-				<TextBlock Text="{Binding ShortName}"/>
+				<TextBlock Text="{Binding ShortName}" FontSize="16"/>
 			</StackPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="CurrentInspectionGroupTemplate">
@@ -49,13 +49,13 @@
 					<RowDefinition Height="*"/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="3" Margin="3" HorizontalContentAlignment="Stretch" FontSize="10" BorderBrush="Black"/>
-				<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Grid.Row="1" Margin="3,0,3,3" HorizontalContentAlignment="Stretch" FontSize="10" BorderBrush="Black"/>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="3" Margin="3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Grid.Row="1" Margin="3,0,3,3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
 				<StackPanel Grid.Column="1" Margin="0" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top">
 					<TextBlock Text="№:" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
-					<TextBox Height="23" Text="{Binding Row}" VerticalAlignment="Center" Width="50.057" Margin="3,0.667,3,0.666" FontSize="10" BorderBrush="Black"/>
+					<TextBox Height="30" Text="{Binding Row}" VerticalAlignment="Center" Width="50.057" Margin="3,0.667,3,0.666" FontSize="16" BorderBrush="Black"/>
 				</StackPanel>
-				<syncfusion:ColorPickerPalette Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Color="{Binding Color}" BorderThickness="0" Margin="0,0,5,5" Background="{x:Null}"/>
+				<syncfusion:ColorPickerPalette Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Color="{Binding Color}" BorderThickness="0" Margin="0,0,5,5" Background="{x:Null}" Height="30"/>
 			</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="InspectionDataTemplate">
@@ -69,15 +69,15 @@
 					<RowDefinition/>
 					<RowDefinition Height="*"/>
 				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="12" BorderBrush="Black" Grid.ColumnSpan="3"/>
-				<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="12" BorderBrush="Black" Grid.Column="0" Grid.Row="1"/>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.ColumnSpan="3"/>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.Column="0" Grid.Row="1"/>
 				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="/Assets/IconClock.png" Height="20" Width="20"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Duration}" VerticalAlignment="Center" Margin="5,0.001,0,0" HorizontalContentAlignment="Stretch" FontSize="12" BorderBrush="Black" Width="25"/>
+					<Image Source="../Assets/IconClock.png" Height="25" Width="25"/>
+					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Duration}" VerticalAlignment="Center" Margin="5,0.001,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Width="25"/>
 				</StackPanel>
 				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1"  Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="/Assets/IconMoney.png" Height="20" Width="20"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Cost}" VerticalAlignment="Center" Width="70" Margin="5,0,0,0" HorizontalContentAlignment="Stretch" FontSize="12" BorderBrush="Black"/>
+					<Image Source="../Assets/IconMoney.png" Height="25" Width="25"/>
+					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Cost}" VerticalAlignment="Center" Width="70" Margin="5,0,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
 				</StackPanel>
 
 			</Grid>
@@ -91,28 +91,28 @@
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
-	<Grid>
+	<Grid Margin="40,40,40,0">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="60"/>
-			<RowDefinition Height="35"/>
+			<RowDefinition Height="80"/>
+			<RowDefinition Height="40"/>
 			<RowDefinition/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="140"/>
-			<ColumnDefinition Width="87"/>
-			<ColumnDefinition Width="160"/>
+			<ColumnDefinition Width="158*"/>
+			<ColumnDefinition Width="89*"/>
+			<ColumnDefinition Width="169*"/>
+			<ColumnDefinition Width="30*"/>
 			<ColumnDefinition Width="40"/>
-			<ColumnDefinition Width="40"/>
-			<ColumnDefinition Width="113"/>
-			<ColumnDefinition Width="87"/>
+			<ColumnDefinition Width="97*"/>
+			<ColumnDefinition Width="87*"/>
 		</Grid.ColumnDefinitions>
 		<sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="119.999" Height="120" Margin="57.767,72.113,22.234,18.887" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" d:IsHidden="True" Grid.ColumnSpan="2"/>
 		<Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="3" Fill="#FF4E7EA4" />
 		<Rectangle Grid.ColumnSpan="5" Grid.Column="2" Grid.RowSpan="3" Grid.Row="0" Fill="#FFE0891D" />
 		<Rectangle Grid.ColumnSpan="3" Grid.Column="2" Grid.RowSpan="2" Grid.Row="1" Fill="#FF3AC968" />
 		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="7" Grid.Row="3"/>
-		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" Margin="5" VerticalAlignment="Center">
+		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,10,5" VerticalAlignment="Center">
             <Button Content="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding NewInspectionGroupCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,2,0" />
             <Button Content="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveInspectionGroupCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,2,0"/>
             <Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveInspectionGroupCommand}" Style="{DynamicResource LocalButtonStyle}"/>
@@ -120,7 +120,7 @@
 		<StackPanel Grid.Column="3" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,0,0">
             <Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Top" Command="{Binding SaveInspectionsInGroupCommand}" Style="{DynamicResource LocalButtonStyle}"/>
 		</StackPanel>
-		<StackPanel Grid.Column="6" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" Margin="5">
+		<StackPanel Grid.Column="6" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,10,5">
             <Button Content="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewInspectionCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,2,0" />
             <Button Content="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveInspectionCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,2,0"/>
             <Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveInspectionCommand}" Style="{DynamicResource LocalButtonStyle}"/>
@@ -129,7 +129,7 @@
 			<Button Content="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveInspectionFromGroupCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,0,10" />
 			<Button Content="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddInspectionToGroupCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0"/>
 		</StackPanel>
-		<ListBox Grid.Row="2" Margin="5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionGroupTemplate}" ItemsSource="{Binding InspectionGroups}">
+		<ListBox Grid.Row="2" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionGroupTemplate}" ItemsSource="{Binding InspectionGroups}">
 			<ListBox.RenderTransform>
 				<TransformGroup>
 					<ScaleTransform/>
@@ -140,13 +140,13 @@
 			</ListBox.RenderTransform>
 		</ListBox>
 		
-		<ListBox Grid.Column="2" Margin="5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionTemplate}" ItemsSource="{Binding Inspections}"/>
-		<ListBox Grid.Column="5" Margin="5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionTemplate}" ItemsSource="{Binding Inspections}"/>
-		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Группы инспекций:" VerticalAlignment="Bottom" Grid.Row="1" FontSize="13.333" FontWeight="Bold"/>
-		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Инспекции в группе:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" FontSize="13.333" FontWeight="Bold"/>
-		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Инспекции:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="5" FontSize="13.333" FontWeight="Bold"/>
-		<ContentControl Content="{Binding CurrentInspectionGroup, Mode=OneWay}" Margin="0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentInspectionGroupTemplate}"/>
-		<ContentControl Content="{Binding CurrentInspection, Mode=OneWay}" Margin="0" Grid.Column="2" Grid.ColumnSpan="5" ContentTemplate="{DynamicResource InspectionDataTemplate}"/>
+		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionTemplate}" ItemsSource="{Binding Inspections}" MinWidth="200"/>
+		<ListBox Grid.Column="5" Margin="5,5,10,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionTemplate}" ItemsSource="{Binding Inspections}" MinWidth="200"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Группы инспекций:" VerticalAlignment="Bottom" Grid.Row="1" FontSize="16" FontWeight="Bold"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Инспекции в группе:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" FontSize="16" FontWeight="Bold"/>
+		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Инспекции:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="5" FontSize="16" FontWeight="Bold"/>
+		<ContentControl Content="{Binding CurrentInspectionGroup, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentInspectionGroupTemplate}"/>
+		<ContentControl Content="{Binding CurrentInspection, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="5" ContentTemplate="{DynamicResource InspectionDataTemplate}"/>
 		
 	</Grid>
 </UserControl>
