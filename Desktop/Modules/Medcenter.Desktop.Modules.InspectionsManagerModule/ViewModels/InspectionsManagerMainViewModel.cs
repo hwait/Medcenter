@@ -40,6 +40,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         private readonly DelegateCommand<object> _newInspectionGroupCommand;
         private readonly DelegateCommand<object> _removeInspectionGroupCommand;
         private readonly DelegateCommand<object> _saveInspectionGroupCommand;
+        private readonly DelegateCommand<object> _colorChangedCommand;
         #region Properties
 
         public ICommand AddInspectionToGroupCommand
@@ -74,7 +75,10 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         {
             get { return this._saveInspectionGroupCommand; }
         }
-
+        public ICommand ColorChangedCommand
+        {
+            get { return this._colorChangedCommand; }
+        }
         private List<ResultMessage> _errors;
 
         public List<ResultMessage> Errors
@@ -88,13 +92,32 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             get { return _inspectionGroups; }
             set { SetProperty(ref _inspectionGroups, value); }
         }
+        private ListCollectionView _inspectionsInGroup;
+        public ListCollectionView InspectionsInGroup
+        {
+            get { return _inspectionsInGroup; }
+            set
+            {
+                SetProperty(ref _inspectionsInGroup, value); 
+            }
+        }
+        
         private ListCollectionView _inspections;
         public ListCollectionView Inspections
         {
             get { return _inspections; }
             set { SetProperty(ref _inspections, value); }
         }
+        private Inspection _currentInspectionInGroup;
 
+        public Inspection CurrentInspectionInGroup
+        {
+            get { return _currentInspectionInGroup; }
+            set
+            {
+                SetProperty(ref _currentInspectionInGroup, value);
+            }
+        }
         private Inspection _currentInspection;
 
         public Inspection CurrentInspection
@@ -113,8 +136,10 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             set
             {
                 SetProperty(ref _currentInspectionGroup, value);
+                InspectionsInGroupRefresh();
             }
         }
+
         private bool _busyIndicator;
 
         public bool BusyIndicator
@@ -138,9 +163,9 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             _newInspectionGroupCommand = new DelegateCommand<object>(NewInspectionGroup, CanAddInspectionGroup);
             _removeInspectionGroupCommand = new DelegateCommand<object>(RemoveInspectionGroup);
             _saveInspectionGroupCommand = new DelegateCommand<object>(SaveInspectionGroup);
+            _colorChangedCommand = new DelegateCommand<object>(ColorChanged);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
-            CurrentInspection=new Inspection();
-            CurrentInspectionGroup=new InspectionGroup();
+            
             BusyIndicator = true;
             _jsonClient.GetAsync(new InspectionsSelect())
             .Success(ri =>
@@ -156,6 +181,10 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
 
                     InspectionGroups = new ListCollectionView(rig.InspectionGroups);
                     InspectionGroups.CurrentChanged += InspectionGroups_CurrentChanged;
+                    CurrentInspection = new Inspection();
+                    CurrentInspectionGroup = new InspectionGroup();
+                    InspectionsInGroup.CurrentChanged += InspectionsInGroup_CurrentChanged;
+                    Inspections.Filter += new FilterEventHandler(InspectionsFilter);
                 })
                 .Error(ex =>
                 {
@@ -166,9 +195,15 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             {
                 throw ex;
             });
-
+            
         }
 
+        
+
+        private void ColorChanged(object obj)
+        {
+            CurrentInspectionGroup.Color = obj.ToString();
+        }
 
 
         private void InspectionGroups_CurrentChanged(object sender, EventArgs e)
@@ -179,6 +214,10 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         private void Inspections_CurrentChanged(object sender, EventArgs e)
         {
             CurrentInspection = Inspections.CurrentItem != null ? (Inspection)Inspections.CurrentItem : new Inspection();
+        }
+        private void InspectionsInGroup_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentInspectionInGroup = InspectionsInGroup.CurrentItem != null ? (Inspection)InspectionsInGroup.CurrentItem : new Inspection();
         }
 
         #region InspectionGroup
@@ -191,21 +230,25 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         private void SaveInspectionGroup(object obj)
         {
             bool isNew = CurrentInspectionGroup.Id <= 0;
-            BusyIndicator = true;
-            _jsonClient.PostAsync(new InspectionGroupSave { InspectionGroup = CurrentInspectionGroup })
-            .Success(r =>
+            Errors = CurrentInspectionGroup.Validate();
+            if (Errors.Count == 0)
             {
-                BusyIndicator = false;
-                CurrentInspectionGroup.Id = r.InspectionGroupId;
-                if (isNew) InspectionGroups.AddNewItem(CurrentInspectionGroup);
-                r.Message.Message = string.Format(r.Message.Message, CurrentInspectionGroup.Name);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _newInspectionGroupCommand.RaiseCanExecuteChanged();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+                BusyIndicator = true;
+                _jsonClient.PostAsync(new InspectionGroupSave {InspectionGroup = CurrentInspectionGroup})
+                    .Success(r =>
+                    {
+                        BusyIndicator = false;
+                        CurrentInspectionGroup.Id = r.InspectionGroupId;
+                        if (isNew) InspectionGroups.AddNewItem(CurrentInspectionGroup);
+                        r.Message.Message = string.Format(r.Message.Message, CurrentInspectionGroup.Name);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        _newInspectionGroupCommand.RaiseCanExecuteChanged();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+            }
         }
 
         private void RemoveInspectionGroup(object obj)
@@ -244,12 +287,18 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         }
         private bool CanAddInspectionGroup(object arg)
         {
-            return CurrentInspectionGroup == null || CurrentInspectionGroup.Id != 0;
+            //return CurrentInspectionGroup == null || CurrentInspectionGroup.Id != 0;
+            return true;
         }
         #endregion
 
         #region Inspection
 
+        private bool InspectionFilter(object item)
+        {
+            Inspection inspection = item as Inspection;
+            return inspection.InspectionGroupIds.Contains(CurrentInspectionGroup.Id);
+        }
         private void NewInspection(object obj)
         {
             CurrentInspection = new Inspection();
@@ -258,21 +307,25 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         private void SaveInspection(object obj)
         {
             bool isNew = CurrentInspection.Id <= 0;
-            BusyIndicator = true;
-            _jsonClient.PostAsync(new InspectionSave { Inspection = CurrentInspection })
-            .Success(r =>
+            Errors = CurrentInspection.Validate();
+            if (Errors.Count == 0)
             {
-                BusyIndicator = false;
-                CurrentInspection.Id = r.InspectionId;
-                if (isNew) Inspections.AddNewItem(CurrentInspection);
-                r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _newInspectionCommand.RaiseCanExecuteChanged();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+                BusyIndicator = true;
+                _jsonClient.PostAsync(new InspectionSave {Inspection = CurrentInspection})
+                    .Success(r =>
+                    {
+                        BusyIndicator = false;
+                        CurrentInspection.Id = r.InspectionId;
+                        if (isNew) Inspections.AddNewItem(CurrentInspection);
+                        r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        _newInspectionCommand.RaiseCanExecuteChanged();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+            }
         }
 
         private void RemoveInspection(object obj)
@@ -311,21 +364,41 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         }
         private bool CanAddInspection(object arg)
         {
-            return CurrentInspection == null || CurrentInspection.Id != 0;
+            //return CurrentInspection == null || CurrentInspection.Id != 0;
+            return true;
         }
 
         #endregion
 
         #region Inspections in Group
-
+        private bool InspectionsFilter(object item)
+        {
+            Inspection inspection = item as Inspection;
+            if (CurrentInspectionGroup == null || CurrentInspectionGroup.Id == 0)
+                return true;
+            else
+                return !inspection.InspectionGroupIds.Contains(CurrentInspectionGroup.Id);
+        }
+        private void InspectionsInGroupRefresh()
+        {
+            var list = new List<Inspection>();
+            foreach (Inspection inspection in Inspections)
+            {
+                if (inspection.InspectionGroupIds.Contains(CurrentInspectionGroup.Id)) list.Add(inspection);
+            }
+            
+            InspectionsInGroup = new ListCollectionView(list);
+        }
         private void AddInspectionToGroup(object obj)
         {
             BusyIndicator = true;
-            _jsonClient.PostAsync(new InspectionsGroupsBind { InspectionId = CurrentInspection.Id,InspectionGroupId = CurrentInspectionGroup.Id })
+            _jsonClient.GetAsync(new InspectionsGroupsBind { InspectionId = CurrentInspection.Id,InspectionGroupId = CurrentInspectionGroup.Id })
             .Success(r =>
             {
                 BusyIndicator = false;
                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                CurrentInspection.InspectionGroupIds.Add(CurrentInspectionGroup.Id);
+                InspectionsInGroupRefresh();
             })
             .Error(ex =>
             {
@@ -336,11 +409,13 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
         private void RemoveInspectionFromGroup(object obj)
         {
             BusyIndicator = true;
-            _jsonClient.PostAsync(new InspectionsGroupsUnbind { InspectionId = CurrentInspection.Id,InspectionGroupId = CurrentInspectionGroup.Id })
+            _jsonClient.GetAsync(new InspectionsGroupsUnbind { InspectionId = CurrentInspection.Id, InspectionGroupId = CurrentInspectionGroup.Id })
             .Success(r =>
             {
                 BusyIndicator = false;
                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                CurrentInspection.InspectionGroupIds.Remove(CurrentInspectionGroup.Id);
+                InspectionsInGroupRefresh();
             })
             .Error(ex =>
             {

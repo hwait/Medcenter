@@ -50,7 +50,7 @@ namespace Medcenter.Service.Interface.Services
 
             return new GroupsInInspectionSelectResponse { InspectionGroupIds = new List<int>(rows) };
         }
-        public InspectionsGroupsBindResponse Post(InspectionsGroupsBind req)
+        public InspectionsGroupsBindResponse Get(InspectionsGroupsBind req)
         {
             ResultMessage _message;
                 try
@@ -75,7 +75,7 @@ namespace Medcenter.Service.Interface.Services
             };
         }
 
-        public InspectionsGroupsUnbindResponse Post(InspectionsGroupsUnbind req)
+        public InspectionsGroupsUnbindResponse Get(InspectionsGroupsUnbind req)
         {
             ResultMessage _message;
             try

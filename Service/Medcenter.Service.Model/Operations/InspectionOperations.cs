@@ -111,7 +111,7 @@ namespace Medcenter.Service.Model.Operations
     }
 
     [RequiresAnyRole("Admin", "Manager")]
-    [Route("/inspection/delete/{InspectionId}", "GET")]
+    [Route("/inspectiongroup/delete/{InspectionGroupId}", "GET")]
     public class InspectionGroupDelete : IReturn<InspectionGroupDeleteResponse>
     {
         public int InspectionGroupId { get; set; }

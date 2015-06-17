@@ -164,5 +164,50 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                 };
             }
         }
+        public ObservableCollection<Inspection> InspectionsInGroup
+        {
+            get
+            {
+                return new ObservableCollection<Inspection>
+                {
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Ультразвуковое исследование сердца",
+                        ShortName = "ЭХО",
+                        Duration = 10,
+                        InspectionGroupId = 0,
+                        Cost = 1000
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Консультация кардиолога",
+                        ShortName = "Кардиолог",
+                        Duration = 5,
+                        InspectionGroupId = 0,
+                        Cost = 1200
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "УЗИ почек с допплерографией",
+                        ShortName = "УЗДГ почек",
+                        Duration = 5,
+                        InspectionGroupId = 1,
+                        Cost = 3500
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "УЗИ почек",
+                        ShortName = "Почки",
+                        Duration = 10,
+                        InspectionGroupId = 1,
+                        Cost = 2100
+                    },
+                };
+            }
+        }
     }
 }
