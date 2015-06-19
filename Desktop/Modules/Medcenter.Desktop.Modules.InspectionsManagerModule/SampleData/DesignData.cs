@@ -56,7 +56,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                     Name = "Кардиология",
                     ShortName = "КРД",
                     Row = 0,
-                    Color = Colors.Bisque.ToString()
+                    //Color = null//(Color) Colors.Bisque//.ToString()
                 };
             }
         }
@@ -89,7 +89,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Name = "Кардиология",
                         ShortName = "КРД",
                         Row = 0,
-                        Color = Colors.Bisque.ToString()
+                        //Color = null;//Colors.Bisque.ToString()
                     },
                     new InspectionGroup
                     {
@@ -97,7 +97,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Name = "Абдоминальные",
                         ShortName = "АБД",
                         Row = 0,
-                        Color = Colors.LightSkyBlue.ToString()
+                        //Color = Colors.LightSkyBlue.ToString()
                     },
                     new InspectionGroup
                     {
@@ -105,7 +105,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Name = "Моче-половая система",
                         ShortName = "МПС",
                         Row = 0,
-                        Color = Colors.LightGreen.ToString()
+                        //Color = Colors.LightGreen.ToString()
                     },
                     new InspectionGroup
                     {
@@ -113,7 +113,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Name = "Прочие",
                         ShortName = "ПРЧ",
                         Row = 1,
-                        Color = Colors.HotPink.ToString()
+                        //Color = Colors.HotPink.ToString()
                     },
                 };
             }

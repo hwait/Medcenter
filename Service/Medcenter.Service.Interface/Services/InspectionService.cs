@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Drawing;
 using System.Threading.Tasks;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
@@ -10,6 +10,7 @@ using Medcenter.Service.Model.Types;
 using ServiceStack.Auth;
 using ServiceStack.OrmLite;
 using ServiceStack;
+
 
 namespace Medcenter.Service.Interface.Services
 {
@@ -145,12 +146,12 @@ namespace Medcenter.Service.Interface.Services
                         Row = req.InspectionGroup.Row,
                     });
                     _message = new ResultMessage(0, "Сохранение исследования", OperationResults.InspectionGroupSave);
-                    Logger.Log("InspectionSaveResponse.Saving");
+                    Logger.Log("InspectionGroupSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.InspectionGroupSave);
-                    Logger.Log("InspectionSaveResponse.Saving", e);
+                    Logger.Log("InspectionGroupSaveResponse.Saving " , e);
                     throw;
                 }
             }

@@ -107,6 +107,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             }
         }
         private User _currentUser;
+        private ListCollectionView _usersFiltered;
 
         public User CurrentUser
         {
@@ -117,16 +118,6 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                 _newUserCommand.RaiseCanExecuteChanged();
                 SetCheckersToCurrent(_currentUser);
             }
-        }
-
-        private bool _busyIndicator;
-
-        private ListCollectionView _usersFiltered;
-
-        public bool BusyIndicator
-        {
-            get { return _busyIndicator; }
-            set { SetProperty(ref _busyIndicator, value); }
         }
 
         #endregion
@@ -144,12 +135,12 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             _saveUserCommand = new DelegateCommand<object>(SaveUser);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
-            BusyIndicator = true;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new UsersSelect())
             .Success(r =>
             {
                 //RolesDictionary=new RolesCollection();
-                BusyIndicator = false;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 Users = r.Users;
                 UsersFiltered = new ListCollectionView(Users);
                 
@@ -178,11 +169,11 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             Errors = CurrentUser.Validate();
             if (Errors.Count == 0)
             {
-                BusyIndicator = true;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 _jsonClient.PostAsync(new UserSave {User = CurrentUser})
                     .Success(r =>
                     {
-                        BusyIndicator = false;
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                         CurrentUser.UserId = r.UserId;
                         CurrentUser.Password = "";
                         CurrentUser.Password1 = "";
@@ -213,7 +204,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                 {
                     if (c.Confirmed)
                     {
-                        BusyIndicator = true;
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                         if (isNew)
                         {
                             CurrentUser=new User();
@@ -224,7 +215,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                             _jsonClient.GetAsync(new UserDelete { Id = CurrentUser.UserId })
                             .Success(r =>
                             {
-                                BusyIndicator = false;
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                                 r.Message.Message = string.Format(r.Message.Message, CurrentUser.DisplayName);
                                 UsersFiltered.Remove(UsersFiltered.CurrentItem);
                                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
@@ -242,8 +233,6 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private void NewUser(object obj)
         {
             CurrentUser = new User();
-            //UsersFiltered.AddNewItem(user);
-
         }
 
         void SetCheckersToCurrent(User user)
@@ -256,9 +245,6 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         {
             CurrentUser = UsersFiltered.CurrentItem != null ? (User)UsersFiltered.CurrentItem : new User();
             ShowUserFoto(CurrentUser.UserId);
-            
-            //SetCheckersToCurrent(CurrentUser);
-            //SetProperty(ref _busyIndicator, RolesDictionary);
         }
          private void UserFotoChoose(object obj)
         {

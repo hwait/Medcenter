@@ -4,16 +4,17 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-			 xmlns:sf="clr-namespace:Syncfusion.Windows.Controls.Notification;assembly=Syncfusion.SfBusyIndicator.WPF"
+             
 			 xmlns:prism="http://www.codeplex.com/prism"
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 xmlns:infrastructure="clr-namespace:Medcenter.Desktop.Infrastructure;assembly=Medcenter.Desktop.Infrastructure" 
 			 xmlns:ds="clr-namespace:Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData"
-			 xmlns:syncfusion="http://schemas.syncfusion.com/wpf"
+			 xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
 			 x:Class="Medcenter.Desktop.Modules.InspectionsManagerModule.Views.InspectionsManagerMainView"
 			 mc:Ignorable="d"
 			 >
 	<UserControl.Resources>
+        
 		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
 		<ds:DesignData x:Key="DesignData"/>
@@ -23,6 +24,13 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFFFB733"/>
             </Style.Resources>
         </Style>
+        <DataTemplate x:Key="PaletteTemplate">
+            <Rectangle Width="10" Height="10">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{Binding CustomColor}" />
+                </Rectangle.Fill>
+            </Rectangle>
+        </DataTemplate>
         <DataTemplate x:Key="ErrorMessageTemplate">
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="{Binding Source}" Foreground="Red" FontSize="13.333" FontWeight="Bold"/>
@@ -61,8 +69,8 @@
 					<TextBlock Text="№:" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
 					<TextBox Height="30" Text="{Binding Row}" VerticalAlignment="Center" Width="50.057" Margin="3,0.667,3,0.666" FontSize="16" BorderBrush="Black"/>
 				</StackPanel>
-				<!--<syncfusion:ColorPickerPalette Grid.Column="2" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Color="{Binding Color}" BorderThickness="0" Margin="0,0,5,5" Background="{x:Null}" Height="30"/>-->
-			</Grid>
+                <telerik:RadColorPicker Grid.Column="2" Grid.Row="1" HeaderPalette="Metro" StandardPalette="Standard" SelectedColor="{Binding Color, Mode=TwoWay}" />
+            </Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="InspectionDataTemplate">
 			<Grid>
@@ -89,9 +97,9 @@
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
-	<d:DataContext>
+	<!--<d:DataContext>
 		<Binding Source="{StaticResource DesignData}"/>
-	</d:DataContext>
+	</d:DataContext>-->
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
@@ -113,7 +121,6 @@
 			<ColumnDefinition Width="97*"/>
 			<ColumnDefinition Width="87*"/>
 		</Grid.ColumnDefinitions>
-		<!--<sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="119.999" Height="120" Margin="57.767,72.113,22.234,18.887" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" d:IsHidden="True" Grid.ColumnSpan="2"/>-->
 		<Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="3" Fill="#FF4E7EA4" />
 		<Rectangle Grid.ColumnSpan="5" Grid.Column="2" Grid.RowSpan="3" Grid.Row="0" Fill="#FFE0891D" />
 		<Rectangle Grid.ColumnSpan="3" Grid.Column="2" Grid.RowSpan="2" Grid.Row="1" Fill="#FF3AC968" />
@@ -124,7 +131,7 @@
 			<Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveInspectionGroupCommand}" Style="{DynamicResource LocalButtonStyle}"/>
 		</StackPanel>
 		<StackPanel Grid.Column="3" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,0,0">
-			<Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Top" Command="{Binding SaveInspectionsInGroupCommand}" Style="{DynamicResource LocalButtonStyle}"/>
+			<Button Content="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Top" Command="{Binding CopyInspectionCommand}" Style="{DynamicResource LocalButtonStyle}"/>
 		</StackPanel>
 		<StackPanel Grid.Column="6" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,10,5">
 			<Button Content="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewInspectionCommand}" Style="{DynamicResource LocalButtonStyle}" Margin="0,0,2,0" />

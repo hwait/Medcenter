@@ -16,4 +16,8 @@ namespace Medcenter.Desktop.Infrastructure
     {
 
     }
+    public class IsBusyEvent : PubSubEvent<bool>
+    {
+
+    }
 }

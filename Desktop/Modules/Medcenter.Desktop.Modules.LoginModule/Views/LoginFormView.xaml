@@ -2,7 +2,6 @@
              xmlns:vm="clr-namespace:Medcenter.Desktop.Modules.LoginModule.ViewModels"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sf="clr-namespace:Syncfusion.Windows.Controls.Notification;assembly=Syncfusion.SfBusyIndicator.WPF"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" >
@@ -23,7 +22,6 @@
         <TextBlock Text="Password:" Grid.Row="1" />
         <TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Password}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
         <Button  Command="{Binding LoginCommand}" Content="Go!" Grid.Column="1" Grid.Row="2"/>
-        <!--<sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="120" Height="120" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
         <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" HorizontalAlignment="Stretch" />
     </Grid>
 </UserControl>

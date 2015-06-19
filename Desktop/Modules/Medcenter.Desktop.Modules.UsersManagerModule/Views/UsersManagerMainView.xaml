@@ -4,7 +4,6 @@
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-			 xmlns:sf="clr-namespace:Syncfusion.Windows.Controls.Notification;assembly=Syncfusion.SfBusyIndicator.WPF"
 			 xmlns:prism="http://www.codeplex.com/prism"
 			 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
 			 x:Class="Medcenter.Desktop.Modules.UsersManagerModule.Views.UsersManagerMainView"
@@ -82,7 +81,6 @@
 			<ColumnDefinition Width="300"/>
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<!--<sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="120" Height="120" Margin="31.266,72.113,28.733,91.887" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" d:IsHidden="True"/>-->
 		<ListBox Grid.Row="1" ItemsSource="{Binding UsersFiltered}" ItemTemplate="{DynamicResource UserTemplate}" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="UsersFilteredList">
 		</ListBox>
 		<StackPanel Grid.Column="1" Orientation="Vertical" Grid.Row="1" Visibility="{Binding CurrentUser, Converter={StaticResource ObjectToVisibility}}">

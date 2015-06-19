@@ -12,6 +12,7 @@ namespace Medcenter.Service.Model.Types
     [DataContract]
     public class InspectionGroup
     {
+        
         [DataMember]
         public int Id { get; set; }
         [DataMember]
@@ -20,10 +21,21 @@ namespace Medcenter.Service.Model.Types
         public string ShortName { get; set; }
         [DataMember]
         public byte Row { get; set; }
+
         [DataMember]
-        public string Color { get; set; }
+        public string Color
+        {
+            get; 
+            set;
+        }
         [DataMember]
         public List<int> InspectionIds { get; set; }
+
+        public Color CurrentColor
+        {
+            get { return ColorTranslator.FromHtml(Color); }
+            set { Color=ColorTranslator.ToHtml(value); }
+        }
         public bool IsChanged { get; set; }
 
         public bool IsRemoved { get; set; }

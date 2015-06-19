@@ -16,11 +16,12 @@ namespace Medcenter.Desktop.Modules.LoginModule
     [ModuleExport(typeof(LoginModule))]
     public class LoginModule : IModule
     {
-        //[Import]
-        //private IRegionManager _regionManager;
+        private static readonly Uri StatusbarViewUri = new Uri("StatusbarView", UriKind.Relative);
+        [Import]
+        private IRegionManager _regionManager;
         public void Initialize()
         {
-            //_regionManager.Regions[RegionNames.MainRegion].Add(ServiceLocator.Current.GetInstance<LoginFormView>());
+            _regionManager.RequestNavigate(RegionNames.StatusbarRegion, StatusbarViewUri);
         }
     }
 }

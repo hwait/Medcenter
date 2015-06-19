@@ -51,11 +51,11 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
 
         private void RefreshData()
         {
-            BusyIndicator = true;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             JsonClient.GetAsync(new LoginsSelect())
             .Success(r =>
             {
-                BusyIndicator = false;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 Users = r.Users;
             })
             .Error(ex => { throw ex; });
@@ -65,7 +65,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             if (user != null)
             {
                 _regionManager.RegisterViewWithRegion(RegionNames.ToolbarRegion, typeof (LogoutToolbarView));
-                _regionManager.RequestNavigate(RegionNames.StatusbarRegion, StatusbarViewUri);
+                //_regionManager.RequestNavigate(RegionNames.StatusbarRegion, StatusbarViewUri);
                 _regionManager.RequestNavigate(RegionNames.MainRegion, welcomeViewUri);
             }
             else
@@ -78,12 +78,7 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
                 RefreshData();
             }
         }
-        private bool _busyIndicator;
-        public bool BusyIndicator
-        {
-            get { return _busyIndicator; }
-            set { SetProperty(ref _busyIndicator, value); }
-        }
+        
         private ObservableCollection<string> _users;
         public ObservableCollection<string> Users
         {

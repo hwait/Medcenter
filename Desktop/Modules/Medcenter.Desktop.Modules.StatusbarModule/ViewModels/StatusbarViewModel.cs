@@ -57,7 +57,18 @@ namespace Medcenter.Desktop.Modules.StatusbarModule.ViewModels
                  if (value!=null) _dispatcherTimer.Start();
              }
          }
-
+         private bool _busyIndicator;
+         public bool BusyIndicator
+         {
+             get { return _busyIndicator; }
+             set { SetProperty(ref _busyIndicator, value); }
+         }
+         private bool _statusButtonIndicator;
+         public bool StatusButtonIndicator
+         {
+             get { return _statusButtonIndicator; }
+             set { SetProperty(ref _statusButtonIndicator, value); }
+         }
          private ResultMessage _aggregateMessage;
          private bool _isMessagesListShow;
          DispatcherTimer _dispatcherTimer = new DispatcherTimer();
@@ -70,7 +81,14 @@ namespace Medcenter.Desktop.Modules.StatusbarModule.ViewModels
              _showMessagesListCommand = new DelegateCommand<object>(ShowMessagesList);
              _eventAggregator = eventAggregator;
              _eventAggregator.GetEvent<OperationResultEvent>().Subscribe(OperationResultGet);
+             _eventAggregator.GetEvent<IsBusyEvent>().Subscribe(ToggleBusyIndicator);
              _statusMessages = new ObservableCollection<ResultMessage>();
+         }
+
+         private void ToggleBusyIndicator(bool obj)
+         {
+             BusyIndicator = obj;
+             StatusButtonIndicator = !obj;
          }
 
          private void ShowMessagesList(object obj)

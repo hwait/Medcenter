@@ -84,14 +84,6 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
                 SetProperty(ref _currentUser, value);
             }
         }
-
-        private bool _busyIndicator;
-
-        public bool BusyIndicator
-        {
-            get { return _busyIndicator; }
-            set { SetProperty(ref _busyIndicator, value); }
-        }
         private bool _isUserEdit;
         public bool IsUserEdit
         {
@@ -119,7 +111,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
             _userReportsCommand = new DelegateCommand<object>(UserReports);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             _eventAggregator.GetEvent<UserInfoEvent>().Subscribe(UserInfoReceived);
-            BusyIndicator = false;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
             IsUserEdit = false;
             IsUserReports = false;
             
@@ -150,11 +142,11 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
             Errors = CurrentUser.Validate();
             if (Errors.Count == 0)
             {
-                BusyIndicator = true;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 _jsonClient.PostAsync(new UserUpdateInfo { User = CurrentUser })
                     .Success(r =>
                     {
-                        BusyIndicator = false;
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                         CurrentUser.UserId = r.UserId;
                         CurrentUser.Password = "";
                         CurrentUser.Password1 = "";
@@ -165,7 +157,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
                     .Error(ex =>
                     {
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(OperationErrors.GetErrorFromText("Сохранение изменений:", ex.Message));
-                        BusyIndicator = false;
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     });
             }
         }

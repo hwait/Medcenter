@@ -33,6 +33,15 @@ namespace Medcenter.Service.Model.Types
         {
             InspectionGroupIds=new List<int>();
         }
+        public Inspection CopyInstance()
+        {
+            Inspection inspection=new Inspection();
+            inspection.Name = "[КОПИЯ] "+Name;
+            inspection.ShortName = ShortName;
+            inspection.Duration = Duration;
+            inspection.Cost = Cost;
+            return inspection;
+        }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();
