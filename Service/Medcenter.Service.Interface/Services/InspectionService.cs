@@ -60,8 +60,17 @@ namespace Medcenter.Service.Interface.Services
                         InspectionId = req.InspectionId,
                         InspectionGroupId = req.InspectionGroupId
                     });
-                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsGroupsBind);
-                    Logger.Log("InspectionsGroups.Bind");
+                    if (rows[0] == 0)
+                    {
+                        _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsGroupsBindZero);
+                        Logger.Log("InspectionsGroups.Bind 0");
+                    }
+                    else
+                    {
+                        _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsGroupsBind);
+                        Logger.Log("InspectionsGroups.Bind 1");
+                    }
+                   
                 }
                 catch (Exception e)
                 {
@@ -85,8 +94,16 @@ namespace Medcenter.Service.Interface.Services
                     InspectionId = req.InspectionId,
                     InspectionGroupId = req.InspectionGroupId
                 });
-                _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsGroupsUnbind);
-                Logger.Log("InspectionsGroups.UnBind");
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Отвязывание", OperationErrors.InspectionsGroupsUnbindZero);
+                    Logger.Log("InspectionsGroups.UnBind");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Отвязывание", OperationResults.InspectionsGroupsUnbind);
+                    Logger.Log("InspectionsGroups.UnBind");
+                }
             }
             catch (Exception e)
             {

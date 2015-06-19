@@ -23,7 +23,7 @@
         <TextBlock Text="Password:" Grid.Row="1" />
         <TextBox HorizontalAlignment="Stretch" Height="23" Text="{Binding Password}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
         <Button  Command="{Binding LoginCommand}" Content="Go!" Grid.Column="1" Grid.Row="2"/>
-        <sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="120" Height="120" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <!--<sf:SfBusyIndicator AnimationType="ECG" Header="Загрузка..." IsBusy="{Binding BusyIndicator}" Width="120" Height="120" Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
         <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" HorizontalAlignment="Stretch" />
     </Grid>
 </UserControl>

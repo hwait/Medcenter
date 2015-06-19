@@ -28,6 +28,11 @@ namespace Medcenter.Service.Model.Types
         public List<int> InspectionGroupIds { get; set; }
         public bool IsChanged { get; set; }
         public bool IsRemoved { get; set; }
+
+        public Inspection()
+        {
+            InspectionGroupIds=new List<int>();
+        }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();
