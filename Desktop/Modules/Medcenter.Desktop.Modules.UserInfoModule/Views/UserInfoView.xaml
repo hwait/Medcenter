@@ -83,7 +83,7 @@
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Column="1" Orientation="Vertical">
 			<StackPanel Orientation="Vertical" Visibility="{Binding IsUserEdit, Converter={StaticResource BoolToVisibility}}">
-				<Button Content="{DynamicResource IconButtons.Save}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding SaveUserCommand}" Style="{DynamicResource LocalButtonStyle}"/>
+				<Button  infrastructure:ButtonExtender.Icon="{DynamicResource IconButtons.Save}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding SaveUserCommand}" Style="{DynamicResource ButtonMenuStyle}" Width="32" Height="32" Tag="Save"/>
 				<StackPanel Margin="40,0,0,0" Orientation="Horizontal">
 					<ContentControl x:Name="EditForm" HorizontalContentAlignment="Stretch" 
 						Content="{Binding CurrentUser}" ContentTemplate="{StaticResource EditFormTemplate}" Height="201"/>
@@ -98,8 +98,8 @@
 			</StackPanel>
 		</StackPanel>
 		<StackPanel Margin="10,10,10,0" Orientation="Vertical">
-            <Button infrastructure:ButtonExtender.Icon="{DynamicResource IconButtons.Edit}" Content="Редактировать" Height="32" Style="{DynamicResource ButtonMenuStyle}" VerticalAlignment="Top" Margin="5" HorizontalContentAlignment="Stretch" Command="{Binding UserEditCommand}"/>
-            <Button infrastructure:ButtonExtender.Icon="{DynamicResource IconButtons.Savings}" Content="Отчёт" Height="32" Style="{DynamicResource ButtonMenuStyle}" VerticalAlignment="Top" Margin="5" Command="{Binding UserReportsCommand}"/>
+			<Button infrastructure:ButtonExtender.Icon="{DynamicResource IconButtons.Edit}" Content="Редактировать" Height="32" Style="{DynamicResource ButtonMenuStyle}" VerticalAlignment="Top" Margin="5" Command="{Binding UserEditCommand}" Tag="Default"/>
+			<Button infrastructure:ButtonExtender.Icon="{DynamicResource IconButtons.Savings}" Content="Отчёт" Height="32" Style="{DynamicResource ButtonMenuStyle}" VerticalAlignment="Top" Margin="5" Command="{Binding UserReportsCommand}" Tag="Default"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

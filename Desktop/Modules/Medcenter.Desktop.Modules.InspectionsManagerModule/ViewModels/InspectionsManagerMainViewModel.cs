@@ -192,11 +192,8 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.ViewModels
             _jsonClient.GetAsync(new InspectionsSelect())
             .Success(ri =>
             {
-                
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 InspectionsBase = new ListCollectionView(ri.Inspections);
-                
-                
                 _jsonClient.GetAsync(new InspectionGroupsSelect())
                 .Success(rig =>
                 {
