@@ -14,6 +14,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule
     [ModuleExport(typeof(UsersManagerModule))]
     public class UsersManagerModule : IModule
     {
+#pragma warning disable 0649,0169
         [Import]
         private IRegionManager _regionManager;
 
@@ -21,6 +22,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule
 
         [Import]
         private IEventAggregator _eventAggregator;
+#pragma warning restore 0649,0169
         public void Initialize()
         {
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);

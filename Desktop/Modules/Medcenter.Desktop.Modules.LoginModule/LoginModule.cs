@@ -17,8 +17,10 @@ namespace Medcenter.Desktop.Modules.LoginModule
     public class LoginModule : IModule
     {
         private static readonly Uri StatusbarViewUri = new Uri("StatusbarView", UriKind.Relative);
+        #pragma warning disable 0649,0169
         [Import]
         private IRegionManager _regionManager;
+        #pragma warning restore 0649,0169
         public void Initialize()
         {
             _regionManager.RequestNavigate(RegionNames.StatusbarRegion, StatusbarViewUri);

@@ -36,8 +36,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         private readonly DelegateCommand<object> _newUserCommand;
         private readonly DelegateCommand<object> _removeUserCommand;
         private readonly DelegateCommand<object> _saveUserCommand;
-        private bool _isFotoChanged = false;
-        
+ 
         #region Properties
 
         public ICommand NewUserCommand
@@ -162,7 +161,6 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
 
         private void SaveUser(object obj)
         {
-            User user;
             bool isNew = CurrentUser.UserId==0;
             CurrentUser.Roles = RolesDictionary.RolesKeys;
             CurrentUser.Permissions = PermissionsDictionary.PermissionsKeys;
@@ -249,7 +247,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
          private void UserFotoChoose(object obj)
         {
             string path = Utils.GetUserFotoPath(CurrentUser.UserId);
-            _isFotoChanged = true;
+            //_isFotoChanged = true;
             ImagePath = Utils.GetUserFotoPath("NoUserFoto.png");
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)

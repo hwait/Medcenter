@@ -11,7 +11,7 @@
 				<ControlTemplate TargetType="{x:Type Button}">
 					<Grid>
 						<Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="32"/>
+							<ColumnDefinition Width="32"/>
 							<ColumnDefinition Width="*"/>
 						</Grid.ColumnDefinitions>
 						<Rectangle x:Name="rectangle" Fill="#FF3939C5" Stroke="{x:Null}" Grid.ColumnSpan="2"/>
@@ -20,87 +20,87 @@
 					</Grid>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsFocused" Value="True"/>
-                        
+						
 						<!--    Default button      -->
-                        
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Default"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="#FF3939C5"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
+						
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Default"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="#FF3939C5"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
 							<MultiDataTrigger.Conditions>
 								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Default"/>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Default"/>
 							</MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="#FF6060FF"/>
+							<Setter Property="Fill" TargetName="rectangle" Value="#FF6060FF"/>
 						</MultiDataTrigger>
 
-                        <!--    New button      -->
+						<!--    New button      -->
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="New"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="DodgerBlue"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="New"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="CadetBlue"/>
-                        </MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="New"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="DodgerBlue"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="New"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="CadetBlue"/>
+						</MultiDataTrigger>
 
-                        <!--    Copy button      -->
+						<!--    Copy button      -->
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Copy"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="SaddleBrown"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Copy"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="SandyBrown"/>
-                        </MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Copy"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="SaddleBrown"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Copy"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="SandyBrown"/>
+						</MultiDataTrigger>
 
-                        <!--    Delete button      -->
+						<!--    Delete button      -->
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Delete"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="DarkRed"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Delete"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="MediumVioletRed"/>
-                        </MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Delete"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="DarkRed"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Delete"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="MediumVioletRed"/>
+						</MultiDataTrigger>
 
-                        <!--    Save button      -->
+						<!--    Save button      -->
 
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Save"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="DarkGreen"/>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Save"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Fill" TargetName="rectangle" Value="ForestGreen"/>
-                        </MultiDataTrigger>
-                        <Trigger Property="IsPressed" Value="True"/>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Save"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="DarkGreen"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Save"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="ForestGreen"/>
+						</MultiDataTrigger>
+						<Trigger Property="IsPressed" Value="True"/>
 						<Trigger Property="IsEnabled" Value="False"/>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

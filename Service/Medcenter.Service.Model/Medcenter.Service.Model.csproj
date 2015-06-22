@@ -58,6 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IItem.cs" />
+    <Compile Include="Interfaces\IItemsGroop.cs" />
     <Compile Include="Messaging\Logger.cs" />
     <Compile Include="Messaging\ResultMessage.cs" />
     <Compile Include="Messaging\MessagesText.cs" />

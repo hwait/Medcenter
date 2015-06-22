@@ -5,12 +5,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Interfaces;
 using Medcenter.Service.Model.Messaging;
 
 namespace Medcenter.Service.Model.Types
 {
     [DataContract]
-    public class Inspection
+    public class Inspection : IItem
     {
         [DataMember]
         public int Id { get; set; }
@@ -23,9 +24,13 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int InspectionGroupId { get; set; }
         [DataMember]
+        public int DoctorId { get; set; }
+        [DataMember]
         public int Cost { get; set; }
         [DataMember]
         public List<int> InspectionGroupIds { get; set; }
+        [DataMember]
+        public List<int> DoctorIds { get; set; }
         public bool IsChanged { get; set; }
         public bool IsRemoved { get; set; }
 

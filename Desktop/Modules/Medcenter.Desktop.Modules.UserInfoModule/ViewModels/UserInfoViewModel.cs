@@ -36,7 +36,6 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
         private readonly DelegateCommand<object> _saveUserCommand;
         private readonly DelegateCommand<object> _userEditCommand;
         private readonly DelegateCommand<object> _userReportsCommand;
-        private bool _isFotoChanged = false;
         #region Properties
 
         public ICommand UserFotoChooseCommand
@@ -137,8 +136,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
 
         private void SaveUser(object obj)
         {
-            User user;
-            bool isNew = CurrentUser.UserId == 0;
+            //bool isNew = CurrentUser.UserId == 0;
             Errors = CurrentUser.Validate();
             if (Errors.Count == 0)
             {
@@ -164,7 +162,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
         private void UserFotoChoose(object obj)
         {
             string path = Utils.GetUserFotoPath(CurrentUser.UserId);
-            _isFotoChanged = true;
+            //_isFotoChanged = true;
             ImagePath = Utils.GetUserFotoPath("NoUserFoto.png");
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)

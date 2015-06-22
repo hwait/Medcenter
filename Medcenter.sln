@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.InspectionsManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.InspectionsManagerModule.csproj", "{789E597C-9C24-4D11-B181-87EA153F78E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.DoctorsManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.DoctorsManagerModule\Medcenter.Desktop.Modules.DoctorsManagerModule.csproj", "{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{789E597C-9C24-4D11-B181-87EA153F78E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{789E597C-9C24-4D11-B181-87EA153F78E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{789E597C-9C24-4D11-B181-87EA153F78E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,5 +100,6 @@ Global
 		{B911FAD2-8C2D-4B38-B737-116C38E21A08} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 		{4AD5C4CD-7975-40B7-84A4-6BCA0E3E4AFC} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 		{789E597C-9C24-4D11-B181-87EA153F78E0} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
+		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 	EndGlobalSection
 EndGlobal

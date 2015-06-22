@@ -23,8 +23,10 @@ namespace Medcenter.Desktop.Modules.LoginModule.Views
     [ViewSortHint("10")]
     public partial class LogoutToolbarView : UserControl
     {
+        #pragma warning disable 0649,0169
         [Import]
         private IEventAggregator _eventAggregator;
+        #pragma warning restore 0649,0169
         public LogoutToolbarView()
         {
             InitializeComponent();
