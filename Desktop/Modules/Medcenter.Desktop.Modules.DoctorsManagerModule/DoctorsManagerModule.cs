@@ -14,14 +14,16 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule
     [ModuleExport(typeof(DoctorsManagerModule))]
     public class DoctorsManagerModule : IModule
     {
+#pragma warning disable 0649,0169
         [Import]
         private IRegionManager _regionManager;
 
         [Import]
-        private DoctorsManagerToolbarView _InspectionsManagerToolbarView;
+        private DoctorsManagerToolbarView _PackagesManagerToolbarView;
 
         [Import]
         private IEventAggregator _eventAggregator;
+#pragma warning restore 0649,0169
         public void Initialize()
         {
             _eventAggregator.GetEvent<UserLoginEvent>().Subscribe(UserLogin);
@@ -32,7 +34,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule
         {
             if (user != null)
             {
-                if (user.Roles.Contains("Admin") || (user.Roles.Contains("Manager") && user.Permissions.Contains("CanEditMainLists"))) _regionManager.Regions[RegionNames.ToolbarRegion].Add(_InspectionsManagerToolbarView, "DoctorsManagerToolbarView");
+                if (user.Roles.Contains("Admin") || (user.Roles.Contains("Manager") && user.Permissions.Contains("CanEditMainLists"))) _regionManager.Regions[RegionNames.ToolbarRegion].Add(_PackagesManagerToolbarView, "DoctorsManagerToolbarView");
             }
             else
             {

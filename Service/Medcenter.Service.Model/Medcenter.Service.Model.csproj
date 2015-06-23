@@ -66,12 +66,12 @@
     <Compile Include="Hello.cs" />
     <Compile Include="Misc\LogAuthEvents.cs" />
     <Compile Include="Operations\DoctorOperations.cs" />
-    <Compile Include="Operations\InspectionOperations.cs" />
+    <Compile Include="Operations\PackageOperations.cs" />
     <Compile Include="Operations\UserOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Doctor.cs" />
-    <Compile Include="Types\Inspection.cs" />
-    <Compile Include="Types\InspectionGroup.cs" />
+    <Compile Include="Types\Package.cs" />
+    <Compile Include="Types\PackageGroup.cs" />
     <Compile Include="Types\Permissions.cs" />
     <Compile Include="Types\Roles.cs" />
     <Compile Include="Types\User.cs" />

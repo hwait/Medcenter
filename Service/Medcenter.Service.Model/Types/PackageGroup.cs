@@ -10,7 +10,7 @@ using Medcenter.Service.Model.Messaging;
 namespace Medcenter.Service.Model.Types
 {
     [DataContract]
-    public class InspectionGroup
+    public class PackageGroup
     {
         
         [DataMember]
@@ -29,7 +29,7 @@ namespace Medcenter.Service.Model.Types
             set;
         }
         [DataMember]
-        public List<int> InspectionIds { get; set; }
+        public List<int> PackageIds { get; set; }
 
         public Color CurrentColor
         {

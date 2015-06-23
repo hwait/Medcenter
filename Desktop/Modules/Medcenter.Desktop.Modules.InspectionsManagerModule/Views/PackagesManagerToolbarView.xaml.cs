@@ -16,18 +16,18 @@ using System.Windows.Shapes;
 using Medcenter.Desktop.Infrastructure;
 using Microsoft.Practices.Prism.Regions;
 
-namespace Medcenter.Desktop.Modules.InspectionsManagerModule.Views
+namespace Medcenter.Desktop.Modules.PackagesManagerModule.Views
 {
     [Export]
     [ViewSortHint("03")]
-    public partial class InspectionsManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
+    public partial class PackagesManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
-        private static readonly Uri InspectionsManagerMainViewUri = new Uri("InspectionsManagerMainView", UriKind.Relative);
+        private static readonly Uri PackagesManagerMainViewUri = new Uri("PackagesManagerMainView", UriKind.Relative);
         //[Import]
-        //private InspectionsManagerMainView _InspectionsManagerMainView;
+        //private PackagesManagerMainView _PackagesManagerMainView;
         private IRegionManager _regionManager;
         [ImportingConstructor]
-        public InspectionsManagerToolbarView(IRegionManager regionManager)
+        public PackagesManagerToolbarView(IRegionManager regionManager)
         {
             _regionManager = regionManager;
             InitializeComponent();
@@ -48,14 +48,14 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.Views
 
         private void UpdateNavigationButtonState(Uri uri)
         {
-            this.NavigateToInspectionsManagerRadioButton.IsChecked = (uri == InspectionsManagerMainViewUri);
+            this.NavigateToPackagesManagerRadioButton.IsChecked = (uri == PackagesManagerMainViewUri);
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
 
 
-            _regionManager.RequestNavigate(RegionNames.MainRegion, InspectionsManagerMainViewUri);
+            _regionManager.RequestNavigate(RegionNames.MainRegion, PackagesManagerMainViewUri);
         }
     }
 }

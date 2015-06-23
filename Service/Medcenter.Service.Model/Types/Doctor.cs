@@ -19,7 +19,7 @@ namespace Medcenter.Service.Model.Types
         }
         public Doctor()
         {
-            InspectionIds = new List<int>();
+            PackageIds = new List<int>();
         }
         [DataMember]
         public int Id { get; set; }
@@ -30,7 +30,7 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Color { get; set; }
         [DataMember]
-        public List<int> InspectionIds { get; set; }
+        public List<int> PackageIds { get; set; }
 
         public List<ResultMessage> Validate()
         {

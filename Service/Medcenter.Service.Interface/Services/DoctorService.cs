@@ -16,7 +16,7 @@ namespace Medcenter.Service.Interface.Services
         {
             var rows = Db.SqlList<Doctor>("EXEC sp_Doctors_Select");
             foreach (var r in rows)
-                r.InspectionIds = Db.SqlList<int>("EXEC sp_Doctor_SelectInspections @DoctorId", new { DoctorId = r.Id });
+                r.PackageIds = Db.SqlList<int>("EXEC sp_Doctor_SelectPackages @DoctorId", new { DoctorId = r.Id });
             return new DoctorsSelectResponse { Doctors = new List<Doctor>(rows) };
         }
 
@@ -24,7 +24,7 @@ namespace Medcenter.Service.Interface.Services
         {
             int id = 0;
             ResultMessage _message;
-            if (req.Doctor.Id > 0) // Inspection exists so we're saving 
+            if (req.Doctor.Id > 0) // Package exists so we're saving 
             {
                 try
                 {
@@ -56,12 +56,12 @@ namespace Medcenter.Service.Interface.Services
                         Color = req.Doctor.Color
                     });
                     _message = new ResultMessage(0, "Новое исследование", OperationResults.DoctorCreate);
-                    Logger.Log("InspectionSaveResponse.NewInspection");
+                    Logger.Log("PackageSaveResponse.NewPackage");
                 }
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.DoctorCreate);
-                    Logger.Log("InspectionSaveResponse.NewInspection", e);
+                    Logger.Log("PackageSaveResponse.NewPackage", e);
                     throw;
                 }
             }
@@ -96,88 +96,88 @@ namespace Medcenter.Service.Interface.Services
 
         #endregion 
 
-        #region Inspections and Doctors
+        #region Packages and Doctors
 
-        public InspectionsInDoctorSelectResponse Get(InspectionsInDoctorSelect req)
+        public PackagesInDoctorSelectResponse Get(PackagesInDoctorSelect req)
         {
-            var rows = Db.SqlList<int>("EXEC sp_Doctor_SelectInspections @Id", new
+            var rows = Db.SqlList<int>("EXEC sp_Doctor_SelectPackages @Id", new
             {
                 Id = req.DoctorId
             });
 
-            return new InspectionsInDoctorSelectResponse { InspectionIds = new List<int>(rows) };
+            return new PackagesInDoctorSelectResponse { PackageIds = new List<int>(rows) };
         }
-        public DoctorsInInspectionSelectResponse Get(DoctorsInInspectionSelect req)
+        public DoctorsInPackageSelectResponse Get(DoctorsInPackageSelect req)
         {
-            var rows = Db.SqlList<int>("EXEC sp_Inspection_SelectDoctors @Id", new
+            var rows = Db.SqlList<int>("EXEC sp_Package_SelectDoctors @Id", new
             {
                 Id = req.DoctorId
             });
 
-            return new DoctorsInInspectionSelectResponse { DoctorIds = new List<int>(rows) };
+            return new DoctorsInPackageSelectResponse { DoctorIds = new List<int>(rows) };
         }
-        public InspectionsDoctorsBindResponse Get(InspectionsDoctorsBind req)
+        public PackagesDoctorsBindResponse Get(PackagesDoctorsBind req)
         {
             ResultMessage _message;
             try
             {
-                var rows = Db.SqlList<int>("EXEC sp_InspectionsInDoctors_Insert @InspectionId, @DoctorId", new
+                var rows = Db.SqlList<int>("EXEC sp_PackagesInDoctors_Insert @PackageId, @DoctorId", new
                 {
-                    InspectionId = req.InspectionId,
+                    PackageId = req.PackageId,
                     DoctorId = req.DoctorId
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsDoctorsBindZero);
-                    Logger.Log("InspectionsDoctors.Bind 0");
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.PackagesDoctorsBindZero);
+                    Logger.Log("PackagesDoctors.Bind 0");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsDoctorsBind);
-                    Logger.Log("InspectionsDoctors.Bind 1");
+                    _message = new ResultMessage(0, "Связывание", OperationResults.PackagesDoctorsBind);
+                    Logger.Log("PackagesDoctors.Bind 1");
                 }
 
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsDoctorsBind);
-                Logger.Log("InspectionsDoctors.Bind", e);
+                _message = new ResultMessage(2, e.Source, OperationErrors.PackagesDoctorsBind);
+                Logger.Log("PackagesDoctors.Bind", e);
                 throw;
             }
-            return new InspectionsDoctorsBindResponse
+            return new PackagesDoctorsBindResponse
             {
                 Message = _message
             };
         }
 
-        public InspectionsDoctorsUnbindResponse Get(InspectionsDoctorsUnbind req)
+        public PackagesDoctorsUnbindResponse Get(PackagesDoctorsUnbind req)
         {
             ResultMessage _message;
             try
             {
-                var rows = Db.SqlList<int>("EXEC sp_InspectionsInDoctors_Delete @InspectionId, @DoctorId", new
+                var rows = Db.SqlList<int>("EXEC sp_PackagesInDoctors_Delete @PackageId, @DoctorId", new
                 {
-                    InspectionId = req.InspectionId,
+                    PackageId = req.PackageId,
                     DoctorId = req.DoctorId
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Отвязывание", OperationErrors.InspectionsDoctorsUnbindZero);
-                    Logger.Log("InspectionsDoctors.UnBind");
+                    _message = new ResultMessage(2, "Отвязывание", OperationErrors.PackagesDoctorsUnbindZero);
+                    Logger.Log("PackagesDoctors.UnBind");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Отвязывание", OperationResults.InspectionsDoctorsUnbind);
-                    Logger.Log("InspectionsDoctors.UnBind");
+                    _message = new ResultMessage(0, "Отвязывание", OperationResults.PackagesDoctorsUnbind);
+                    Logger.Log("PackagesDoctors.UnBind");
                 }
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsDoctorsUnbind);
-                Logger.Log("InspectionsDoctors.UnBind", e);
+                _message = new ResultMessage(2, e.Source, OperationErrors.PackagesDoctorsUnbind);
+                Logger.Log("PackagesDoctors.UnBind", e);
                 throw;
             }
-            return new InspectionsDoctorsUnbindResponse
+            return new PackagesDoctorsUnbindResponse
             {
                 Message = _message
             };

@@ -113,13 +113,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SampleData\DesignData.cs" />
-    <Compile Include="InspectionsManagerModule.cs" />
-    <Compile Include="ViewModels\InspectionsManagerMainViewModel.cs" />
-    <Compile Include="Views\InspectionsManagerMainView.xaml.cs">
-      <DependentUpon>InspectionsManagerMainView.xaml</DependentUpon>
+    <Compile Include="PackagesManagerModule.cs" />
+    <Compile Include="ViewModels\PackagesManagerMainViewModel.cs" />
+    <Compile Include="Views\PackagesManagerMainView.xaml.cs">
+      <DependentUpon>PackagesManagerMainView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\InspectionsManagerToolbarView.xaml.cs">
-      <DependentUpon>InspectionsManagerToolbarView.xaml</DependentUpon>
+    <Compile Include="Views\PackagesManagerToolbarView.xaml.cs">
+      <DependentUpon>PackagesManagerToolbarView.xaml</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -148,11 +148,11 @@
       <SubType>Designer</SubType>
       <ContainsDataSources>True</ContainsDataSources>
     </Page>
-    <Page Include="Views\InspectionsManagerMainView.xaml">
+    <Page Include="Views\PackagesManagerMainView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\InspectionsManagerToolbarView.xaml">
+    <Page Include="Views\PackagesManagerToolbarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

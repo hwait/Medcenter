@@ -26,37 +26,37 @@ using Microsoft.Practices.Prism.Regions;
 using Microsoft.Win32;
 using ServiceStack;
 
-namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
+namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
 {
     [Export]
-    public class DoctorsManagerMainViewModel : BindableBase
+    public class PackagesManagerMainViewModel : BindableBase
     {
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
         private readonly DelegateCommand<object> _copyPackageCommand;
-        private readonly DelegateCommand<object> _addPackageToDoctorCommand;
-        private readonly DelegateCommand<object> _removePackageFromDoctorCommand;
+        private readonly DelegateCommand<object> _addPackageToGroupCommand;
+        private readonly DelegateCommand<object> _removePackageFromGroupCommand;
         private readonly DelegateCommand<object> _newPackageCommand;
         private readonly DelegateCommand<object> _removePackageCommand;
         private readonly DelegateCommand<object> _savePackageCommand;
-        private readonly DelegateCommand<object> _newDoctorCommand;
-        private readonly DelegateCommand<object> _removeDoctorCommand;
-        private readonly DelegateCommand<object> _saveDoctorCommand;
+        private readonly DelegateCommand<object> _newPackageGroupCommand;
+        private readonly DelegateCommand<object> _removePackageGroupCommand;
+        private readonly DelegateCommand<object> _savePackageGroupCommand;
         #region Properties
 
         public ICommand CopyPackageCommand
         {
             get { return this._copyPackageCommand; }
         }
-        public ICommand AddPackageToDoctorCommand
+        public ICommand AddPackageToGroupCommand
         {
-            get { return this._addPackageToDoctorCommand; }
+            get { return this._addPackageToGroupCommand; }
         }
-        public ICommand RemovePackageFromDoctorCommand
+        public ICommand RemovePackageFromGroupCommand
         {
-            get { return this._removePackageFromDoctorCommand; }
+            get { return this._removePackageFromGroupCommand; }
         }
         public ICommand NewPackageCommand
         {
@@ -70,17 +70,17 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         {
             get { return this._savePackageCommand; }
         }
-        public ICommand NewDoctorCommand
+        public ICommand NewPackageGroupCommand
         {
-            get { return this._newDoctorCommand; }
+            get { return this._newPackageGroupCommand; }
         }
-        public ICommand RemoveDoctorCommand
+        public ICommand RemovePackageGroupCommand
         {
-            get { return this._removeDoctorCommand; }
+            get { return this._removePackageGroupCommand; }
         }
-        public ICommand SaveDoctorCommand
+        public ICommand SavePackageGroupCommand
         {
-            get { return this._saveDoctorCommand; }
+            get { return this._savePackageGroupCommand; }
         }
         private List<ResultMessage> _errors;
 
@@ -89,19 +89,19 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _Doctors;
-        public ListCollectionView Doctors
+        private ListCollectionView _PackageGroups;
+        public ListCollectionView PackageGroups
         {
-            get { return _Doctors; }
-            set { SetProperty(ref _Doctors, value); }
+            get { return _PackageGroups; }
+            set { SetProperty(ref _PackageGroups, value); }
         }
-        private ListCollectionView _PackagesInDoctor;
-        public ListCollectionView PackagesInDoctor
+        private ListCollectionView _PackagesInGroup;
+        public ListCollectionView PackagesInGroup
         {
-            get { return _PackagesInDoctor; }
+            get { return _PackagesInGroup; }
             set
             {
-                SetProperty(ref _PackagesInDoctor, value);
+                SetProperty(ref _PackagesInGroup, value); 
             }
         }
         private ListCollectionView _PackagesBase;
@@ -116,11 +116,11 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             get { return _Packages; }
             set { SetProperty(ref _Packages, value); }
         }
-        private Package _CurrentPackageInDoctor;
+        private Package _currentPackageInGroup;
 
-        public Package CurrentPackageInDoctor
+        public Package CurrentPackageInGroup
         {
-            get { return _CurrentPackageInDoctor; }
+            get { return _currentPackageInGroup; }
             set
             {
                 if (value.Id == 0) _currentBasePackage = new Package();
@@ -128,11 +128,11 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                 {
                     for (int i = 0; i < PackagesBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Package) PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package) PackagesBase.GetItemAt(i);
                     }
                 }
-                SetProperty(ref _CurrentPackageInDoctor, value);
+                SetProperty(ref _currentPackageInGroup, value);
             }
         }
         private Package _currentPackage;
@@ -147,8 +147,8 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                 {
                     for (int i = 0; i < PackagesBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Package) PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package) PackagesBase.GetItemAt(i);
                     }
                 }
                 SetProperty(ref _currentPackage, value);
@@ -157,60 +157,60 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         }
         private Package _currentBasePackage;
 
-        private Doctor _CurrentDoctor;
+        private PackageGroup _currentPackageGroup;
 
-        public Doctor CurrentDoctor
+        public PackageGroup CurrentPackageGroup
         {
-            get { return _CurrentDoctor; }
+            get { return _currentPackageGroup; }
             set
             {
-                SetProperty(ref _CurrentDoctor, value);
-                PackagesInDoctorRefresh();
+                SetProperty(ref _currentPackageGroup, value);
+                PackagesInGroupRefresh();
             }
         }
 
         #endregion
 
         [ImportingConstructor]
-        public DoctorsManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
+        public PackagesManagerMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
             _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
-            _removePackageFromDoctorCommand = new DelegateCommand<object>(RemovePackageFromDoctor);
-            _addPackageToDoctorCommand = new DelegateCommand<object>(AddPackageToDoctor);
+            _removePackageFromGroupCommand = new DelegateCommand<object>(RemovePackageFromGroup);
+            _addPackageToGroupCommand = new DelegateCommand<object>(AddPackageToGroup);
             _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
             _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
             _savePackageCommand = new DelegateCommand<object>(SavePackage);
-            _newDoctorCommand = new DelegateCommand<object>(NewDoctor, CanAddDoctor);
-            _removeDoctorCommand = new DelegateCommand<object>(RemoveDoctor);
-            _saveDoctorCommand = new DelegateCommand<object>(SaveDoctor);
+            _newPackageGroupCommand = new DelegateCommand<object>(NewPackageGroup, CanAddPackageGroup);
+            _removePackageGroupCommand = new DelegateCommand<object>(RemovePackageGroup);
+            _savePackageGroupCommand = new DelegateCommand<object>(SavePackageGroup);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new PackagesSelect())
             .Success(ri =>
             {
-                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 PackagesBase = new ListCollectionView(ri.Packages);
-                _jsonClient.GetAsync(new DoctorsSelect())
+                _jsonClient.GetAsync(new PackageGroupsSelect())
                 .Success(rig =>
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Doctors = new ListCollectionView(rig.Doctors);
-                    Doctors.CurrentChanged += Doctors_CurrentChanged;
-
-                    CurrentDoctor = new Doctor();
-                    PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
+                    PackageGroups = new ListCollectionView(rig.PackageGroups);
+                    PackageGroups.CurrentChanged += PackageGroups_CurrentChanged;
+                    
+                    CurrentPackageGroup = new PackageGroup();
+                    PackagesInGroup.CurrentChanged += PackagesInGroup_CurrentChanged;
                     PackagesReload(ri.Packages);
-                    Doctors.MoveCurrentTo(null);
+                    PackageGroups.MoveCurrentTo(null);
                 })
                 .Error(ex =>
                 {
                     throw ex;
                 });
-            })
+                })
             .Error(ex =>
             {
                 throw ex;
@@ -225,46 +225,46 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
 
         private bool CanRemovePackage(object arg)
         {
-            return (CurrentPackage != null) ? CurrentPackage.Name != "" : false;
+            return (CurrentPackage!=null)?CurrentPackage.Name != "":false;
         }
-
-        private void Doctors_CurrentChanged(object sender, EventArgs e)
+        
+        private void PackageGroups_CurrentChanged(object sender, EventArgs e)
         {
-            CurrentDoctor = Doctors.CurrentItem != null ? (Doctor)Doctors.CurrentItem : new Doctor();
+            CurrentPackageGroup = PackageGroups.CurrentItem != null ? (PackageGroup)PackageGroups.CurrentItem : new PackageGroup();
         }
 
         private void Packages_CurrentChanged(object sender, EventArgs e)
         {
             CurrentPackage = Packages.CurrentItem != null ? (Package)Packages.CurrentItem : new Package();
         }
-        private void PackagesInDoctor_CurrentChanged(object sender, EventArgs e)
+        private void PackagesInGroup_CurrentChanged(object sender, EventArgs e)
         {
-            CurrentPackageInDoctor = PackagesInDoctor.CurrentItem != null ? (Package)PackagesInDoctor.CurrentItem : new Package();
+            CurrentPackageInGroup = PackagesInGroup.CurrentItem != null ? (Package)PackagesInGroup.CurrentItem : new Package();
         }
 
-        #region Doctor
+        #region PackageGroup
 
-        private void NewDoctor(object obj)
+        private void NewPackageGroup(object obj)
         {
-            CurrentDoctor = new Doctor();
+            CurrentPackageGroup=new PackageGroup();
         }
 
-        private void SaveDoctor(object obj)
+        private void SavePackageGroup(object obj)
         {
-            bool isNew = CurrentDoctor.Id <= 0;
-            Errors = CurrentDoctor.Validate();
+            bool isNew = CurrentPackageGroup.Id <= 0;
+            Errors = CurrentPackageGroup.Validate();
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.PostAsync(new DoctorSave { Doctor = CurrentDoctor })
+                _jsonClient.PostAsync(new PackageGroupSave {PackageGroup = CurrentPackageGroup})
                     .Success(r =>
                     {
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                        CurrentDoctor.Id = r.DoctorId;
-                        if (isNew) Doctors.AddNewItem(CurrentDoctor);
-                        r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
+                        CurrentPackageGroup.Id = r.PackageGroupId;
+                        if (isNew) PackageGroups.AddNewItem(CurrentPackageGroup);
+                        r.Message.Message = string.Format(r.Message.Message, CurrentPackageGroup.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        _newDoctorCommand.RaiseCanExecuteChanged();
+                        _newPackageGroupCommand.RaiseCanExecuteChanged();
                     })
                     .Error(ex =>
                     {
@@ -273,9 +273,9 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             }
         }
 
-        private void RemoveDoctor(object obj)
+        private void RemovePackageGroup(object obj)
         {
-            bool isNew = CurrentDoctor.Id == 0;
+            bool isNew = CurrentPackageGroup.Id == 0;
             ConfirmationRequest.Raise(
                 new Confirmation { Content = "Группа будет удалёна! Вы уверены?", Title = "Удаление группы инспекций." },
                 c =>
@@ -285,20 +285,20 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                         if (isNew)
                         {
-                            CurrentDoctor = new Doctor();
-                            _newDoctorCommand.RaiseCanExecuteChanged();
+                            CurrentPackageGroup = new PackageGroup();
+                            _newPackageGroupCommand.RaiseCanExecuteChanged();
                         }
                         else
                         {
-                            _jsonClient.GetAsync(new DoctorDelete { DoctorId = CurrentDoctor.Id })
+                            _jsonClient.GetAsync(new PackageGroupDelete { PackageGroupId = CurrentPackageGroup.Id })
                             .Success(r =>
                             {
                                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false); _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                                r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
-                                RemovePackageFromDoctorByIGID(CurrentDoctor.Id);
-                                Doctors.Remove(Doctors.CurrentItem);
+                                r.Message.Message = string.Format(r.Message.Message, CurrentPackageGroup.Name);
+                                RemovePackageFromGroupByIGID(CurrentPackageGroup.Id);
+                                PackageGroups.Remove(PackageGroups.CurrentItem);
                                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                                _newDoctorCommand.RaiseCanExecuteChanged();
+                                _newPackageGroupCommand.RaiseCanExecuteChanged();
                             })
                             .Error(ex =>
                             {
@@ -308,9 +308,9 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                     }
                 });
         }
-        private bool CanAddDoctor(object arg)
+        private bool CanAddPackageGroup(object arg)
         {
-            //return CurrentDoctor == null || CurrentDoctor.Id != 0;
+            //return CurrentPackageGroup == null || CurrentPackageGroup.Id != 0;
             return true;
         }
         #endregion
@@ -320,7 +320,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         private bool PackageFilter(object item)
         {
             Package Package = item as Package;
-            return Package.DoctorIds.Contains(CurrentDoctor.Id);
+            return Package.PackageGroupIds.Contains(CurrentPackageGroup.Id);
         }
         private void NewPackage(object obj)
         {
@@ -334,7 +334,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.PostAsync(new PackageSave { Package = CurrentPackage })
+                _jsonClient.PostAsync(new PackageSave {Package = CurrentPackage})
                     .Success(r =>
                     {
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
@@ -342,7 +342,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                         if (isNew)
                         {
                             PackagesBase.AddNewItem(CurrentPackage);
-                            PackagesInDoctorRefresh();
+                            PackagesInGroupRefresh();
                         }
                         r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
@@ -377,10 +377,10 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                             {
                                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                                 r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
-                                RemovePackageFromDoctorByIID(_currentBasePackage.Id);
+                                RemovePackageFromGroupByIID(_currentBasePackage.Id);
                                 PackagesBase.Remove(_currentBasePackage);
                                 //Packages.Remove(Packages.CurrentItem);
-                                PackagesInDoctorRefresh();
+                                PackagesInGroupRefresh();
                                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                                 _newPackageCommand.RaiseCanExecuteChanged();
                             })
@@ -400,22 +400,22 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
 
         #endregion
 
-        #region Packages in Doctor
+        #region Packages in Group
         private bool PackagesFilter(object item)
         {
             Package Package = item as Package;
-            if (CurrentDoctor == null || CurrentDoctor.Id == 0)
+            if (CurrentPackageGroup == null || CurrentPackageGroup.Id == 0)
                 return true;
             else
-                return !Package.DoctorIds.Contains(CurrentDoctor.Id);
+                return !Package.PackageGroupIds.Contains(CurrentPackageGroup.Id);
         }
 
         private void ClearPackages()
         {
             Packages.MoveCurrentTo(null);
-            PackagesInDoctor.MoveCurrentTo(null);
-            CurrentPackage = new Package();
-            CurrentPackageInDoctor = new Package();
+            PackagesInGroup.MoveCurrentTo(null);
+            CurrentPackage=new Package();
+            CurrentPackageInGroup=new Package();
         }
         private void PackagesReload(List<Package> packages)
         {
@@ -424,36 +424,36 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             Packages.MoveCurrentTo(null);
             CurrentPackage = new Package();
         }
-        private void PackagesInDoctorReload(List<Package> Packages)
+        private void PackagesInGroupReload(List<Package> Packages)
         {
-            PackagesInDoctor = new ListCollectionView(Packages);
-            PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
-            PackagesInDoctor.MoveCurrentTo(null);
-            CurrentPackageInDoctor = new Package();
+            PackagesInGroup = new ListCollectionView(Packages);
+            PackagesInGroup.CurrentChanged += PackagesInGroup_CurrentChanged;
+            PackagesInGroup.MoveCurrentTo(null);
+            CurrentPackageInGroup = new Package();
         }
-        private void PackagesInDoctorRefresh()
+        private void PackagesInGroupRefresh()
         {
             var list1 = new List<Package>();
             var list2 = new List<Package>();
             foreach (Package Package in PackagesBase)
             {
-                if (Package.DoctorIds != null && Package.DoctorIds.Contains(CurrentDoctor.Id)) list1.Add(Package);
+                if (Package.PackageGroupIds!=null&&Package.PackageGroupIds.Contains(CurrentPackageGroup.Id)) list1.Add(Package);
                 else list2.Add(Package);
             }
-            PackagesInDoctorReload(list1);
+            PackagesInGroupReload(list1);
             PackagesReload(list2);
         }
-        private void AddPackageToDoctor(object obj)
+        private void AddPackageToGroup(object obj)
         {
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new PackagesDoctorsBind { PackageId = CurrentPackage.Id, DoctorId = CurrentDoctor.Id })
+            _jsonClient.GetAsync(new PackagesGroupsBind { PackageId = CurrentPackage.Id,PackageGroupId = CurrentPackageGroup.Id })
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _currentBasePackage.DoctorIds.Add(CurrentDoctor.Id);
-                //CurrentPackage.DoctorIds.Add(CurrentDoctor.Id);
-                PackagesInDoctorRefresh();
+                _currentBasePackage.PackageGroupIds.Add(CurrentPackageGroup.Id);
+                //CurrentPackage.PackageGroupIds.Add(CurrentPackageGroup.Id);
+                PackagesInGroupRefresh();
             })
             .Error(ex =>
             {
@@ -461,17 +461,17 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             });
         }
 
-        private void RemovePackageFromDoctor(object obj)
+        private void RemovePackageFromGroup(object obj)
         {
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new PackagesDoctorsUnbind { PackageId = CurrentPackageInDoctor.Id, DoctorId = CurrentDoctor.Id })
+            _jsonClient.GetAsync(new PackagesGroupsUnbind { PackageId = CurrentPackageInGroup.Id, PackageGroupId = CurrentPackageGroup.Id })
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _currentBasePackage.DoctorIds.Remove(CurrentDoctor.Id);
-                //CurrentPackageInDoctor.DoctorIds.Remove(CurrentDoctor.Id);
-                PackagesInDoctorRefresh();
+                _currentBasePackage.PackageGroupIds.Remove(CurrentPackageGroup.Id);
+                //CurrentPackageInGroup.PackageGroupIds.Remove(CurrentPackageGroup.Id);
+                PackagesInGroupRefresh();
             })
             .Error(ex =>
             {
@@ -479,25 +479,25 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             });
         }
 
-        private void RemovePackageFromDoctorByIID(int id)
+        private void RemovePackageFromGroupByIID(int id)
         {
-            foreach (Doctor ig in Doctors)
+            foreach (PackageGroup ig in PackageGroups)
             {
                 if (ig.PackageIds.Contains(id)) ig.PackageIds.Remove(id);
             }
-            //PackagesInDoctorRefresh();
+            //PackagesInGroupRefresh();
         }
-        private void RemovePackageFromDoctorByIGID(int id)
+        private void RemovePackageFromGroupByIGID(int id)
         {
             foreach (Package i in Packages)
             {
-                if (i.DoctorIds.Contains(id)) Packages.Remove(i);
+                if (i.PackageGroupIds.Contains(id)) Packages.Remove(i);
             }
-            PackagesInDoctorRefresh();
+            PackagesInGroupRefresh();
         }
         #endregion
 
 
-
+      
     }
 }

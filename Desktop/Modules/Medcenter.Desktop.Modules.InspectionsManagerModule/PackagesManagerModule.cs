@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.Linq;
 using Medcenter.Desktop.Infrastructure;
-using Medcenter.Desktop.Modules.InspectionsManagerModule.Views;
+using Medcenter.Desktop.Modules.PackagesManagerModule.Views;
 using Medcenter.Service.Model.Types;
 using Microsoft.Practices.Prism.MefExtensions.Modularity;
 using Microsoft.Practices.Prism.Modularity;
@@ -9,17 +9,17 @@ using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Medcenter.Desktop.Modules.InspectionsManagerModule
+namespace Medcenter.Desktop.Modules.PackagesManagerModule
 {
-    [ModuleExport(typeof(InspectionsManagerModule))]
-    public class InspectionsManagerModule : IModule
+    [ModuleExport(typeof(PackagesManagerModule))]
+    public class PackagesManagerModule : IModule
     {
 #pragma warning disable 0649,0169
         [Import]
         private IRegionManager _regionManager;
 
         [Import]
-        private InspectionsManagerToolbarView _InspectionsManagerToolbarView;
+        private PackagesManagerToolbarView _PackagesManagerToolbarView;
 
         [Import]
         private IEventAggregator _eventAggregator;
@@ -34,12 +34,12 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule
         {
             if (user != null)
             {
-                if (user.Roles.Contains("Admin") || (user.Roles.Contains("Manager") && user.Permissions.Contains("CanEditMainLists"))) _regionManager.Regions[RegionNames.ToolbarRegion].Add(_InspectionsManagerToolbarView, "InspectionsManagerToolbarView");
+                if (user.Roles.Contains("Admin") || (user.Roles.Contains("Manager") && user.Permissions.Contains("CanEditMainLists"))) _regionManager.Regions[RegionNames.ToolbarRegion].Add(_PackagesManagerToolbarView, "PackagesManagerToolbarView");
             }
             else
             {
-                if (_regionManager.Regions[RegionNames.ToolbarRegion].GetView("InspectionsManagerToolbarView") != null)
-                    _regionManager.Regions[RegionNames.ToolbarRegion].Remove(_regionManager.Regions[RegionNames.ToolbarRegion].GetView("InspectionsManagerToolbarView"));
+                if (_regionManager.Regions[RegionNames.ToolbarRegion].GetView("PackagesManagerToolbarView") != null)
+                    _regionManager.Regions[RegionNames.ToolbarRegion].Remove(_regionManager.Regions[RegionNames.ToolbarRegion].GetView("PackagesManagerToolbarView"));
             }
         }
     }

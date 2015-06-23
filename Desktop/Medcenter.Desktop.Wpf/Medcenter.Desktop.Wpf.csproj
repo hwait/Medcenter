@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3E118DDD-1E84-4188-B2BD-016F3FA0FF65}</ProjectGuid>
@@ -150,9 +150,9 @@
       <Project>{49494e8b-047f-4aae-bef7-2be0e6b32817}</Project>
       <Name>Medcenter.Desktop.Modules.DoctorsManagerModule</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.InspectionsManagerModule.csproj">
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.PackagesManagerModule.csproj">
       <Project>{789e597c-9c24-4d11-b181-87ea153f78e0}</Project>
-      <Name>Medcenter.Desktop.Modules.InspectionsManagerModule</Name>
+      <Name>Medcenter.Desktop.Modules.PackagesManagerModule</Name>
     </ProjectReference>
     <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.LoginModule\Medcenter.Desktop.Modules.LoginModule.csproj">
       <Project>{b2534544-4596-4d21-b56d-db63b8783245}</Project>

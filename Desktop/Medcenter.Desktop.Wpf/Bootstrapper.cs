@@ -3,7 +3,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.Windows;
 using Medcenter.Desktop.Infrastructure;
 using Medcenter.Desktop.Modules.DoctorsManagerModule;
-using Medcenter.Desktop.Modules.InspectionsManagerModule;
+using Medcenter.Desktop.Modules.PackagesManagerModule;
 using Medcenter.Desktop.Modules.LoginModule;
 using Medcenter.Desktop.Modules.StatusbarModule;
 using Medcenter.Desktop.Modules.UserInfoModule;
@@ -33,7 +33,7 @@ namespace Medcenter.Desktop.Wpf
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(StatusbarModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(UserInfoModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(UsersManagerModule).Assembly));
-            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(InspectionsManagerModule).Assembly));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(PackagesManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(DoctorsManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IUserRepository).Assembly));
         }
@@ -49,8 +49,8 @@ namespace Medcenter.Desktop.Wpf
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = statusbarModuleType.Name, ModuleType = statusbarModuleType.AssemblyQualifiedName });
             var usersManagerModuleType = typeof(UsersManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = usersManagerModuleType.Name, ModuleType = usersManagerModuleType.AssemblyQualifiedName });
-            var inspectionsManagerModuleType = typeof(InspectionsManagerModule);
-            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = inspectionsManagerModuleType.Name, ModuleType = inspectionsManagerModuleType.AssemblyQualifiedName });
+            var PackagesManagerModuleType = typeof(PackagesManagerModule);
+            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = PackagesManagerModuleType.Name, ModuleType = PackagesManagerModuleType.AssemblyQualifiedName });
             var doctorsManagerModuleType = typeof(DoctorsManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = doctorsManagerModuleType.Name, ModuleType = doctorsManagerModuleType.AssemblyQualifiedName });
             var userInfoModuleType = typeof(UserInfoModule);

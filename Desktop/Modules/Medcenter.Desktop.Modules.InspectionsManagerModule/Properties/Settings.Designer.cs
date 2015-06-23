@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Medcenter.Desktop.Modules.InspectionsManagerModule.Properties
+namespace Medcenter.Desktop.Modules.PackagesManagerModule.Properties
 {
 
 

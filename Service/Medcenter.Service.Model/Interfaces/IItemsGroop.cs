@@ -12,7 +12,7 @@ namespace Medcenter.Service.Model.Interfaces
         int Id { get; set; }
         string Name { get; set; }
         string ShortName { get; set; }
-        List<int> InspectionIds { get; set; }
+        List<int> PackageIds { get; set; }
         List<ResultMessage> Validate();
     }
 }

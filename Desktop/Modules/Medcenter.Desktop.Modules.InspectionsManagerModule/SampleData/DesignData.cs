@@ -6,7 +6,7 @@ using System.Windows.Media;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Types;
 
-namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
+namespace Medcenter.Desktop.Modules.PackagesManagerModule.SampleData
 {
     public class DesignData
     {
@@ -46,11 +46,11 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
             }
         }
 
-        public InspectionGroup CurrentInspectionGroup
+        public PackageGroup CurrentPackageGroup
         {
             get
             {
-                return new InspectionGroup
+                return new PackageGroup
                 {
                     Id = 0,
                     Name = "Кардиология",
@@ -61,29 +61,29 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
             }
         }
 
-        public Inspection CurrentInspection
+        public Package CurrentPackage
         {
             get
             {
-                return new Inspection
+                return new Package
                 {
                     Id = 0,
                     Name = "Ультразвуковое исследование сердца",
                     ShortName = "ЭХО",
                     Duration = 10,
-                    InspectionGroupId = 0,
+                    PackageGroupId = 0,
                     Cost = 1000
                 };
             }
         }
 
-        public ObservableCollection<InspectionGroup> InspectionGroups
+        public ObservableCollection<PackageGroup> PackageGroups
         {
             get
             {
-                return new ObservableCollection<InspectionGroup>
+                return new ObservableCollection<PackageGroup>
                 {
-                    new InspectionGroup
+                    new PackageGroup
                     {
                         Id = 0,
                         Name = "Кардиология",
@@ -91,7 +91,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Row = 0,
                         //Color = null;//Colors.Bisque.ToString()
                     },
-                    new InspectionGroup
+                    new PackageGroup
                     {
                         Id = 0,
                         Name = "Абдоминальные",
@@ -99,7 +99,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Row = 0,
                         //Color = Colors.LightSkyBlue.ToString()
                     },
-                    new InspectionGroup
+                    new PackageGroup
                     {
                         Id = 0,
                         Name = "Моче-половая система",
@@ -107,7 +107,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
                         Row = 0,
                         //Color = Colors.LightGreen.ToString()
                     },
-                    new InspectionGroup
+                    new PackageGroup
                     {
                         Id = 0,
                         Name = "Прочие",
@@ -119,91 +119,91 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.SampleData
             }
         }
 
-        public ObservableCollection<Inspection> Inspections
+        public ObservableCollection<Package> Packages
         {
             get
             {
-                return new ObservableCollection<Inspection>
+                return new ObservableCollection<Package>
                 {
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Ультразвуковое исследование сердца",
                         ShortName = "ЭХО",
                         Duration = 10,
-                        InspectionGroupId = 0,
+                        PackageGroupId = 0,
                         Cost = 1000
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Консультация кардиолога",
                         ShortName = "Кардиолог",
                         Duration = 5,
-                        InspectionGroupId = 0,
+                        PackageGroupId = 0,
                         Cost = 1200
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек с допплерографией",
                         ShortName = "УЗДГ почек",
                         Duration = 5,
-                        InspectionGroupId = 1,
+                        PackageGroupId = 1,
                         Cost = 3500
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек",
                         ShortName = "Почки",
                         Duration = 10,
-                        InspectionGroupId = 1,
+                        PackageGroupId = 1,
                         Cost = 2100
                     },
                 };
             }
         }
-        public ObservableCollection<Inspection> InspectionsInGroup
+        public ObservableCollection<Package> PackagesInGroup
         {
             get
             {
-                return new ObservableCollection<Inspection>
+                return new ObservableCollection<Package>
                 {
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Ультразвуковое исследование сердца",
                         ShortName = "ЭХО",
                         Duration = 10,
-                        InspectionGroupId = 0,
+                        PackageGroupId = 0,
                         Cost = 1000
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Консультация кардиолога",
                         ShortName = "Кардиолог",
                         Duration = 5,
-                        InspectionGroupId = 0,
+                        PackageGroupId = 0,
                         Cost = 1200
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек с допплерографией",
                         ShortName = "УЗДГ почек",
                         Duration = 5,
-                        InspectionGroupId = 1,
+                        PackageGroupId = 1,
                         Cost = 3500
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек",
                         ShortName = "Почки",
                         Duration = 10,
-                        InspectionGroupId = 1,
+                        PackageGroupId = 1,
                         Cost = 2100
                     },
                 };

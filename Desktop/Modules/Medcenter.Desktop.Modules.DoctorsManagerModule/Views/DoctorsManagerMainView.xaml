@@ -37,7 +37,7 @@
 				<TextBlock Text="{Binding Message}" Margin="5,0,0,0" Foreground="Red" FontSize="13.333"/>
 			</StackPanel>
 		</DataTemplate>
-		<DataTemplate x:Key="InspectionDoctorTemplate">
+		<DataTemplate x:Key="PackageDoctorTemplate">
 			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
 				<Rectangle Width="30">
 					<Rectangle.Fill>
@@ -52,7 +52,7 @@
 				<TextBlock Text="{Binding ShortName}" FontSize="16"/>
 			</StackPanel>
 		</DataTemplate>
-		<DataTemplate x:Key="CurrentInspectionDoctorTemplate">
+		<DataTemplate x:Key="CurrentPackageDoctorTemplate">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="44*"/>
@@ -140,14 +140,14 @@
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddDoctorToDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDoctorFromDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
 		</StackPanel>
-		<ListBox Grid.Row="2" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource InspectionDoctorTemplate}" ItemsSource="{Binding Doctors}"/>
-		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding InspectionsInDoctor}" MinWidth="200"/>
-		<ListBox Grid.Column="5" Margin="5,5,10,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding Inspections}" MinWidth="200"/>
+		<ListBox Grid.Row="2" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageDoctorTemplate}" ItemsSource="{Binding Doctors}"/>
+		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding PackagesInDoctor}" MinWidth="200"/>
+		<ListBox Grid.Column="5" Margin="5,5,10,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding Packages}" MinWidth="200"/>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Группы инспекций:" VerticalAlignment="Bottom" Grid.Row="1" FontSize="16" FontWeight="Bold"/>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Инспекции в группе:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" FontSize="16" FontWeight="Bold"/>
 		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Инспекции:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="5" FontSize="16" FontWeight="Bold"/>
-		<ContentControl Content="{Binding CurrentDoctor, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentInspectionDoctorTemplate}"/>
-		<ContentControl Content="{Binding CurrentInspection, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="5" ContentTemplate="{DynamicResource DoctorDataTemplate}"/>
+		<ContentControl Content="{Binding CurrentDoctor, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentPackageDoctorTemplate}"/>
+		<ContentControl Content="{Binding CurrentPackage, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="5" ContentTemplate="{DynamicResource DoctorDataTemplate}"/>
 		
 	</Grid>
 </UserControl>

@@ -11,7 +11,7 @@ using Medcenter.Service.Model.Messaging;
 namespace Medcenter.Service.Model.Types
 {
     [DataContract]
-    public class Inspection : IItem
+    public class Package : IItem
     {
         [DataMember]
         public int Id { get; set; }
@@ -22,30 +22,30 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Duration { get; set; }
         [DataMember]
-        public int InspectionGroupId { get; set; }
+        public int PackageGroupId { get; set; }
         [DataMember]
         public int DoctorId { get; set; }
         [DataMember]
         public int Cost { get; set; }
         [DataMember]
-        public List<int> InspectionGroupIds { get; set; }
+        public List<int> PackageGroupIds { get; set; }
         [DataMember]
         public List<int> DoctorIds { get; set; }
         public bool IsChanged { get; set; }
         public bool IsRemoved { get; set; }
 
-        public Inspection()
+        public Package()
         {
-            InspectionGroupIds=new List<int>();
+            PackageGroupIds=new List<int>();
         }
-        public Inspection CopyInstance()
+        public Package CopyInstance()
         {
-            Inspection inspection=new Inspection();
-            inspection.Name = "[КОПИЯ] "+Name;
-            inspection.ShortName = ShortName;
-            inspection.Duration = Duration;
-            inspection.Cost = Cost;
-            return inspection;
+            Package Package=new Package();
+            Package.Name = "[КОПИЯ] "+Name;
+            Package.ShortName = ShortName;
+            Package.Duration = Duration;
+            Package.Cost = Cost;
+            return Package;
         }
         public List<ResultMessage> Validate()
         {

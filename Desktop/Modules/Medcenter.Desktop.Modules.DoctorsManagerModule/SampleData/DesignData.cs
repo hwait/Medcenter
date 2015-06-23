@@ -60,11 +60,11 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
             }
         }
 
-        public Inspection CurrentInspection
+        public Package CurrentPackage
         {
             get
             {
-                return new Inspection
+                return new Package
                 {
                     Id = 0,
                     Name = "Ультразвуковое исследование сердца",
@@ -107,13 +107,13 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
             }
         }
 
-        public ObservableCollection<Inspection> Inspections
+        public ObservableCollection<Package> Packages
         {
             get
             {
-                return new ObservableCollection<Inspection>
+                return new ObservableCollection<Package>
                 {
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Ультразвуковое исследование сердца",
@@ -122,7 +122,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 0,
                         Cost = 1000
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Консультация кардиолога",
@@ -131,7 +131,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 0,
                         Cost = 1200
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек с допплерографией",
@@ -140,7 +140,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 1,
                         Cost = 3500
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек",
@@ -152,13 +152,13 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                 };
             }
         }
-        public ObservableCollection<Inspection> InspectionsInDoctor
+        public ObservableCollection<Package> PackagesInDoctor
         {
             get
             {
-                return new ObservableCollection<Inspection>
+                return new ObservableCollection<Package>
                 {
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Ультразвуковое исследование сердца",
@@ -167,7 +167,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 0,
                         Cost = 1000
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "Консультация кардиолога",
@@ -176,7 +176,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 0,
                         Cost = 1200
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек с допплерографией",
@@ -185,7 +185,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.SampleData
                         DoctorId = 1,
                         Cost = 3500
                     },
-                    new Inspection
+                    new Package
                     {
                         Id = 0,
                         Name = "УЗИ почек",

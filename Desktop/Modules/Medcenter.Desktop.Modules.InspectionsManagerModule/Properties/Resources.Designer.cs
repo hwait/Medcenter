@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Medcenter.Desktop.Modules.InspectionsManagerModule.Properties
+namespace Medcenter.Desktop.Modules.PackagesManagerModule.Properties
 {
 
 
@@ -44,7 +44,7 @@ namespace Medcenter.Desktop.Modules.InspectionsManagerModule.Properties
             {
                 if ((resourceMan == null))
                 {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Medcenter.Desktop.Modules.InspectionsManagerModule.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Medcenter.Desktop.Modules.PackagesManagerModule.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -69,21 +69,21 @@ namespace Medcenter.Service.Model.Operations
     #endregion
 
 
-    #region Inspections In Doctors
+    #region Packages In Doctors
 
     [RequiresAnyRole("Admin", "Manager")]
-    [Route("/doctors/bind/{InspectionId}/{DoctorId}", "GET")]
-    public class InspectionsDoctorsBind : IReturn<InspectionsDoctorsBindResponse>
+    [Route("/doctors/bind/{PackageId}/{DoctorId}", "GET")]
+    public class PackagesDoctorsBind : IReturn<PackagesDoctorsBindResponse>
     {
-        public int InspectionId { get; set; }
+        public int PackageId { get; set; }
 
         public int DoctorId { get; set; }
 
     }
 
-    public class InspectionsDoctorsBindResponse : IHasResponseStatus
+    public class PackagesDoctorsBindResponse : IHasResponseStatus
     {
-        public InspectionsDoctorsBindResponse()
+        public PackagesDoctorsBindResponse()
         {
             ResponseStatus = new ResponseStatus();
         }
@@ -93,18 +93,18 @@ namespace Medcenter.Service.Model.Operations
     }
 
     [RequiresAnyRole("Admin", "Manager")]
-    [Route("/Doctors/unbind/{InspectionId}/{DoctorId}", "GET")]
-    public class InspectionsDoctorsUnbind : IReturn<InspectionsDoctorsUnbindResponse>
+    [Route("/Doctors/unbind/{PackageId}/{DoctorId}", "GET")]
+    public class PackagesDoctorsUnbind : IReturn<PackagesDoctorsUnbindResponse>
     {
-        public int InspectionId { get; set; }
+        public int PackageId { get; set; }
 
         public int DoctorId { get; set; }
 
     }
 
-    public class InspectionsDoctorsUnbindResponse : IHasResponseStatus
+    public class PackagesDoctorsUnbindResponse : IHasResponseStatus
     {
-        public InspectionsDoctorsUnbindResponse()
+        public PackagesDoctorsUnbindResponse()
         {
             ResponseStatus = new ResponseStatus();
         }
@@ -114,34 +114,34 @@ namespace Medcenter.Service.Model.Operations
     }
 
     [Authenticate]
-    [Route("/inspectionsindoctor/{DoctorId}", "GET")]
-    public class InspectionsInDoctorSelect : IReturn<InspectionsInDoctorSelectResponse>
+    [Route("/Packagesindoctor/{DoctorId}", "GET")]
+    public class PackagesInDoctorSelect : IReturn<PackagesInDoctorSelectResponse>
     {
         public int DoctorId { get; set; }
     }
 
-    public class InspectionsInDoctorSelectResponse : IHasResponseStatus
+    public class PackagesInDoctorSelectResponse : IHasResponseStatus
     {
-        public InspectionsInDoctorSelectResponse()
+        public PackagesInDoctorSelectResponse()
         {
             ResponseStatus = new ResponseStatus();
         }
 
         public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
-        public List<int> InspectionIds { get; set; }
+        public List<int> PackageIds { get; set; }
     }
 
     [Authenticate]
-    [Route("/doctorsininspection/{InspectionId}", "GET")]
-    public class DoctorsInInspectionSelect : IReturn<DoctorsInInspectionSelectResponse>
+    [Route("/doctorsinPackage/{PackageId}", "GET")]
+    public class DoctorsInPackageSelect : IReturn<DoctorsInPackageSelectResponse>
     {
         public int DoctorId { get; set; }
     }
 
-    public class DoctorsInInspectionSelectResponse : IHasResponseStatus
+    public class DoctorsInPackageSelectResponse : IHasResponseStatus
     {
-        public DoctorsInInspectionSelectResponse()
+        public DoctorsInPackageSelectResponse()
         {
             ResponseStatus = new ResponseStatus();
         }
