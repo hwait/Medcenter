@@ -19,7 +19,7 @@ using Microsoft.Practices.Prism.Regions;
 namespace Medcenter.Desktop.Modules.DoctorsManagerModule.Views
 {
     [Export]
-    [ViewSortHint("04")]
+    [ViewSortHint("05")]
     public partial class DoctorsManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
         private static readonly Uri DoctorsManagerMainViewUri = new Uri("DoctorsManagerMainView", UriKind.Relative);

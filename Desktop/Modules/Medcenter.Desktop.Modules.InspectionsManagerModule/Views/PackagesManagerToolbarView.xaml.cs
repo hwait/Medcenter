@@ -19,7 +19,7 @@ using Microsoft.Practices.Prism.Regions;
 namespace Medcenter.Desktop.Modules.PackagesManagerModule.Views
 {
     [Export]
-    [ViewSortHint("03")]
+    [ViewSortHint("04")]
     public partial class PackagesManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
         private static readonly Uri PackagesManagerMainViewUri = new Uri("PackagesManagerMainView", UriKind.Relative);
