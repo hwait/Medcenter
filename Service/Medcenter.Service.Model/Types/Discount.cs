@@ -18,9 +18,11 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public bool IsGlobal { get; set; }
         [DataMember]
+        public bool IsIncrement { get; set; }
+        [DataMember]
         public string Code { get; set; }
         [DataMember]
-        public bool Gender { get; set; }
+        public int Gender { get; set; }
         [DataMember]
         public int AgeMin { get; set; }
         [DataMember]
@@ -55,6 +57,7 @@ namespace Medcenter.Service.Model.Types
         public List<int> PackageIds { get; set; }
         [DataMember]
         public string ValueText { get; set; }
+        public string Requirements { get; set; }
         public bool Sunday
         {
             get { return IsDiscountThisDay(0); } 

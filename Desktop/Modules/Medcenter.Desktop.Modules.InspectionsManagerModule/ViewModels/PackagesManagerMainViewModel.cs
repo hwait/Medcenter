@@ -35,10 +35,11 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        private readonly DelegateCommand<object> _copyPackageCommand;
+        
         private readonly DelegateCommand<object> _addPackageToGroupCommand;
         private readonly DelegateCommand<object> _removePackageFromGroupCommand;
         private readonly DelegateCommand<object> _newPackageCommand;
+        private readonly DelegateCommand<object> _copyPackageCommand;
         private readonly DelegateCommand<object> _removePackageCommand;
         private readonly DelegateCommand<object> _savePackageCommand;
         private readonly DelegateCommand<object> _newPackageGroupCommand;
@@ -220,7 +221,6 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         private void CopyPackage(object obj)
         {
             CurrentPackage = CurrentPackage.CopyInstance();
-
         }
 
         private bool CanRemovePackage(object arg)

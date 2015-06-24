@@ -10,6 +10,20 @@ using System.Windows.Media.Imaging;
 
 namespace Medcenter.Desktop.Infrastructure
 {
+    public class RadioButtonCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(parameter);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(true) ? parameter : Binding.DoNothing;
+        }
+    }
     public class BoolToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

@@ -28,6 +28,16 @@ namespace Medcenter.Service.Model.Messaging
             Type = 2;
             Time = DateTime.Now;
         }
+        public LogMessage(string caller, Exception e, string message)
+        {
+            Caller = caller;
+            Message = e.Message;
+            Source = e.Source;
+            StackTrace = message;
+            Data = e.Data;
+            Type = 2;
+            Time = DateTime.Now;
+        }
         public LogMessage(string caller, string message)
         {
             Caller = caller;
@@ -47,6 +57,11 @@ namespace Medcenter.Service.Model.Messaging
     {
         private static bool IsLogging = true;
         public static void Log(string caller, Exception e)
+        {
+            var log = new LogMessage(caller, e);
+            SaveLog(log);
+        }
+        public static void Log(string caller, Exception e, string message)
         {
             var log = new LogMessage(caller, e);
             SaveLog(log);

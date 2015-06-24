@@ -32,28 +32,38 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        private readonly DelegateCommand<object> _discountFotoChooseCommand;
+        private readonly DelegateCommand<object> _newDiscountCommand;
+        private readonly DelegateCommand<object> _copyDiscountCommand;
+        private readonly DelegateCommand<object> _removeDiscountCommand;
         private readonly DelegateCommand<object> _saveDiscountCommand;
         private readonly DelegateCommand<object> _discountEditCommand;
-        private readonly DelegateCommand<object> _discountReportsCommand;
+        private readonly DelegateCommand<object> _comissionFeesCommand;
         #region Properties
-
-        public ICommand DiscountFotoChooseCommand
+        public ICommand DiscountEditCommand
         {
-            get { return this._discountFotoChooseCommand; }
+            get { return this._discountEditCommand; }
+        }
+
+        public ICommand ComissionFeesCommand
+        {
+            get { return this._comissionFeesCommand; }
+        }
+        public ICommand NewDiscountCommand
+        {
+            get { return this._newDiscountCommand; }
         }
 
         public ICommand SaveDiscountCommand
         {
             get { return this._saveDiscountCommand; }
         }
-        public ICommand DiscountReportsCommand
+        public ICommand CopyDiscountCommand
         {
-            get { return this._discountReportsCommand; }
+            get { return this._copyDiscountCommand; }
         }
-        public ICommand DiscountEditCommand
+        public ICommand RemoveDiscountCommand
         {
-            get { return this._discountEditCommand; }
+            get { return this._removeDiscountCommand; }
         }
         private List<ResultMessage> _errors;
 
@@ -61,17 +71,6 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
         {
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
-        }
-
-        private string _imagePath;
-
-        public string ImagePath
-        {
-            get { return _imagePath; }
-            set
-            {
-                SetProperty(ref _imagePath, value);
-            }
         }
         private Discount _currentDiscount;
 
@@ -83,85 +82,155 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
                 SetProperty(ref _currentDiscount, value);
             }
         }
+        private ListCollectionView _discounts;
+        public ListCollectionView Discounts
+        {
+            get { return _discounts; }
+            set { SetProperty(ref _discounts, value); }
+        }
         private bool _isDiscountEdit;
         public bool IsDiscountEdit
         {
             get { return _isDiscountEdit; }
             set { SetProperty(ref _isDiscountEdit, value); }
         }
-        private bool _isDiscountReports;
-        public bool IsDiscountReports
+        private bool _isComissionFees;
+        public bool IsComissionFees
         {
-            get { return _isDiscountReports; }
-            set { SetProperty(ref _isDiscountReports, value); }
+            get { return _isComissionFees; }
+            set { SetProperty(ref _isComissionFees, value); }
         }
         #endregion
 
         [ImportingConstructor]
         public FinancesManagerViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
-
+            /*
+              private readonly DelegateCommand<object> _newDiscountCommand;
+        private readonly DelegateCommand<object> _copyDiscountCommand;
+        private readonly DelegateCommand<object> _removeDiscountCommand;
+        private readonly DelegateCommand<object> _saveDiscountCommand;
+             */
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _discountFotoChooseCommand = new DelegateCommand<object>(DiscountFotoChoose);
+            _newDiscountCommand = new DelegateCommand<object>(NewDiscount);
             _saveDiscountCommand = new DelegateCommand<object>(SaveDiscount);
+            _copyDiscountCommand = new DelegateCommand<object>(CopyDiscount);
+            _removeDiscountCommand = new DelegateCommand<object>(RemoveDiscount);
+            _comissionFeesCommand = new DelegateCommand<object>(ComissionFees);
             _discountEditCommand = new DelegateCommand<object>(DiscountEdit);
-            _discountReportsCommand = new DelegateCommand<object>(DiscountReports);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             //_eventAggregator.GetEvent<FinancesManagerEvent>().Subscribe(FinancesManagerReceived);
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new DiscountsSelect())
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Discounts = new ListCollectionView(r.Discounts);
+                Discounts.CurrentChanged += Discounts_CurrentChanged;
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+            
             IsDiscountEdit = false;
-            IsDiscountReports = false;
+            IsComissionFees = false;
 
         }
-
+        void Discounts_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentDiscount = Discounts.CurrentItem != null ? (Discount)Discounts.CurrentItem : new Discount();
+        }
         //private void FinancesManagerReceived(Discount obj)
         //{
         //    CurrentDiscount = obj;
         //    ShowDiscountFoto(CurrentDiscount.DiscountId);
         //}
 
-        private void DiscountReports(object obj)
+        private void ComissionFees(object obj)
         {
             IsDiscountEdit = false;
-            IsDiscountReports = true;
+            IsComissionFees = true;
         }
 
         private void DiscountEdit(object obj)
         {
             IsDiscountEdit = true;
-            IsDiscountReports = false;
+            IsComissionFees = false;
         }
-
+        private void CopyDiscount(object obj)
+        {
+            CurrentDiscount = CurrentDiscount.CopyInstance();
+        }
         private void SaveDiscount(object obj)
         {
-            //bool isNew = CurrentDiscount.DiscountId == 0;
+            bool isNew = CurrentDiscount.Id == 0;
             Errors = CurrentDiscount.Validate();
-            //if (Errors.Count == 0)
-            //{
-            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //    _jsonClient.PostAsync(new DiscountUpdateInfo { Discount = CurrentDiscount })
-            //        .Success(r =>
-            //        {
-            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //            CurrentDiscount.DiscountId = r.DiscountId;
-            //            CurrentDiscount.Password = "";
-            //            CurrentDiscount.Password1 = "";
-            //            r.Message.Message = string.Format(r.Message.Message, CurrentDiscount.DisplayName);
-            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-            //            _eventAggregator.GetEvent<FinancesManagerEvent>().Publish(CurrentDiscount);
-            //        })
-            //        .Error(ex =>
-            //        {
-            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(OperationErrors.GetErrorFromText("Сохранение изменений:", ex.Message));
-            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //        });
-            //}
+            if (Errors.Count == 0)
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.PostAsync(new DiscountSave { Discount = CurrentDiscount })
+                    .Success(r =>
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        CurrentDiscount.Id = r.DiscountId;
+                        if (isNew)
+                        {
+                            Discounts.AddNewItem(CurrentDiscount);
+                            Discounts.CommitNew();
+                        }
+                        Discounts.Refresh();
+                        r.Message.Message = string.Format(r.Message.Message, CurrentDiscount.Name);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        //_newUserCommand.RaiseCanExecuteChanged();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+            }
         }
-        private void DiscountFotoChoose(object obj)
-        {
 
+        private void RemoveDiscount(object obj)
+        {
+            bool isNew = CurrentDiscount.Id == 0;
+            ConfirmationRequest.Raise(
+                new Confirmation { Content = "Скидка будет удалена! Вы уверены?", Title = "Удаление скидки." },
+                c =>
+                {
+                    if (c.Confirmed)
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                        if (isNew)
+                        {
+                            CurrentDiscount = new Discount();
+                            //_newUserCommand.RaiseCanExecuteChanged();
+                        }
+                        else
+                        {
+                            _jsonClient.GetAsync(new DiscountDelete { DiscountId = CurrentDiscount.Id })
+                            .Success(r =>
+                            {
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                r.Message.Message = string.Format(r.Message.Message, CurrentDiscount.Name);
+                                Discounts.Remove(Discounts.CurrentItem);
+                                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                //_newUserCommand.RaiseCanExecuteChanged();
+                            })
+                            .Error(ex =>
+                            {
+                                throw ex;
+                            });
+                        }
+                    }
+                });
+        }
+
+        private void NewDiscount(object obj)
+        {
+            CurrentDiscount = new Discount();
         }
     }
 }
