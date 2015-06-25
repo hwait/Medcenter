@@ -18,16 +18,29 @@ namespace Medcenter.Service.Interface.Services
         public DiscountsSelectResponse Get(DiscountsSelect req)
         {
             List<Discount> discounts=new List<Discount>();
+            List<Discount> rows = new List<Discount>();
             Discount discount;
-            var rows = Db.SqlList<Discount>("EXEC sp_Discounts_Select");
-            foreach (var r in rows)
+            ResultMessage _message;
+            try
             {
-                discount = JsonConvert.DeserializeObject<Discount>(r.Requirements);
-                discount.Id = r.Id;
-                discounts.Add(discount);
+                rows = Db.SqlList<Discount>("EXEC sp_Discounts_Select");
+                foreach (var r in rows)
+                {
+                    discount = JsonConvert.DeserializeObject<Discount>(r.Requirements);
+                    discount.Id = r.Id;
+                    discounts.Add(discount);
+                }
+                _message = new ResultMessage(0, "Загрузка скидок", OperationResults.DiscountLoad);
             }
-                //r.DiscountPackageIds = Db.SqlList<int>("EXEC sp_Discount_SelectGroups @DiscountId", new { DiscountId = r.Id });
-            return new DiscountsSelectResponse { Discounts = discounts };
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountSave);
+                //Logger.Log("DiscountsSelectResponse", e, JsonConvert.SerializeObject(rows));
+                Logger.Log("DiscountsSelectResponse", e);
+                throw;
+            }
+            //r.DiscountPackageIds = Db.SqlList<int>("EXEC sp_Discount_SelectGroups @DiscountId", new { DiscountId = r.Id });
+            return new DiscountsSelectResponse { Discounts = discounts, Message = _message};
         }
 
         public DiscountSaveResponse Post(DiscountSave req)
@@ -38,7 +51,7 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Discounts_Update @Id, @Requirements, @Name, @Value, @IsGlobal", new
+                    id = Db.Single<int>("EXEC sp_Discounts_Update @Id, @Name,@Requirements,  @Value, @IsGlobal", new
                     {
                         Id = req.Discount.Id,
                         Value = req.Discount.Value,
@@ -52,7 +65,8 @@ namespace Medcenter.Service.Interface.Services
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.DiscountSave);
-                    Logger.Log("DiscountSaveResponse.Saving", e, JsonConvert.SerializeObject(req));
+                    //Logger.Log("DiscountSaveResponse.Saving", e, JsonConvert.SerializeObject(req));
+                    Logger.Log("DiscountSaveResponse.Saving", e);
                     throw;
                 }
             }
@@ -60,7 +74,7 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Discounts_Insert @Requirements, @Name, @Value, @IsGlobal", new
+                    id = Db.Single<int>("EXEC sp_Discounts_Insert  @Name, @Requirements, @Value, @IsGlobal", new
                     {
                         Value = req.Discount.Value,
                         Requirements = JsonConvert.SerializeObject(req.Discount),
@@ -73,7 +87,8 @@ namespace Medcenter.Service.Interface.Services
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.DiscountCreate);
-                    Logger.Log("DiscountSaveResponse.NewDiscount", e, JsonConvert.SerializeObject(req));
+                    //Logger.Log("DiscountSaveResponse.NewDiscount", e, JsonConvert.SerializeObject(req));
+                    Logger.Log("DiscountSaveResponse.NewDiscount", e);
                     throw;
                 }
             }

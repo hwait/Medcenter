@@ -11,7 +11,7 @@ namespace Medcenter.Service.Model.Operations
 {
     #region Discount
 
-    [Authenticate]
+    //[Authenticate]
     [Route("/discounts", "GET")]
     public class DiscountsSelect : IReturn<DiscountsSelectResponse>
     {

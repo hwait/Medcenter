@@ -38,6 +38,7 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
         private readonly DelegateCommand<object> _saveDiscountCommand;
         private readonly DelegateCommand<object> _discountEditCommand;
         private readonly DelegateCommand<object> _comissionFeesCommand;
+
         #region Properties
         public ICommand DiscountEditCommand
         {
@@ -100,6 +101,13 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
             get { return _isComissionFees; }
             set { SetProperty(ref _isComissionFees, value); }
         }
+
+        private Dictionary<int, string> _monthsDictionary;
+        public Dictionary<int, string> MonthsDictionary
+        {
+            get { return _monthsDictionary; }
+            set { SetProperty(ref _monthsDictionary, value); }
+        }
         #endregion
 
         [ImportingConstructor]
@@ -120,6 +128,7 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
             _removeDiscountCommand = new DelegateCommand<object>(RemoveDiscount);
             _comissionFeesCommand = new DelegateCommand<object>(ComissionFees);
             _discountEditCommand = new DelegateCommand<object>(DiscountEdit);
+            MonthsDictionary = Utils.MonthsDictionary;
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             //_eventAggregator.GetEvent<FinancesManagerEvent>().Subscribe(FinancesManagerReceived);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);

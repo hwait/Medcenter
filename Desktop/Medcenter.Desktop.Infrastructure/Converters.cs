@@ -15,13 +15,13 @@ namespace Medcenter.Desktop.Infrastructure
         public object Convert(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            return value.Equals(parameter);
+            return value.Equals(int.Parse(parameter.ToString()));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
             System.Globalization.CultureInfo culture)
         {
-            return value.Equals(true) ? parameter : Binding.DoNothing;
+            return value.Equals(true) ? int.Parse(parameter.ToString()) : Binding.DoNothing;
         }
     }
     public class BoolToVisibilityConverter : IValueConverter

@@ -42,20 +42,31 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string WeekDays { get; set; }
 
+        private int _value;
         [DataMember]
         public int Value
         {
             get
             {
                 int nmb;
-                int.TryParse(ValueText.Replace("%","").Trim(), out nmb);
-                return (ValueText.IndexOf("%") > 0) ? nmb : nmb*100;
+                if (int.TryParse(ValueText.Replace("%", "").Trim(), out nmb))
+                {
+                    nmb = (ValueText.IndexOf("%") > 0) ? nmb : nmb*100;
+                }
+                else
+                {
+                    nmb=_value;
+                }
+                return nmb;
             }
-            set { ValueText = (value>100) ? (value/100).ToString() : value.ToString()+"%"; }
+            set
+            {
+                _value = value;
+                ValueText = (_value > 100) ? (_value / 100).ToString() : _value.ToString() + "%";
+            }
         }
         [DataMember]
         public List<int> PackageIds { get; set; }
-        [DataMember]
         public string ValueText { get; set; }
         public string Requirements { get; set; }
         public bool Sunday
@@ -97,6 +108,7 @@ namespace Medcenter.Service.Model.Types
         public Discount()
         {
             PackageIds=new List<int>();
+            WeekDays = "0000000";
         }
         public Discount CopyInstance()
         {
@@ -113,13 +125,21 @@ namespace Medcenter.Service.Model.Types
             discount.DayEnd = DayEnd;
             discount.WeekDays = WeekDays;
             discount.Value = Value;
+            discount.MonthStart = MonthStart;
+            discount.MonthEnd = MonthEnd;
+            
             return discount;
         }
         public List<ResultMessage> Validate()
         {
+
             List<ResultMessage> em = new List<ResultMessage>();
+            if (AgeMin>AgeMax) em.Add(new ResultMessage(2, "Возраст:", OperationErrors.MinMax));
+            if (MonthStart > MonthEnd) em.Add(new ResultMessage(2, "Месяц:", OperationErrors.MinMax));
+            else if (DayStart > DayEnd) em.Add(new ResultMessage(2, "День:", OperationErrors.MinMax));
             if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
-            if (Value <= 0) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.ZeroNumber));
+            if (string.IsNullOrEmpty(ValueText)) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.EmptyString));
+            else if (Value <= 0) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.ZeroNumber));
             return em;
         }
 

@@ -10,6 +10,7 @@
 			 x:Class="Medcenter.Desktop.Modules.FinancesManagerModule.Views.FinancesManagerView"
 			 xmlns:infrastructure="clr-namespace:Medcenter.Desktop.Infrastructure;assembly=Medcenter.Desktop.Infrastructure" 
 			 xmlns:ds="clr-namespace:Medcenter.Desktop.Modules.FinancesManagerModule.SampleData"
+			 xmlns:local="clr-namespace:Medcenter.Desktop.Modules.FinancesManagerModule"
 			 mc:Ignorable="d"
 			 d:DataContext="{Binding Source={StaticResource DesignData}}">
 	<i:Interaction.Triggers>
@@ -18,7 +19,8 @@
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
 	<UserControl.Resources>
-		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
+        <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+        <infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
 		<ds:DesignData x:Key="DesignData"></ds:DesignData>
 		<DataTemplate x:Key="DiscountTemplate">
@@ -31,11 +33,11 @@
 			<Grid Margin="5,0,0,0" VerticalAlignment="Top">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="95*"/>
-					<ColumnDefinition Width="83*"/>
-					<ColumnDefinition Width="83*"/>
-					<ColumnDefinition Width="83*"/>
+					<ColumnDefinition Width="351*"/>
+					<ColumnDefinition Width="114*"/>
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
@@ -47,41 +49,51 @@
 				<TextBlock Text="Наименование:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,7.633"/>
 				<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" HorizontalContentAlignment="Stretch" FontSize="13.333" MinWidth="240" Grid.ColumnSpan="4"/>
 				<TextBlock Text="Скидка: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Margin="0,7.633,5,7.633"/>
-				<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding ValueText}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="1" HorizontalContentAlignment="Stretch"/>
-				<CheckBox Content="Дополнительная" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1"  IsChecked="{Binding IsIncrement}"/>
+				<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding ValueText}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="1" HorizontalContentAlignment="Stretch" MinWidth="70"/>
+				<CheckBox Content="Дополнительная" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Grid.Row="2"  IsChecked="{Binding IsIncrement}" Grid.ColumnSpan="2" Margin="5,6.773,0,4.999"/>
 				<CheckBox Content="Постоянная" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center" Width="Auto" Margin="5,0,0,0" IsChecked="{Binding IsGlobal}"/>
 				<TextBlock Text="Пол: " Grid.Row="2" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
-				<StackPanel Grid.Row="2" Grid.Column="1"  Grid.ColumnSpan="3" Orientation="Horizontal">
+				<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
 					<RadioButton  Content="Не важно" GroupName="GenderGroup" IsChecked="{Binding Gender, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=0}" Margin="5,0,10,0" VerticalAlignment="Center"/>
-					<RadioButton  Content="Мужской"  GroupName="GenderGroup" IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-					<RadioButton  Content="Женский"  GroupName="GenderGroup" IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+					<RadioButton  Content="Мужской"  GroupName="GenderGroup" IsChecked="{Binding Gender, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+					<RadioButton  Content="Женский"  GroupName="GenderGroup" IsChecked="{Binding Gender, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="0,0,10,0" VerticalAlignment="Center"/>
 				</StackPanel>
 				<TextBlock Text="Возраст: " Grid.Row="3" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
-				<StackPanel Grid.Row="3" Grid.Column="1"  Grid.ColumnSpan="3" Orientation="Horizontal">
+				<StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
 					<TextBlock Text="От: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,0,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding AgeMin}" VerticalAlignment="Center" Width="Auto" Margin="10,5,5,5" HorizontalContentAlignment="Stretch"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding AgeMin}" VerticalAlignment="Center" Width="Auto" Margin="10,5,5,5" HorizontalContentAlignment="Stretch" MinWidth="40"/>
 					<TextBlock Text="До: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,5,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding AgeMax}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding AgeMax}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="40"/>
 				</StackPanel>
 				<TextBlock Text="Календарь: " Grid.Row="4" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
-				<StackPanel Grid.Row="4" Grid.Column="1"  Grid.ColumnSpan="3" Orientation="Horizontal">
-					<TextBlock Text="Начало М/Д: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,0,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding MonthStart}" VerticalAlignment="Center" Width="Auto" Margin="10,5,5,5" HorizontalContentAlignment="Stretch"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding DayStart}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch"/>
-					<TextBlock Text="Окончание М/Д: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,5,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding MonthEnd}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding DayEnd}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch"/>
+				<StackPanel Grid.Row="4" Grid.Column="1"  Grid.ColumnSpan="2" Orientation="Horizontal">
+					<TextBlock Text="Начало: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,0,0"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding DayStart}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" FontSize="13.333" MinWidth="25"/>
+					<ComboBox ItemsSource="{Binding DataContext.MonthsDictionary, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="Auto" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding MonthStart}" VerticalAlignment="Center" FontSize="13.333"/>
+					<TextBlock Text="Окончание: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,5,0"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding DayEnd}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" FontSize="13.333" MinWidth="25"/>
+					<ComboBox ItemsSource="{Binding DataContext.MonthsDictionary, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="Auto" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding MonthEnd}" VerticalContentAlignment="Center" VerticalAlignment="Center" FontSize="13.333"/>
 				</StackPanel>
-				<TextBlock Text="Накопления: " Grid.Row="5" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
-				<StackPanel Grid.Row="5" Grid.Column="1"  Grid.ColumnSpan="3" Orientation="Horizontal">
+				<TextBlock Text="Накопления: " Grid.Row="6" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
+				<StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal">
 					<TextBlock Text="От: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0,0,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding BoughtMin}" VerticalAlignment="Center" Width="Auto" Margin="10,5,5,5" HorizontalContentAlignment="Stretch"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding BoughtMin}" VerticalAlignment="Center" Width="Auto" Margin="10,5,5,5" HorizontalContentAlignment="Stretch" MinWidth="70"/>
 					<TextBlock Text="До: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,0,5,0"/>
-					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding BoughtMax}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding BoughtMax}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="70"/>
 					<TextBlock Text="тенге." FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,0"/>
 				</StackPanel>
-				<TextBlock Text="Промокод: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="6" Margin="0,7.633,5,7.633"/>
-				<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="6" HorizontalContentAlignment="Stretch"/>
+				<TextBlock Text="Промокод: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="7" Margin="0,7.633,5,7.633"/>
+				<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Code}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="7" HorizontalContentAlignment="Left" MinWidth="70"/>
+				<StackPanel Grid.Column="1" Margin="5,10,0,15" Orientation="Horizontal" Grid.Row="5">
+					<TextBlock Text="Дни недели:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
+					<CheckBox Content="" Margin="20,0,5,0" VerticalAlignment="Center" IsChecked="{Binding Monday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding Tuesday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding Wednesday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding Thursday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" IsChecked="{Binding Friday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" Background="Red" IsChecked="{Binding Saturday}"/>
+					<CheckBox Content="" Margin="5,0" VerticalAlignment="Center" Background="Red" IsChecked="{Binding Sunday}"/>
+				</StackPanel>
 				</Grid>
 		</DataTemplate>
 		<DataTemplate x:Key="RolesTemplate">
@@ -103,7 +115,7 @@
 		</DataTemplate>
 		<DataTemplate x:Key="DiscountsDataTemplate">
 			<StackPanel Orientation="Horizontal">
-				<TextBlock Margin="0,0,5,5" HorizontalAlignment="Left" VerticalAlignment="Top"><Run Text="100%"/></TextBlock>
+				<TextBlock Margin="0,0,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" Text="{Binding ValueText}"/>
 				<TextBlock Text="{Binding Name}" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 			</StackPanel>
 		</DataTemplate>
@@ -129,20 +141,20 @@
 						<RowDefinition Height="80*"/>
 					</Grid.RowDefinitions>
 					<ListBox Grid.Column="0" Margin="10,5,5,5" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding Discounts}" MinWidth="200" ItemTemplate="{DynamicResource DiscountsDataTemplate}"/>
-					<StackPanel Grid.Column="6" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="5,5,10,5">
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="5,5,10,5">
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 					</StackPanel>
-					<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1"  Visibility="{Binding CurrentDiscount, Converter={StaticResource ObjectToVisibility}}">
 						<ContentControl x:Name="EditForm" HorizontalContentAlignment="Stretch" 
 							Content="{Binding CurrentDiscount}" ContentTemplate="{StaticResource EditFormTemplate}"/>
 					</StackPanel>
 					<ListBox ItemTemplate="{DynamicResource ErrorMessageTemplate1}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.Row="2" Grid.Column="1" Margin="0,0,5,0"/>
 				</Grid>
 			</StackPanel>
-            <StackPanel x:Name="Comissions" Orientation="Vertical" Visibility="{Binding IsComissionFees, Converter={StaticResource BoolToVisibility}}">
+			<StackPanel x:Name="Comissions" Orientation="Vertical" Visibility="{Binding IsComissionFees, Converter={StaticResource BoolToVisibility}}">
 				<TextBlock Text="Комиссионные"/>
 			</StackPanel>
 		</StackPanel>

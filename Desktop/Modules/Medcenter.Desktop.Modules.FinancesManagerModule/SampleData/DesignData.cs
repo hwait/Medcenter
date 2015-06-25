@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
+using Medcenter.Desktop.Infrastructure;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Types;
 
@@ -28,11 +29,18 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.SampleData
                     DayStart = 25,
                     DayEnd = 30,
                     WeekDays = "1000001",
+                    ValueText = "37",
                     Value = 37
                 };
             }
         }
-
+        public Dictionary<int, string> MonthsDictionary
+        {
+            get
+            {
+                return Utils.MonthsDictionary;
+            }
+        }
         public List<ResultMessage> Errors
         {
             get

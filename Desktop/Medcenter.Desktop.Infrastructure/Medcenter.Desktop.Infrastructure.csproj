@@ -84,6 +84,7 @@
     <Compile Include="IItem.cs" />
     <Compile Include="IItemsGroup.cs" />
     <Compile Include="IUserRepository.cs" />
+    <Compile Include="Months.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
