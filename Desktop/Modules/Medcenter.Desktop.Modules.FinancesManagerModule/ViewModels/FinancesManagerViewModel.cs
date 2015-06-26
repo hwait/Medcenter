@@ -193,6 +193,7 @@ namespace Medcenter.Desktop.Modules.FinancesManagerModule.ViewModels
                         Discounts.Refresh();
                         r.Message.Message = string.Format(r.Message.Message, CurrentDiscount.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        CurrentDiscount = new Discount();
                         //_newUserCommand.RaiseCanExecuteChanged();
                     })
                     .Error(ex =>

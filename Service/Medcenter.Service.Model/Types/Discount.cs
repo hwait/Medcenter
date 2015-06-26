@@ -48,10 +48,12 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                int nmb;
-                if (int.TryParse(ValueText.Replace("%", "").Trim(), out nmb))
+                int nmb=0;
+                int.TryParse(ValueText.Replace("%", "").Trim(), out nmb);
+                if (nmb>0)
                 {
-                    nmb = (ValueText.IndexOf("%") > 0) ? nmb : nmb*100;
+                    nmb = (nmb <= 100) ? nmb : nmb*100;
+                    if(nmb<=100) ValueText=nmb.ToString() + "%";
                 }
                 else
                 {
@@ -135,8 +137,8 @@ namespace Medcenter.Service.Model.Types
 
             List<ResultMessage> em = new List<ResultMessage>();
             if (AgeMin>AgeMax) em.Add(new ResultMessage(2, "Возраст:", OperationErrors.MinMax));
-            if (MonthStart > MonthEnd) em.Add(new ResultMessage(2, "Месяц:", OperationErrors.MinMax));
-            else if (DayStart > DayEnd) em.Add(new ResultMessage(2, "День:", OperationErrors.MinMax));
+            //if (MonthStart > MonthEnd) em.Add(new ResultMessage(2, "Месяц:", OperationErrors.MinMax));
+            //else if (DayStart > DayEnd) em.Add(new ResultMessage(2, "День:", OperationErrors.MinMax));
             if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
             if (string.IsNullOrEmpty(ValueText)) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.EmptyString));
             else if (Value <= 0) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.ZeroNumber));

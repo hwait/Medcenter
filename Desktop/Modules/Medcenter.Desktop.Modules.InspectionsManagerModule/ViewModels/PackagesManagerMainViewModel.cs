@@ -265,6 +265,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                         r.Message.Message = string.Format(r.Message.Message, CurrentPackageGroup.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                         _newPackageGroupCommand.RaiseCanExecuteChanged();
+                        CurrentPackageGroup = new PackageGroup();
                     })
                     .Error(ex =>
                     {
@@ -347,6 +348,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                         r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                         _newPackageCommand.RaiseCanExecuteChanged();
+                        CurrentPackage = new Package();
                     })
                     .Error(ex =>
                     {
