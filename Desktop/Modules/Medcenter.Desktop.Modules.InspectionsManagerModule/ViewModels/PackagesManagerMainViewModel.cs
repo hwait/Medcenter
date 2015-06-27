@@ -38,15 +38,22 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         
         private readonly DelegateCommand<object> _addPackageToGroupCommand;
         private readonly DelegateCommand<object> _removePackageFromGroupCommand;
+        private readonly DelegateCommand<object> _addInspectionToPackageCommand;
+        private readonly DelegateCommand<object> _removeInspectionFromPackageCommand;
+        private readonly DelegateCommand<object> _addDiscountToPackageCommand;
+        private readonly DelegateCommand<object> _removeDiscountFromPackageCommand;
         private readonly DelegateCommand<object> _newPackageCommand;
         private readonly DelegateCommand<object> _copyPackageCommand;
         private readonly DelegateCommand<object> _removePackageCommand;
         private readonly DelegateCommand<object> _savePackageCommand;
+        private readonly DelegateCommand<object> _newInspectionCommand;
+        private readonly DelegateCommand<object> _copyInspectionCommand;
+        private readonly DelegateCommand<object> _removeInspectionCommand;
+        private readonly DelegateCommand<object> _saveInspectionCommand;
         private readonly DelegateCommand<object> _newPackageGroupCommand;
         private readonly DelegateCommand<object> _removePackageGroupCommand;
         private readonly DelegateCommand<object> _savePackageGroupCommand;
         #region Properties
-
         public ICommand CopyPackageCommand
         {
             get { return this._copyPackageCommand; }
@@ -62,6 +69,38 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         public ICommand NewPackageCommand
         {
             get { return this._newPackageCommand; }
+        }
+        public ICommand AddInspectionToPackageCommand
+        {
+            get { return this._addInspectionToPackageCommand; }
+        }
+        public ICommand RemoveInspectionFromPackageCommand
+        {
+            get { return this._removeInspectionFromPackageCommand; }
+        }
+        public ICommand AddDiscountToPackageCommand
+        {
+            get { return this._addDiscountToPackageCommand; }
+        }
+        public ICommand RemoveDiscountFromPackageCommand
+        {
+            get { return this._removeDiscountFromPackageCommand; }
+        }
+        public ICommand NewInspectionCommand
+        {
+            get { return this._newInspectionCommand; }
+        }
+        public ICommand CopyInspectionCommand
+        {
+            get { return this._copyInspectionCommand; }
+        }
+        public ICommand RemoveInspectionCommand
+        {
+            get { return this._removeInspectionCommand; }
+        }
+        public ICommand SaveInspectionCommand
+        {
+            get { return this._saveInspectionCommand; }
         }
         public ICommand RemovePackageCommand
         {
@@ -90,32 +129,117 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _PackageGroups;
+        private ListCollectionView _packageGroups;
         public ListCollectionView PackageGroups
         {
-            get { return _PackageGroups; }
-            set { SetProperty(ref _PackageGroups, value); }
+            get { return _packageGroups; }
+            set { SetProperty(ref _packageGroups, value); }
         }
-        private ListCollectionView _PackagesInGroup;
+        private ListCollectionView _packagesInGroup;
         public ListCollectionView PackagesInGroup
         {
-            get { return _PackagesInGroup; }
+            get { return _packagesInGroup; }
             set
             {
-                SetProperty(ref _PackagesInGroup, value); 
+                SetProperty(ref _packagesInGroup, value); 
             }
         }
-        private ListCollectionView _PackagesBase;
+
+
+        private ListCollectionView _inspectionsInPackage;
+        public ListCollectionView InspectionsInPackage
+        {
+            get { return _inspectionsInPackage; }
+            set
+            {
+                SetProperty(ref _inspectionsInPackage, value);
+            }
+        }
+        private Inspection _currentInspectionInPackage;
+
+        public Inspection CurrentInspectionInPackage
+        {
+            get { return _currentInspectionInPackage; }
+            set
+            {
+                if (value.Id == 0) _currentBaseInspection = new Inspection();
+                else
+                {
+                    for (int i = 0; i < PackagesBase.Count; i++)
+                    {
+                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                    }
+                }
+                SetProperty(ref _currentInspectionInPackage, value);
+            }
+        }
+
+        private ListCollectionView _discountsInPackage;
+        public ListCollectionView DiscountsInPackage
+        {
+            get { return _discountsInPackage; }
+            set
+            {
+                SetProperty(ref _discountsInPackage, value);
+            }
+        }
+        private Discount _currentDiscountInPackage;
+
+        public Discount CurrentDiscountInPackage
+        {
+            get { return _currentDiscountInPackage; }
+            set
+            {
+                if (value.Id == 0) _currentBasePackage = new Package();
+                else
+                {
+                    for (int i = 0; i < PackagesBase.Count; i++)
+                    {
+                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                    }
+                }
+                SetProperty(ref _currentDiscountInPackage, value);
+            }
+        }
+
+        private ListCollectionView _packagesBase;
         public ListCollectionView PackagesBase
         {
-            get { return _PackagesBase; }
-            set { SetProperty(ref _PackagesBase, value); }
+            get { return _packagesBase; }
+            set { SetProperty(ref _packagesBase, value); }
         }
-        private ListCollectionView _Packages;
+        private ListCollectionView _packages;
         public ListCollectionView Packages
         {
-            get { return _Packages; }
-            set { SetProperty(ref _Packages, value); }
+            get { return _packages; }
+            set { SetProperty(ref _packages, value); }
+        }
+
+        private ListCollectionView _discountsBase;
+        public ListCollectionView DiscountsBase
+        {
+            get { return _discountsBase; }
+            set { SetProperty(ref _discountsBase, value); }
+        }
+        private ListCollectionView _discounts;
+        public ListCollectionView Discounts
+        {
+            get { return _discounts; }
+            set { SetProperty(ref _discounts, value); }
+        }
+        private ListCollectionView _inspectionsBase;
+        public ListCollectionView InspectionsBase
+        {
+            get { return _inspectionsBase; }
+            set { SetProperty(ref _inspectionsBase, value); }
+        }
+        private ListCollectionView _inspections;
+        public ListCollectionView Inspections
+        {
+            get { return _inspections; }
+            set { SetProperty(ref _inspections, value); }
         }
         private Package _currentPackageInGroup;
 
@@ -136,6 +260,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                 SetProperty(ref _currentPackageInGroup, value);
             }
         }
+
         private Package _currentPackage;
 
         public Package CurrentPackage
@@ -169,7 +294,42 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                 PackagesInGroupRefresh();
             }
         }
+        private Inspection _currentInspection;
 
+        public Inspection CurrentInspection
+        {
+            get { return _currentInspection; }
+            set
+            {
+                if (value.Id == 0) _currentBaseInspection = new Inspection();
+                else
+                {
+                    for (int i = 0; i < InspectionsBase.Count; i++)
+                    {
+                        if (((Inspection)InspectionsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseInspection = (Inspection)InspectionsBase.GetItemAt(i);
+                    }
+                }
+                SetProperty(ref _currentInspection, value);
+
+            }
+        }
+        private Inspection _currentBaseInspection;
+
+        
+        private Discount _currentBaseDiscount;
+
+        private Discount _currentDiscount;
+
+        public Discount CurrentDiscount
+        {
+            get { return _currentDiscount; }
+            set
+            {
+                SetProperty(ref _currentDiscount, value);
+                DiscountsInPackageRefresh();
+            }
+        }
         #endregion
 
         [ImportingConstructor]
@@ -178,34 +338,76 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
+            
             _removePackageFromGroupCommand = new DelegateCommand<object>(RemovePackageFromGroup);
             _addPackageToGroupCommand = new DelegateCommand<object>(AddPackageToGroup);
+            _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
             _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
             _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
             _savePackageCommand = new DelegateCommand<object>(SavePackage);
+            _copyInspectionCommand = new DelegateCommand<object>(CopyInspection);
+            _newInspectionCommand = new DelegateCommand<object>(NewInspection, CanAddInspection);
+            _removeInspectionCommand = new DelegateCommand<object>(RemoveInspection, CanRemoveInspection);
+            _saveInspectionCommand = new DelegateCommand<object>(SaveInspection);
             _newPackageGroupCommand = new DelegateCommand<object>(NewPackageGroup, CanAddPackageGroup);
             _removePackageGroupCommand = new DelegateCommand<object>(RemovePackageGroup);
             _savePackageGroupCommand = new DelegateCommand<object>(SavePackageGroup);
+            _removeDiscountFromPackageCommand = new DelegateCommand<object>(RemoveDiscountFromPackage);
+            _addDiscountToPackageCommand = new DelegateCommand<object>(AddDiscountToPackage);
+            _removeInspectionFromPackageCommand = new DelegateCommand<object>(RemoveInspectionFromPackage);
+            _addInspectionToPackageCommand = new DelegateCommand<object>(AddInspectionToPackage);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new PackagesSelect())
             .Success(ri =>
             {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 PackagesBase = new ListCollectionView(ri.Packages);
+
                 _jsonClient.GetAsync(new PackageGroupsSelect())
                 .Success(rig =>
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     PackageGroups = new ListCollectionView(rig.PackageGroups);
-                    PackageGroups.CurrentChanged += PackageGroups_CurrentChanged;
-                    
-                    CurrentPackageGroup = new PackageGroup();
-                    PackagesInGroup.CurrentChanged += PackagesInGroup_CurrentChanged;
-                    PackagesReload(ri.Packages);
-                    PackageGroups.MoveCurrentTo(null);
+                    _jsonClient.GetAsync(new InspectionsSelect())
+                    .Success(rinsp =>
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        //Inspections = new ListCollectionView(rinsp.Inspections);
+                        InspectionsBase = new ListCollectionView(rinsp.Inspections);
+                        
+                        _jsonClient.GetAsync(new DiscountsSelect())
+                        .Success(rdisc =>
+                        {
+                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                            //Discounts = new ListCollectionView(rdisc.Discounts);
+                            DiscountsBase = new ListCollectionView(rdisc.Discounts);
+                            
+                            PackageGroups.CurrentChanged += PackageGroups_CurrentChanged;
+                            Inspections.CurrentChanged += Inspections_CurrentChanged;
+                            Discounts.CurrentChanged += Discounts_CurrentChanged;
+                            
+                            CurrentPackageGroup = new PackageGroup();
+                            CurrentInspection = new Inspection();
+                            CurrentDiscount = new Discount();
+                            InspectionsInPackageRefresh();
+                            DiscountsInPackageRefresh();
+                            Inspections.CurrentChanged += Inspections_CurrentChanged;
+                            Discounts.CurrentChanged += Discounts_CurrentChanged;
+                            PackagesReload(ri.Packages);
+                            PackagesInGroup.CurrentChanged += PackagesInGroup_CurrentChanged;
+                            PackageGroups.MoveCurrentTo(null);
+                            Packages.MoveCurrentTo(null);
+                        })
+                        .Error(ex =>
+                        {
+                            throw ex;
+                        });
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
                 })
                 .Error(ex =>
                 {
@@ -223,11 +425,16 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             CurrentPackage = CurrentPackage.CopyInstance();
         }
 
+        private bool CanRemoveInspection(object arg)
+        {
+            return (CurrentInspection!=null)?CurrentInspection.Name != "":false;
+        }
+
         private bool CanRemovePackage(object arg)
         {
-            return (CurrentPackage!=null)?CurrentPackage.Name != "":false;
+            return (CurrentPackage != null) ? CurrentPackage.Name != "" : false;
         }
-        
+
         private void PackageGroups_CurrentChanged(object sender, EventArgs e)
         {
             CurrentPackageGroup = PackageGroups.CurrentItem != null ? (PackageGroup)PackageGroups.CurrentItem : new PackageGroup();
@@ -242,6 +449,25 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             CurrentPackageInGroup = PackagesInGroup.CurrentItem != null ? (Package)PackagesInGroup.CurrentItem : new Package();
         }
 
+
+        private void Inspections_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentInspection = Inspections.CurrentItem != null ? (Inspection)Inspections.CurrentItem : new Inspection();
+        }
+
+        private void InspectionsInPackage_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentInspectionInPackage = InspectionsInPackage.CurrentItem != null ? (Inspection)InspectionsInPackage.CurrentItem : new Inspection();
+        }
+        private void Discounts_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentDiscount = Discounts.CurrentItem != null ? (Discount)Discounts.CurrentItem : new Discount();
+        }
+
+        private void DiscountsInPackage_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentDiscountInPackage = DiscountsInPackage.CurrentItem != null ? (Discount)DiscountsInPackage.CurrentItem : new Discount();
+        }
         #region PackageGroup
 
         private void NewPackageGroup(object obj)
@@ -499,7 +725,266 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         }
         #endregion
 
+        #region Inspection
 
-      
+        private void NewInspection(object obj)
+        {
+            CurrentInspection = new Inspection();
+        }
+        private void CopyInspection(object obj)
+        {
+            CurrentInspection = CurrentInspection.CopyInstance();
+        }
+        private void SaveInspection(object obj)
+        {
+            bool isNew = CurrentInspection.Id <= 0;
+            Errors = CurrentInspection.Validate();
+            if (Errors.Count == 0)
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.PostAsync(new InspectionSave { Inspection = CurrentInspection })
+                    .Success(r =>
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        CurrentInspection.Id = r.InspectionId;
+                        if (isNew)
+                        {
+                            InspectionsBase.AddNewItem(CurrentInspection);
+                            InspectionsInPackageRefresh();
+                        }
+                        r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        _newInspectionCommand.RaiseCanExecuteChanged();
+                        CurrentInspection = new Inspection();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+            }
+        }
+
+        private void RemoveInspection(object obj)
+        {
+            bool isNew = CurrentInspection.Id == 0;
+            ConfirmationRequest.Raise(
+                new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
+                c =>
+                {
+                    if (c.Confirmed)
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                        if (isNew)
+                        {
+                            CurrentInspection = new Inspection();
+                            _newInspectionCommand.RaiseCanExecuteChanged();
+                        }
+                        else
+                        {
+                            _jsonClient.GetAsync(new InspectionDelete { InspectionId = CurrentInspection.Id })
+                            .Success(r =>
+                            {
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                r.Message.Message = string.Format(r.Message.Message, CurrentInspection.Name);
+                                RemoveInspectionFromPackageByIID(_currentBaseInspection.Id);
+                                InspectionsBase.Remove(_currentBaseInspection);
+                                //Inspections.Remove(Inspections.CurrentItem);
+                                InspectionsInPackageRefresh();
+                                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                _newInspectionCommand.RaiseCanExecuteChanged();
+                            })
+                            .Error(ex =>
+                            {
+                                throw ex;
+                            });
+                        }
+                    }
+                });
+        }
+        private bool CanAddInspection(object arg)
+        {
+            //return CurrentInspection == null || CurrentInspection.Id != 0;
+            return true;
+        }
+
+        #endregion
+
+        #region Inspections in Package
+
+        private void ClearInspections()
+        {
+            Inspections.MoveCurrentTo(null);
+            InspectionsInPackage.MoveCurrentTo(null);
+            CurrentInspection = new Inspection();
+            CurrentInspectionInPackage = new Inspection();
+        }
+        private void InspectionsReload(List<Inspection> inspections)
+        {
+            Inspections = new ListCollectionView(inspections);
+            Inspections.CurrentChanged += Inspections_CurrentChanged;
+            Inspections.MoveCurrentTo(null);
+            CurrentInspection = new Inspection();
+        }
+        private void InspectionsInPackageReload(List<Inspection> Inspections)
+        {
+            InspectionsInPackage = new ListCollectionView(Inspections);
+            InspectionsInPackage.CurrentChanged += InspectionsInPackage_CurrentChanged;
+            InspectionsInPackage.MoveCurrentTo(null);
+            CurrentInspectionInPackage = new Inspection();
+        }
+        private void InspectionsInPackageRefresh()
+        {
+            var list1 = new List<Inspection>();
+            var list2 = new List<Inspection>();
+            foreach (Inspection inspection in InspectionsBase)
+            {
+                if (inspection.PackageIds != null && inspection.PackageIds.Contains(CurrentPackage.Id)) list1.Add(inspection);
+                else list2.Add(inspection);
+            }
+            InspectionsInPackageReload(list1);
+            InspectionsReload(list2);
+        }
+        private void AddInspectionToPackage(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new InspectionsPackagesBind { InspectionId = CurrentInspection.Id, PackageId = CurrentPackage.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseInspection.PackageIds.Add(CurrentPackage.Id);
+                //CurrentInspection.InspectionPackageIds.Add(CurrentInspectionPackage.Id);
+                InspectionsInPackageRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+
+        private void RemoveInspectionFromPackage(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new InspectionsPackagesUnbind { InspectionId = CurrentInspectionInPackage.Id, PackageId = CurrentPackage.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseInspection.PackageIds.Remove(CurrentPackage.Id);
+                //CurrentInspectionInPackage.InspectionPackageIds.Remove(CurrentInspectionPackage.Id);
+                InspectionsInPackageRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+
+        private void RemoveInspectionFromPackageByIID(int id)
+        {
+            foreach (Package p in Packages)
+            {
+                if (p.InspectionIds.Contains(id)) p.InspectionIds.Remove(id);
+            }
+            //InspectionsInPackageRefresh();
+        }
+        private void RemoveInspectionFromPackageByPID(int id)
+        {
+            foreach (Inspection i in Inspections)
+            {
+                if (i.PackageIds.Contains(id)) Inspections.Remove(i);
+            }
+            InspectionsInPackageRefresh();
+        }
+        #endregion
+
+        #region Discounts in Package
+
+        private void ClearDiscounts()
+        {
+            Discounts.MoveCurrentTo(null);
+            DiscountsInPackage.MoveCurrentTo(null);
+            CurrentDiscount = new Discount();
+            CurrentDiscountInPackage = new Discount();
+        }
+        private void DiscountsReload(List<Discount> discounts)
+        {
+            Discounts = new ListCollectionView(discounts);
+            Discounts.CurrentChanged += Discounts_CurrentChanged;
+            Discounts.MoveCurrentTo(null);
+            CurrentDiscount = new Discount();
+        }
+        private void DiscountsInPackageReload(List<Discount> discounts)
+        {
+            DiscountsInPackage = new ListCollectionView(discounts);
+            DiscountsInPackage.CurrentChanged += DiscountsInPackage_CurrentChanged;
+            DiscountsInPackage.MoveCurrentTo(null);
+            CurrentDiscountInPackage = new Discount();
+        }
+        private void DiscountsInPackageRefresh()
+        {
+            var list1 = new List<Discount>();
+            var list2 = new List<Discount>();
+            foreach (Discount discount in DiscountsBase)
+            {
+                if (discount.PackageIds != null && discount.PackageIds.Contains(CurrentPackage.Id)) list1.Add(discount);
+                else list2.Add(discount);
+            }
+            DiscountsInPackageReload(list1);
+            DiscountsReload(list2);
+        }
+        private void AddDiscountToPackage(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new DiscountsPackagesBind { DiscountId = CurrentDiscount.Id, PackageId = CurrentPackage.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseDiscount.PackageIds.Add(CurrentPackage.Id);
+                //CurrentDiscount.DiscountPackageIds.Add(CurrentDiscountPackage.Id);
+                DiscountsInPackageRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+
+        private void RemoveDiscountFromPackage(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new DiscountsPackagesUnbind { DiscountId = CurrentDiscountInPackage.Id, PackageId = CurrentPackage.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseDiscount.PackageIds.Remove(CurrentPackage.Id);
+                //CurrentDiscountInPackage.DiscountPackageIds.Remove(CurrentDiscountPackage.Id);
+                DiscountsInPackageRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+
+        private void RemoveDiscountFromPackageByIID(int id)
+        {
+            foreach (Package p in Packages)
+            {
+                if (p.DiscountIds.Contains(id)) p.DiscountIds.Remove(id);
+            }
+            //DiscountsInPackageRefresh();
+        }
+        private void RemoveDiscountFromPackageByPID(int id)
+        {
+            foreach (Discount i in Discounts)
+            {
+                if (i.PackageIds.Contains(id)) Discounts.Remove(i);
+            }
+            DiscountsInPackageRefresh();
+        }
+        #endregion
     }
 }

@@ -51,12 +51,13 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Discounts_Update @Id, @Name,@Requirements,  @Value, @IsGlobal", new
+                    id = Db.Single<int>("EXEC sp_Discounts_Update @Id, @Name, @ShortName, @Requirements,  @Value, @IsGlobal", new
                     {
                         Id = req.Discount.Id,
                         Value = req.Discount.Value,
                         Requirements=JsonConvert.SerializeObject(req.Discount),
                         Name = req.Discount.Name,
+                        ShortName=req.Discount.ShortName,
                         IsGlobal = req.Discount.IsGlobal
                     });
                     _message = new ResultMessage(0, "Сохранение скидки", OperationResults.DiscountSave);
@@ -74,11 +75,12 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Discounts_Insert  @Name, @Requirements, @Value, @IsGlobal", new
+                    id = Db.Single<int>("EXEC sp_Discounts_Insert  @Name, @ShortName, @Requirements, @Value, @IsGlobal", new
                     {
                         Value = req.Discount.Value,
                         Requirements = JsonConvert.SerializeObject(req.Discount),
                         Name = req.Discount.Name,
+                        ShortName = req.Discount.ShortName,
                         IsGlobal = req.Discount.IsGlobal
                     });
                     _message = new ResultMessage(0, "Новая скидка", OperationResults.DiscountCreate);

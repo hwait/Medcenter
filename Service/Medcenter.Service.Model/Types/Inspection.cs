@@ -16,6 +16,8 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Name { get; set; }
         [DataMember]
+        public string ShortName { get; set; }
+        [DataMember]
         public int Cost { get; set; }
         [DataMember]
         public List<int> PackageIds { get; set; }
@@ -27,6 +29,7 @@ namespace Medcenter.Service.Model.Types
         {
             Inspection inspection = new Inspection();
             inspection.Name = "[КОПИЯ] " + Name;
+            inspection.ShortName = ShortName;
             inspection.Cost = Cost;
             return inspection;
         }
@@ -34,6 +37,7 @@ namespace Medcenter.Service.Model.Types
         {
             List<ResultMessage> em = new List<ResultMessage>();
             if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(ShortName)) em.Add(new ResultMessage(2, "Краткое наименование:", OperationErrors.EmptyString));
             if (Cost<=0) em.Add(new ResultMessage(2, "Стоимость:", OperationErrors.ZeroNumber));
             return em;
         }

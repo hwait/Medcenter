@@ -16,6 +16,8 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Name { get; set; }
         [DataMember]
+        public string ShortName { get; set; }
+        [DataMember]
         public bool IsGlobal { get; set; }
         [DataMember]
         public bool IsIncrement { get; set; }
@@ -106,7 +108,7 @@ namespace Medcenter.Service.Model.Types
             get { return IsDiscountThisDay(6); } 
             set { WeekDays=WeekDays.Remove(6, 1).Insert(6, (value) ? "1" : "0"); }
         }
-        
+
         public Discount()
         {
             PackageIds=new List<int>();
@@ -116,6 +118,7 @@ namespace Medcenter.Service.Model.Types
         {
             Discount discount = new Discount();
             discount.Name = "[КОПИЯ] " + Name;
+            discount.ShortName = ShortName;
             discount.IsGlobal = IsGlobal;
             discount.Gender = Gender;
             discount.Code = Code;
@@ -140,6 +143,7 @@ namespace Medcenter.Service.Model.Types
             //if (MonthStart > MonthEnd) em.Add(new ResultMessage(2, "Месяц:", OperationErrors.MinMax));
             //else if (DayStart > DayEnd) em.Add(new ResultMessage(2, "День:", OperationErrors.MinMax));
             if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(ShortName)) em.Add(new ResultMessage(2, "Краткое наименование:", OperationErrors.EmptyString));
             if (string.IsNullOrEmpty(ValueText)) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.EmptyString));
             else if (Value <= 0) em.Add(new ResultMessage(2, "Размер скидки:", OperationErrors.ZeroNumber));
             return em;

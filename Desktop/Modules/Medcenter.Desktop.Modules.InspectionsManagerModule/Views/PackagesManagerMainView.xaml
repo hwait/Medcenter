@@ -96,6 +96,27 @@
 
 			</Grid>
 		</DataTemplate>
+		<DataTemplate x:Key="InspectionDataTemplate">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="4*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="2*"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.ColumnSpan="3"/>
+				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.Column="0" Grid.Row="1"/>
+				
+				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1"  Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top">
+					<Image Source="../Assets/IconMoney.png" Height="25" Width="25"/>
+					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Cost}" VerticalAlignment="Center" Width="70" Margin="5,0,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
+				</StackPanel>
+
+			</Grid>
+		</DataTemplate>
 	</UserControl.Resources>
 	<!--<d:DataContext>
 		<Binding Source="{StaticResource DesignData}"/>
@@ -105,52 +126,79 @@
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
-	<Grid Margin="40,40,40,0">
+	<Grid Margin="10">
 		<Grid.RowDefinitions>
+			<RowDefinition Height="20"/>
 			<RowDefinition Height="80"/>
 			<RowDefinition Height="40"/>
+			<RowDefinition/>
+			<RowDefinition Height="20"/>
 			<RowDefinition/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="158*"/>
-			<ColumnDefinition Width="89*"/>
-			<ColumnDefinition Width="169*"/>
-			<ColumnDefinition Width="30*"/>
-			<ColumnDefinition Width="40"/>
-			<ColumnDefinition Width="97*"/>
-			<ColumnDefinition Width="87*"/>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="110"/>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="30"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="144"/>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="30"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="144"/>
 		</Grid.ColumnDefinitions>
-		<Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="3" Fill="#FFBAD7EE" />
-		<Rectangle Grid.ColumnSpan="5" Grid.Column="2" Grid.RowSpan="3" Grid.Row="0" Fill="#FFE6CBA9" />
-		<Rectangle Grid.ColumnSpan="3" Grid.Column="2" Grid.RowSpan="2" Grid.Row="1" Fill="#FFA1F9BE" />
-		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="7" Grid.Row="3"/>
-		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,10,5" VerticalAlignment="Center">
+		<Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="6" Fill="#FFBAD7EE" Grid.Row="0" />
+		<Rectangle Grid.ColumnSpan="6" Grid.Column="2" Grid.RowSpan="6" Grid.Row="0" Fill="#FFE6CBA9" />
+		<Rectangle Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="4" Grid.Row="2" Fill="#FFBAD7EE" />
+		<Rectangle Grid.ColumnSpan="6" Grid.Column="6" Grid.RowSpan="2" Grid.Row="0" Fill="#FFA9E6A9" />
+		<Rectangle Grid.ColumnSpan="2" Grid.Column="8" Grid.Row="1" Grid.RowSpan="3" Fill="#FFA9E6A9" />
+		<Rectangle Grid.ColumnSpan="2" Grid.Column="8" Grid.Row="4" Grid.RowSpan="2" Fill="#FFD5A9E6" />
+		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="10" Grid.Row="6"/>
+		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="100">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding NewPackageGroupCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePackageGroupCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="Delete" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SavePackageGroupCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 		</StackPanel>
-		<StackPanel Grid.Column="3" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,0,0">
-			
-		</StackPanel>
-		<StackPanel Grid.Column="6" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="5,5,10,5">
+		<StackPanel Grid.Column="5" Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,5,10,5" Width="134">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SavePackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 		</StackPanel>
-		<StackPanel Grid.Column="4" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Center" Width="30" VerticalAlignment="Center">
+		<StackPanel Grid.Column="3" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Width="29" VerticalAlignment="Center" Height="84"  Grid.RowSpan="3">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddPackageToGroupCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePackageFromGroupCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
 		</StackPanel>
-		<ListBox Grid.Row="2" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageGroupTemplate}" ItemsSource="{Binding PackageGroups}"/>
-		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageTemplate}" ItemsSource="{Binding PackagesInGroup}" MinWidth="200"/>
-		<ListBox Grid.Column="5" Margin="5,5,10,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageTemplate}" ItemsSource="{Binding Packages}" MinWidth="200"/>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Группы инспекций:" VerticalAlignment="Bottom" Grid.Row="1" FontSize="16" FontWeight="Bold"/>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Инспекции в группе:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" FontSize="16" FontWeight="Bold"/>
-		<TextBlock HorizontalAlignment="Left" Margin="5,0,0,0" TextWrapping="Wrap" Text="Инспекции:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="5" FontSize="16" FontWeight="Bold"/>
-		<ContentControl Content="{Binding CurrentPackageGroup, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentPackageGroupTemplate}"/>
-		<ContentControl Content="{Binding CurrentPackage, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="5" ContentTemplate="{DynamicResource PackageDataTemplate}"/>
-		
+		<ListBox Grid.Row="3" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageGroupTemplate}" ItemsSource="{Binding PackageGroups}" Grid.RowSpan="3"/>
+		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="3" ItemTemplate="{DynamicResource PackageTemplate}" ItemsSource="{Binding PackagesInGroup}" MinWidth="80" Grid.RowSpan="3"/>
+		<ListBox Grid.Column="4" Margin="5,5,10,5" Grid.Row="3" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageTemplate}" ItemsSource="{Binding Packages}" MinWidth="100" Grid.RowSpan="3"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.Row="2" Grid.Column="2" FontSize="13.333" Height="21.28" Width="134.54" Text="Пакеты в группе:" FontWeight="Bold"/>
+		<ContentControl Content="{Binding CurrentPackageGroup, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentPackageGroupTemplate}" Grid.Row="1"/>
+		<ContentControl Content="{Binding CurrentPackage, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="4" ContentTemplate="{DynamicResource PackageDataTemplate}" Grid.Row="1"/>
+		<ListBox Grid.Column="6" Margin="10,5,5,5" Grid.Row="3" ItemsSource="{Binding InspectionsInPackage}" MinWidth="100" ItemTemplate="{DynamicResource PackageTemplate}"/>
+		<ListBox Grid.Column="8" Margin="10,5,5,5" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Inspections}" MinWidth="100" ItemTemplate="{DynamicResource PackageTemplate}"/>
+		<ListBox Grid.Column="6" Margin="10,5,5,5" Grid.Row="5" ItemsSource="{Binding DiscountsInPackage}" MinWidth="100" ItemTemplate="{DynamicResource PackageTemplate}"/>
+		<ListBox Grid.Column="8" Margin="10,5,5,5" Grid.Row="5" Grid.ColumnSpan="2" ItemsSource="{Binding Discounts}" MinWidth="99" ItemTemplate="{DynamicResource PackageTemplate}"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.Row="2" Grid.Column="6" FontSize="13.333" Height="21.28" Text="Исследования в пакете:" Width="187.187" FontWeight="Bold"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" Text="Скидки в пакете:" VerticalAlignment="Bottom" Grid.Row="3" Grid.Column="6" FontSize="13.333" Height="21.28" Grid.RowSpan="2" Width="132.24" FontWeight="Bold"/>
+		<ContentControl Content="{Binding CurrentInspection, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="6" Grid.ColumnSpan="4" ContentTemplate="{DynamicResource InspectionDataTemplate}" Grid.Row="1"/>
+		<StackPanel Grid.Column="9" Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,5,10,5" Width="134">
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewInspectionCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyInspectionCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveInspectionCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveInspectionCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
+		</StackPanel>
+		<StackPanel Grid.Column="7" Orientation="Vertical" Grid.Row="3" HorizontalAlignment="Center" Width="29" VerticalAlignment="Center" Height="84">
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddInspectionToPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveInspectionFromPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
+		</StackPanel>
+		<StackPanel Grid.Column="7" Orientation="Vertical" Grid.Row="5" HorizontalAlignment="Center" Width="29" VerticalAlignment="Center" Height="84">
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddDiscountToPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDiscountFromPackageCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
+		</StackPanel>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" FontSize="16" FontWeight="Bold" Height="21.28" Width="153.497" Text="Группы пакетов:"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.Column="2" FontSize="16" FontWeight="Bold" Height="21.28" Width="134.54" Text="Пакеты:"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" Grid.Column="6" FontSize="16" FontWeight="Bold" Height="21.28" Text="Исследования:" Width="187.187"/>
 	</Grid>
 </UserControl>

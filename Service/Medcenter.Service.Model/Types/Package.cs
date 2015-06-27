@@ -30,6 +30,10 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public List<int> PackageGroupIds { get; set; }
         [DataMember]
+        public List<int> InspectionIds { get; set; }
+        [DataMember]
+        public List<int> DiscountIds { get; set; }
+        [DataMember]
         public List<int> DoctorIds { get; set; }
         public bool IsChanged { get; set; }
         public bool IsRemoved { get; set; }

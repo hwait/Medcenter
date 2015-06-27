@@ -30,6 +30,23 @@ namespace Medcenter.Service.Interface.Services
          * 
          * PackagesInGroupSelectResponse
          * GroupsInPackageSelectResponse
+         * 
+         * InspectionsSelectResponse
+         * InspectionSaveResponse
+         * InspectionDeleteResponse
+         * 
+         * InspectionsPackagesBindResponse
+         * InspectionsPackagesUnbindResponse
+         * InspectionsInPackageSelectResponse
+         * PackagetInInspectionSelectResponse
+         * 
+         * Discounts from FinancesService
+         * 
+         * DiscountsPackagesBindResponse
+         * DiscountsPackagesUnbindResponse
+         * DiscountsInPackageSelectResponse
+         * PackagesInDiscountSelectResponse
+         * 
          */
         #region Packages and Groups
 
@@ -290,6 +307,270 @@ namespace Medcenter.Service.Interface.Services
                 throw;
             }
             return new PackageDeleteResponse {Message = _message};
+        }
+
+        #endregion
+
+        #region Inspection
+
+        public InspectionsSelectResponse Get(InspectionsSelect req)
+        {
+            var rows = Db.SqlList<Inspection>("EXEC sp_Inspections_Select");
+            foreach (var r in rows)
+                r.PackageIds = Db.SqlList<int>("EXEC sp_Inspection_SelectPackages @InspectionId", new { InspectionId = r.Id });
+            return new InspectionsSelectResponse { Inspections = new List<Inspection>(rows) };
+        }
+
+        public InspectionSaveResponse Post(InspectionSave req)
+        {
+            int id = 0;
+            ResultMessage _message;
+            if (req.Inspection.Id > 0) // Inspection exists so we're saving 
+            {
+                try
+                {
+                    id = Db.Single<int>("EXEC sp_Inspections_Update @Id, @Name, @ShortName, @Cost", new
+                    {
+                        Id = req.Inspection.Id,
+                        ShortName = req.Inspection.ShortName,
+                        Name = req.Inspection.Name,
+                        Cost = req.Inspection.Cost,
+                    });
+                    _message = new ResultMessage(0, "Сохранение исследования", OperationResults.InspectionSave);
+                    Logger.Log("InspectionSaveResponse.Saving");
+                }
+                catch (Exception e)
+                {
+                    _message = new ResultMessage(2, e.Source, OperationErrors.InspectionSave);
+                    Logger.Log("InspectionSaveResponse.Saving", e);
+                    throw;
+                }
+            }
+            else //New Inspection
+            {
+                try
+                {
+                    id = Db.Single<int>("EXEC sp_Inspections_Insert @Name, @ShortName, @Cost", new
+                    {
+                        ShortName = req.Inspection.ShortName,
+                        Name = req.Inspection.Name,
+                        Cost = req.Inspection.Cost,
+                    });
+                    _message = new ResultMessage(0, "Новое исследование", OperationResults.InspectionCreate);
+                    Logger.Log("InspectionSaveResponse.NewInspection");
+                }
+                catch (Exception e)
+                {
+                    _message = new ResultMessage(2, e.Source, OperationErrors.InspectionCreate);
+                    Logger.Log("InspectionSaveResponse.NewInspection", e);
+                    throw;
+                }
+            }
+
+            return new InspectionSaveResponse
+            {
+                InspectionId = id,
+                Message = _message
+            };
+        }
+
+        public InspectionDeleteResponse Get(InspectionDelete req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var res = Db.SqlList<int>("EXEC sp_Inspections_Delete @Id", new
+                {
+                    Id = req.InspectionId
+                });
+                _message = new ResultMessage(0, "Инспекции:", OperationResults.InspectionDelete);
+                Logger.Log("InspectionDeleteResponse");
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionDelete);
+                Logger.Log("InspectionDeleteResponse", e);
+                throw;
+            }
+            return new InspectionDeleteResponse { Message = _message };
+        }
+
+        #endregion
+        #region Inspections and Packages
+
+        public InspectionsInPackageSelectResponse Get(InspectionsInPackageSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Package_SelectInspections @Id", new
+            {
+                Id = req.PackageId
+            });
+
+            return new InspectionsInPackageSelectResponse { InspectionIds = new List<int>(rows) };
+        }
+        public PackagesInInspectionSelectResponse Get(PackagesInInspectionSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Inspection_SelectPackages @Id", new
+            {
+                Id = req.InspectionId
+            });
+
+            return new PackagesInInspectionSelectResponse { PackageIds = new List<int>(rows) };
+        }
+        public InspectionsPackagesBindResponse Get(InspectionsPackagesBind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_InspectionsInPackages_Insert @PackageId, @InspectionId", new
+                {
+                    PackageId = req.PackageId,
+                    InspectionId = req.InspectionId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesBindZero);
+                    Logger.Log("InspectionsPackages.Bind 0");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesBind);
+                    Logger.Log("InspectionsPackages.Bind 1");
+                }
+
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesBind);
+                Logger.Log("InspectionsPackages.Bind", e);
+                throw;
+            }
+            return new InspectionsPackagesBindResponse
+            {
+                Message = _message
+            };
+        }
+
+        public InspectionsPackagesUnbindResponse Get(InspectionsPackagesUnbind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_InspectionsInPackages_Delete @PackageId, @InspectionId", new
+                {
+                    PackageId = req.PackageId,
+                    InspectionId = req.InspectionId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesUnbindZero);
+                    Logger.Log("InspectionsPackages.Unbind 0");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesUnbind);
+                    Logger.Log("InspectionsPackages.Unbind 1");
+                }
+
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesUnbind);
+                Logger.Log("InspectionsPackages.Unbind", e);
+                throw;
+            }
+            return new InspectionsPackagesUnbindResponse
+            {
+                Message = _message
+            };
+        }
+
+        #endregion
+        #region Discounts and Packages
+
+        public DiscountsInPackageSelectResponse Get(DiscountsInPackageSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Package_SelectDiscounts @Id", new
+            {
+                Id = req.PackageId
+            });
+
+            return new DiscountsInPackageSelectResponse { DiscountIds = new List<int>(rows) };
+        }
+        public PackagesInDiscountSelectResponse Get(PackagesInDiscountSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Discount_SelectPackages @Id", new
+            {
+                Id = req.DiscountId
+            });
+
+            return new PackagesInDiscountSelectResponse { PackageIds = new List<int>(rows) };
+        }
+        public DiscountsPackagesBindResponse Get(DiscountsPackagesBind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_DiscountsInPackages_Insert @PackageId, @DiscountId", new
+                {
+                    PackageId = req.PackageId,
+                    DiscountId = req.DiscountId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesBindZero);
+                    Logger.Log("DiscountsPackages.Bind 0");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesBind);
+                    Logger.Log("DiscountsPackages.Bind 1");
+                }
+
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesBind);
+                Logger.Log("DiscountsPackages.Bind", e);
+                throw;
+            }
+            return new DiscountsPackagesBindResponse
+            {
+                Message = _message
+            };
+        }
+
+        public DiscountsPackagesUnbindResponse Get(DiscountsPackagesUnbind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_DiscountsInPackages_Delete @PackageId, @DiscountId", new
+                {
+                    PackageId = req.PackageId,
+                    DiscountId = req.DiscountId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesUnbindZero);
+                    Logger.Log("DiscountsPackages.Unbind 0");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesUnbind);
+                    Logger.Log("DiscountsPackages.Unbind 1");
+                }
+
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesUnbind);
+                Logger.Log("DiscountsPackages.Unbind", e);
+                throw;
+            }
+            return new DiscountsPackagesUnbindResponse
+            {
+                Message = _message
+            };
         }
 
         #endregion

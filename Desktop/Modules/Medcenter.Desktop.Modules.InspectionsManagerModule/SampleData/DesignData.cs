@@ -33,7 +33,245 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.SampleData
                 };
             }
         }
+        public Discount CurrentDiscount
+        {
+            get
+            {
+                return new Discount
+                {
+                    Name = "Скидка ветеранам",
+                    ShortName = "Ветеранам 37%",
+                    Code = "GA12",
+                    IsGlobal = true,
+                    Gender = 1,
+                    AgeMin = 80,
+                    AgeMax = 90,
+                    BoughtMin = 100000,
+                    BoughtMax = 1000000,
+                    MonthStart = 5,
+                    MonthEnd = 6,
+                    DayStart = 25,
+                    DayEnd = 30,
+                    WeekDays = "1000001",
+                    ValueText = "37",
+                    Value = 37
+                };
+            }
+        }
+        public ObservableCollection<Discount> Discounts
+        {
+            get
+            {
+                return new ObservableCollection<Discount>
+                {
+                    new Discount
+                    {
+                        Name = "Скидка ветеранам",
+                        ShortName = "Ветеранам 37%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 2,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=100
+                    },
+                    new Discount
+                    {
+                        Name = "Скидка под новый год",
+                        ShortName = "НГ 12%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 0,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=12
+                    },
+                    new Discount
+                    {
+                        Name = "Весенняя распродажа",
+                        ShortName = "8 марта 5%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 0,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=30000
+                    },
+                    new Discount
+                    {
+                        Name = "Производственная скидка",
+                        ShortName = "Юр.лиц.10%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 0,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=10000
+                    }
+                };
+            }
+        }
+        public ObservableCollection<Discount> DiscountsInPackage
+        {
+            get
+            {
+                return new ObservableCollection<Discount>
+                {
+                    new Discount
+                    {
+                        Name = "Весенняя распродажа",
+                        ShortName = "8 марта 5%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 0,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=30000
+                    },
+                    new Discount
+                    {
+                        Name = "Производственная скидка",
+                        ShortName = "Юр.лиц.10%",
+                        Code = "GA12",
+                        IsGlobal = true,
+                        Gender = 0,
+                        AgeMin = 80,
+                        AgeMax = 90,
+                        BoughtMin = 100000,
+                        BoughtMax = 1000000,
+                        MonthStart = 5,
+                        MonthEnd = 6,
+                        DayStart = 25,
+                        DayEnd = 30,
+                        WeekDays = "1000001",
+                        Value=10000
+                    }
+                };
+            }
+        }
 
+        public ObservableCollection<Inspection> Inspections
+        {
+            get
+            {
+                return new ObservableCollection<Inspection>
+                {
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Ультразвуковое исследование сердца",
+                        ShortName = "УЗИ сердца",
+                        Cost = 1000
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Консультация кардиолога",
+                        ShortName = "К.Кардиолога",
+                        Cost = 1200
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Допплерография почек",
+                        ShortName = "Д почек",
+                        Cost = 3500
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "УЗИ почек",
+                        ShortName = "УЗИ почек",
+                        Cost = 2100
+                    },
+                };
+            }
+        }
+        public ObservableCollection<Inspection> InspectionsInPackage
+        {
+            get
+            {
+                return new ObservableCollection<Inspection>
+                {
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Ультразвуковое исследование сердца",
+                        ShortName = "УЗИ сердца",
+                        Cost = 1000
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Консультация кардиолога",
+                        ShortName = "К.Кардиолога",
+                        Cost = 1200
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Допплерография почек",
+                        ShortName = "Д почек",
+                        Cost = 3500
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "УЗИ почек",
+                        ShortName = "УЗИ почек",
+                        Cost = 2100
+                    },
+                };
+            }
+        }
+        public Inspection CurrentInspection
+        {
+            get
+            {
+                return new Inspection
+                {
+                    Id = 0,
+                    Name = "Ультразвуковое исследование сердца",
+                    ShortName = "УЗИ сердца",
+                    Cost = 1000
+                };
+            }
+        }
         public List<ResultMessage> Errors
         {
             get

@@ -214,5 +214,295 @@ namespace Medcenter.Service.Model.Operations
     }
 
     #endregion
+
+
+    #region Inspection
+
+    [Authenticate]
+    [Route("/inspections", "GET")]
+    public class InspectionsSelect : IReturn<InspectionsSelectResponse>
+    {
+    }
+
+    public class InspectionsSelectResponse : IHasResponseStatus
+    {
+        public InspectionsSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Inspection> Inspections { get; set; }
+    }
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/inspection/save", "POST")]
+    public class InspectionSave : IReturn<InspectionSaveResponse>
+    {
+        public Inspection Inspection { get; set; }
+    }
+
+    public class InspectionSaveResponse : IHasResponseStatus
+    {
+        public InspectionSaveResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public int InspectionId { get; set; }
+    }
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/inspection/delete/{InspectionId}", "GET")]
+    public class InspectionDelete : IReturn<InspectionDeleteResponse>
+    {
+        public int InspectionId { get; set; }
+    }
+
+    public class InspectionDeleteResponse : IHasResponseStatus
+    {
+        public InspectionDeleteResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    #endregion
+
+
+    #region  Inspectoins In Packages
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/inspectionpackage/bind/{InspectionId}/{PackageId}", "GET")]
+    public class InspectionsPackagesBind : IReturn<InspectionsPackagesBindResponse>
+    {
+        public int PackageId { get; set; }
+
+        public int InspectionId { get; set; }
+
+    }
+
+    public class InspectionsPackagesBindResponse : IHasResponseStatus
+    {
+        public InspectionsPackagesBindResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/inspectionpackage/unbind/{InspectionId}/{PackageId}", "GET")]
+    public class InspectionsPackagesUnbind : IReturn<InspectionsPackagesUnbindResponse>
+    {
+        public int PackageId { get; set; }
+
+        public int InspectionId { get; set; }
+
+    }
+
+    public class InspectionsPackagesUnbindResponse : IHasResponseStatus
+    {
+        public InspectionsPackagesUnbindResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Authenticate]
+    [Route("/inspectionsinpackage/{PackageId}", "GET")]
+    public class InspectionsInPackageSelect : IReturn<InspectionsInPackageSelectResponse>
+    {
+        public int PackageId { get; set; }
+    }
+
+    public class InspectionsInPackageSelectResponse : IHasResponseStatus
+    {
+        public InspectionsInPackageSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<int> InspectionIds { get; set; }
+    }
+
+    [Authenticate]
+    [Route("/packagesininspection/{InspectionId}", "GET")]
+    public class PackagesInInspectionSelect : IReturn<PackagesInInspectionSelectResponse>
+    {
+        public int InspectionId { get; set; }
+    }
+
+    public class PackagesInInspectionSelectResponse : IHasResponseStatus
+    {
+        public PackagesInInspectionSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<int> PackageIds { get; set; }
+    }
+
+    #endregion
+
+
+    //#region Discount
+
+    //[Authenticate]
+    //[Route("/discounts", "GET")]
+    //public class DiscountsSelect : IReturn<DiscountsSelectResponse>
+    //{
+    //}
+
+    //public class DiscountsSelectResponse : IHasResponseStatus
+    //{
+    //    public DiscountsSelectResponse()
+    //    {
+    //        ResponseStatus = new ResponseStatus();
+    //    }
+
+    //    public ResultMessage Message { get; set; }
+    //    public ResponseStatus ResponseStatus { get; set; }
+    //    public List<Discount> Discounts { get; set; }
+    //}
+
+    //[RequiresAnyRole("Admin", "Manager")]
+    //[Route("/discount/save", "POST")]
+    //public class DiscountSave : IReturn<DiscountSaveResponse>
+    //{
+    //    public Discount Discount { get; set; }
+    //}
+
+    //public class DiscountSaveResponse : IHasResponseStatus
+    //{
+    //    public DiscountSaveResponse()
+    //    {
+    //        ResponseStatus = new ResponseStatus();
+    //    }
+
+    //    public ResultMessage Message { get; set; }
+    //    public ResponseStatus ResponseStatus { get; set; }
+    //    public int DiscountId { get; set; }
+    //}
+
+    //[RequiresAnyRole("Admin", "Manager")]
+    //[Route("/discount/delete/{DiscountId}", "GET")]
+    //public class DiscountDelete : IReturn<DiscountDeleteResponse>
+    //{
+    //    public int DiscountId { get; set; }
+    //}
+
+    //public class DiscountDeleteResponse : IHasResponseStatus
+    //{
+    //    public DiscountDeleteResponse()
+    //    {
+    //        ResponseStatus = new ResponseStatus();
+    //    }
+
+    //    public ResultMessage Message { get; set; }
+    //    public ResponseStatus ResponseStatus { get; set; }
+    //}
+
+    //#endregion
+
+
+    #region Discounts In Package
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/discountpackage/bind/{DiscountId}/{PackageId}", "GET")]
+    public class DiscountsPackagesBind : IReturn<DiscountsPackagesBindResponse>
+    {
+        public int PackageId { get; set; }
+
+        public int DiscountId { get; set; }
+
+    }
+
+    public class DiscountsPackagesBindResponse : IHasResponseStatus
+    {
+        public DiscountsPackagesBindResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/discountpackage/unbind/{DiscountId}/{PackageId}", "GET")]
+    public class DiscountsPackagesUnbind : IReturn<DiscountsPackagesUnbindResponse>
+    {
+        public int PackageId { get; set; }
+
+        public int DiscountId { get; set; }
+
+    }
+
+    public class DiscountsPackagesUnbindResponse : IHasResponseStatus
+    {
+        public DiscountsPackagesUnbindResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    [Authenticate]
+    [Route("/discountinpackage/{PackageId}", "GET")]
+    public class DiscountsInPackageSelect : IReturn<DiscountsInPackageSelectResponse>
+    {
+        public int PackageId { get; set; }
+    }
+
+    public class DiscountsInPackageSelectResponse : IHasResponseStatus
+    {
+        public DiscountsInPackageSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<int> DiscountIds { get; set; }
+    }
+
+    [Authenticate]
+    [Route("/packageindiscount/{DiscountId}", "GET")]
+    public class PackagesInDiscountSelect : IReturn<PackagesInDiscountSelectResponse>
+    {
+        public int DiscountId { get; set; }
+    }
+
+    public class PackagesInDiscountSelectResponse : IHasResponseStatus
+    {
+        public PackagesInDiscountSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<int> PackageIds { get; set; }
+    }
+
+    #endregion
 }
 
