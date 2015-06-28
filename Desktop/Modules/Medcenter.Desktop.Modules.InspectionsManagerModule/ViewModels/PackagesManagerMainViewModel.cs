@@ -278,7 +278,8 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                     }
                 }
                 SetProperty(ref _currentPackage, value);
-
+                InspectionsInPackageRefresh();
+                DiscountsInPackageRefresh();
             }
         }
         private Package _currentBasePackage;
@@ -327,7 +328,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             set
             {
                 SetProperty(ref _currentDiscount, value);
-                DiscountsInPackageRefresh();
+                //DiscountsInPackageRefresh();
             }
         }
         #endregion
@@ -384,20 +385,18 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                             DiscountsBase = new ListCollectionView(rdisc.Discounts);
                             
                             PackageGroups.CurrentChanged += PackageGroups_CurrentChanged;
-                            Inspections.CurrentChanged += Inspections_CurrentChanged;
-                            Discounts.CurrentChanged += Discounts_CurrentChanged;
-                            
                             CurrentPackageGroup = new PackageGroup();
                             CurrentInspection = new Inspection();
-                            CurrentDiscount = new Discount();
-                            InspectionsInPackageRefresh();
-                            DiscountsInPackageRefresh();
-                            Inspections.CurrentChanged += Inspections_CurrentChanged;
-                            Discounts.CurrentChanged += Discounts_CurrentChanged;
+                            //CurrentDiscount = new Discount();
+                            
+                            //Inspections.CurrentChanged += Inspections_CurrentChanged;
+                            //Discounts.CurrentChanged += Discounts_CurrentChanged;
                             PackagesReload(ri.Packages);
                             PackagesInGroup.CurrentChanged += PackagesInGroup_CurrentChanged;
                             PackageGroups.MoveCurrentTo(null);
                             Packages.MoveCurrentTo(null);
+                            InspectionsInPackageRefresh();
+                            DiscountsInPackageRefresh();
                         })
                         .Error(ex =>
                         {
@@ -663,10 +662,10 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         {
             var list1 = new List<Package>();
             var list2 = new List<Package>();
-            foreach (Package Package in PackagesBase)
+            foreach (Package package in PackagesBase)
             {
-                if (Package.PackageGroupIds!=null&&Package.PackageGroupIds.Contains(CurrentPackageGroup.Id)) list1.Add(Package);
-                else list2.Add(Package);
+                if (package.PackageGroupIds!=null&&package.PackageGroupIds.Contains(CurrentPackageGroup.Id)) list1.Add(package);
+                else list2.Add(package);
             }
             PackagesInGroupReload(list1);
             PackagesReload(list2);
