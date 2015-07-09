@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.UserInfoModule", "Desktop\Modules\Medcenter.Desktop.Modules.UserInfoModule\Medcenter.Desktop.Modules.UserInfoModule.csproj", "{4AD5C4CD-7975-40B7-84A4-6BCA0E3E4AFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.PackagesManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.PackagesManagerModule.csproj", "{789E597C-9C24-4D11-B181-87EA153F78E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.PackagesManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.PackagesManagerModule\Medcenter.Desktop.Modules.PackagesManagerModule.csproj", "{789E597C-9C24-4D11-B181-87EA153F78E0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.DoctorsManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.DoctorsManagerModule\Medcenter.Desktop.Modules.DoctorsManagerModule.csproj", "{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}"
 EndProject

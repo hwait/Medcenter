@@ -154,7 +154,7 @@
       <Project>{456dda22-2819-44c0-88ba-9960ed5dd9d4}</Project>
       <Name>Medcenter.Desktop.Modules.FinancesManagerModule</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.InspectionsManagerModule\Medcenter.Desktop.Modules.PackagesManagerModule.csproj">
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.PackagesManagerModule\Medcenter.Desktop.Modules.PackagesManagerModule.csproj">
       <Project>{789e597c-9c24-4d11-b181-87ea153f78e0}</Project>
       <Name>Medcenter.Desktop.Modules.PackagesManagerModule</Name>
     </ProjectReference>

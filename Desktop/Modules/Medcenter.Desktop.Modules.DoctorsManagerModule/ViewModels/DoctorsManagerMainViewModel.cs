@@ -89,38 +89,38 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _Doctors;
+        private ListCollectionView _doctors;
         public ListCollectionView Doctors
         {
-            get { return _Doctors; }
-            set { SetProperty(ref _Doctors, value); }
+            get { return _doctors; }
+            set { SetProperty(ref _doctors, value); }
         }
-        private ListCollectionView _PackagesInDoctor;
+        private ListCollectionView _packagesInDoctor;
         public ListCollectionView PackagesInDoctor
         {
-            get { return _PackagesInDoctor; }
+            get { return _packagesInDoctor; }
             set
             {
-                SetProperty(ref _PackagesInDoctor, value);
+                SetProperty(ref _packagesInDoctor, value);
             }
         }
-        private ListCollectionView _PackagesBase;
+        private ListCollectionView _packagesBase;
         public ListCollectionView PackagesBase
         {
-            get { return _PackagesBase; }
-            set { SetProperty(ref _PackagesBase, value); }
+            get { return _packagesBase; }
+            set { SetProperty(ref _packagesBase, value); }
         }
-        private ListCollectionView _Packages;
+        private ListCollectionView _packages;
         public ListCollectionView Packages
         {
-            get { return _Packages; }
-            set { SetProperty(ref _Packages, value); }
+            get { return _packages; }
+            set { SetProperty(ref _packages, value); }
         }
-        private Package _CurrentPackageInDoctor;
+        private Package _currentPackageInDoctor;
 
         public Package CurrentPackageInDoctor
         {
-            get { return _CurrentPackageInDoctor; }
+            get { return _currentPackageInDoctor; }
             set
             {
                 if (value.Id == 0) _currentBasePackage = new Package();
@@ -132,7 +132,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                             _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
                     }
                 }
-                SetProperty(ref _CurrentPackageInDoctor, value);
+                SetProperty(ref _currentPackageInDoctor, value);
             }
         }
         private Package _currentPackage;
@@ -157,14 +157,14 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         }
         private Package _currentBasePackage;
 
-        private Doctor _CurrentDoctor;
+        private Doctor _currentDoctor;
 
         public Doctor CurrentDoctor
         {
-            get { return _CurrentDoctor; }
+            get { return _currentDoctor; }
             set
             {
-                SetProperty(ref _CurrentDoctor, value);
+                SetProperty(ref _currentDoctor, value);
                 PackagesInDoctorRefresh();
             }
         }

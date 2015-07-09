@@ -29,13 +29,15 @@ using ServiceStack;
 namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
 {
     [Export]
-    public class PackagesManagerMainViewModel : BindableBase
+    public class PackagesManagerMainViewModel : BindableBase, INavigationAware
     {
+        
+        #region Properties
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        
+
         private readonly DelegateCommand<object> _addPackageToGroupCommand;
         private readonly DelegateCommand<object> _removePackageFromGroupCommand;
         private readonly DelegateCommand<object> _addInspectionToPackageCommand;
@@ -53,7 +55,6 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         private readonly DelegateCommand<object> _newPackageGroupCommand;
         private readonly DelegateCommand<object> _removePackageGroupCommand;
         private readonly DelegateCommand<object> _savePackageGroupCommand;
-        #region Properties
         public ICommand CopyPackageCommand
         {
             get { return this._copyPackageCommand; }
@@ -165,10 +166,15 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                 if (value.Id == 0) _currentBaseInspection = new Inspection();
                 else
                 {
-                    for (int i = 0; i < PackagesBase.Count; i++)
+                    //for (int i = 0; i < PackagesBase.Count; i++)
+                    //{
+                    //    if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
+                    //        _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                    //}
+                    for (int i = 0; i < InspectionsBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Inspection)InspectionsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseInspection = (Inspection)InspectionsBase.GetItemAt(i);
                     }
                 }
                 SetProperty(ref _currentInspectionInPackage, value);
@@ -191,13 +197,13 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             get { return _currentDiscountInPackage; }
             set
             {
-                if (value.Id == 0) _currentBasePackage = new Package();
+                if (value.Id == 0) _currentBaseDiscount = new Discount();
                 else
                 {
-                    for (int i = 0; i < PackagesBase.Count; i++)
+                    for (int i = 0; i < DiscountsBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Discount)DiscountsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseDiscount = (Discount)DiscountsBase.GetItemAt(i);
                     }
                 }
                 SetProperty(ref _currentDiscountInPackage, value);
@@ -312,7 +318,6 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                     }
                 }
                 SetProperty(ref _currentInspection, value);
-
             }
         }
         private Inspection _currentBaseInspection;
@@ -327,8 +332,16 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             get { return _currentDiscount; }
             set
             {
+                if (value.Id == 0) _currentBaseDiscount = new Discount();
+                else
+                {
+                    for (int i = 0; i < DiscountsBase.Count; i++)
+                    {
+                        if (((Discount)DiscountsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseDiscount = (Discount)DiscountsBase.GetItemAt(i);
+                    }
+                }
                 SetProperty(ref _currentDiscount, value);
-                //DiscountsInPackageRefresh();
             }
         }
         #endregion
@@ -418,7 +431,31 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                 throw ex;
             });
         }
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (CurrentPackage==null) return;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new DiscountsSelect())
+            .Success(rdisc =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                DiscountsBase = new ListCollectionView(rdisc.Discounts);
+                DiscountsInPackageRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
 
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
         private void CopyPackage(object obj)
         {
             CurrentPackage = CurrentPackage.CopyInstance();
@@ -586,7 +623,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         {
             bool isNew = CurrentPackage.Id == 0;
             ConfirmationRequest.Raise(
-                new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
+                new Confirmation { Content = "Пакет будет удалён! Вы уверены?", Title = "Удаление пакета." },
                 c =>
                 {
                     if (c.Confirmed)
@@ -824,9 +861,9 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             Inspections.MoveCurrentTo(null);
             CurrentInspection = new Inspection();
         }
-        private void InspectionsInPackageReload(List<Inspection> Inspections)
+        private void InspectionsInPackageReload(List<Inspection> inspections)
         {
-            InspectionsInPackage = new ListCollectionView(Inspections);
+            InspectionsInPackage = new ListCollectionView(inspections);
             InspectionsInPackage.CurrentChanged += InspectionsInPackage_CurrentChanged;
             InspectionsInPackage.MoveCurrentTo(null);
             CurrentInspectionInPackage = new Inspection();
@@ -850,7 +887,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message.Inject("\"" + CurrentPackage.ShortName + " - " + CurrentInspection.ShortName + "\""));
                 _currentBaseInspection.PackageIds.Add(CurrentPackage.Id);
                 //CurrentInspection.InspectionPackageIds.Add(CurrentInspectionPackage.Id);
                 InspectionsInPackageRefresh();
@@ -868,7 +905,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message.Inject("\"" + CurrentPackage.ShortName + " - " + CurrentInspectionInPackage.ShortName + "\""));
                 _currentBaseInspection.PackageIds.Remove(CurrentPackage.Id);
                 //CurrentInspectionInPackage.InspectionPackageIds.Remove(CurrentInspectionPackage.Id);
                 InspectionsInPackageRefresh();
@@ -939,7 +976,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message.Inject("\"" + CurrentPackage.ShortName + " - " + CurrentDiscount.ShortName + "\""));
                 _currentBaseDiscount.PackageIds.Add(CurrentPackage.Id);
                 //CurrentDiscount.DiscountPackageIds.Add(CurrentDiscountPackage.Id);
                 DiscountsInPackageRefresh();
@@ -952,12 +989,18 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
 
         private void RemoveDiscountFromPackage(object obj)
         {
+            if (CurrentDiscountInPackage.IsGlobal)
+            {
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(new ResultMessage(2,"Удаление скидки", "Невозможно удалить глобальную скидку! Воспользуйтесь редактором скидок."));
+                return;
+            }
+            
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new DiscountsPackagesUnbind { DiscountId = CurrentDiscountInPackage.Id, PackageId = CurrentPackage.Id })
             .Success(r =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message.Inject("\"" + CurrentPackage.ShortName + " - " + CurrentDiscountInPackage.ShortName + "\""));
                 _currentBaseDiscount.PackageIds.Remove(CurrentPackage.Id);
                 //CurrentDiscountInPackage.DiscountPackageIds.Remove(CurrentDiscountPackage.Id);
                 DiscountsInPackageRefresh();
@@ -985,5 +1028,7 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
             DiscountsInPackageRefresh();
         }
         #endregion
+
+
     }
 }

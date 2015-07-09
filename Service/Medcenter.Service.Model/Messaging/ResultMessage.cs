@@ -41,6 +41,11 @@ namespace Medcenter.Service.Model.Messaging
             set { _message = value; }
         }
 
+        public ResultMessage Inject(string txt)
+        {
+            this.Message=string.Format(Message, txt);
+            return this;
+        }
         public ResultMessage(int errorType, string source, string message, DateTime dt=default(DateTime))
         {
             _errorType = errorType;

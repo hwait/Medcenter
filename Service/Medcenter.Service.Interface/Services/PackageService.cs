@@ -70,7 +70,7 @@ namespace Medcenter.Service.Interface.Services
         }
         public PackagesGroupsBindResponse Get(PackagesGroupsBind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
                 try
                 {
                     var rows = Db.SqlList<int>("EXEC sp_PackagesInGroups_Insert @PackageId, @PackageGroupId", new
@@ -80,31 +80,31 @@ namespace Medcenter.Service.Interface.Services
                     });
                     if (rows[0] == 0)
                     {
-                        _message = new ResultMessage(2, "Связывание", OperationErrors.PackagesGroupsBindZero);
+                        message = new ResultMessage(2, "Связывание", OperationErrors.PackagesGroupsBindZero);
                         Logger.Log("PackagesGroups.Bind 0");
                     }
                     else
                     {
-                        _message = new ResultMessage(0, "Связывание", OperationResults.PackagesGroupsBind);
+                        message = new ResultMessage(0, "Связывание", OperationResults.PackagesGroupsBind);
                         Logger.Log("PackagesGroups.Bind 1");
                     }
                    
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.PackagesGroupsBind);
+                    message = new ResultMessage(2, e.Source, OperationErrors.PackagesGroupsBind);
                     Logger.Log("PackagesGroups.Bind", e);
                     throw;
                 }
             return new PackagesGroupsBindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 
         public PackagesGroupsUnbindResponse Get(PackagesGroupsUnbind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var rows = Db.SqlList<int>("EXEC sp_PackagesInGroups_Delete @PackageId, @PackageGroupId", new
@@ -114,24 +114,24 @@ namespace Medcenter.Service.Interface.Services
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Отвязывание", OperationErrors.PackagesGroupsUnbindZero);
+                    message = new ResultMessage(2, "Отвязывание", OperationErrors.PackagesGroupsUnbindZero);
                     Logger.Log("PackagesGroups.UnBind");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Отвязывание", OperationResults.PackagesGroupsUnbind);
+                    message = new ResultMessage(0, "Отвязывание", OperationResults.PackagesGroupsUnbind);
                     Logger.Log("PackagesGroups.UnBind");
                 }
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.PackagesGroupsUnbind);
+                message = new ResultMessage(2, e.Source, OperationErrors.PackagesGroupsUnbind);
                 Logger.Log("PackagesGroups.UnBind", e);
                 throw;
             }
             return new PackagesGroupsUnbindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 
@@ -149,7 +149,7 @@ namespace Medcenter.Service.Interface.Services
         public PackageGroupSaveResponse Post(PackageGroupSave req)
         {
             int id = 0;
-            ResultMessage _message;
+            ResultMessage message;
             if (req.PackageGroup.Id > 0) // Package exists so we're saving 
             {
                 try
@@ -162,12 +162,12 @@ namespace Medcenter.Service.Interface.Services
                         Color = req.PackageGroup.Color,
                         Row = req.PackageGroup.Row,
                     });
-                    _message = new ResultMessage(0, "Сохранение исследования", OperationResults.PackageGroupSave);
+                    message = new ResultMessage(0, "Сохранение исследования", OperationResults.PackageGroupSave);
                     Logger.Log("PackageGroupSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupSave);
+                    message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupSave);
                     Logger.Log("PackageGroupSaveResponse.Saving " , e);
                     throw;
                 }
@@ -183,12 +183,12 @@ namespace Medcenter.Service.Interface.Services
                         Color = req.PackageGroup.Color,
                         Row = req.PackageGroup.Row,
                     });
-                    _message = new ResultMessage(0, "Новое исследование", OperationResults.PackageGroupCreate);
+                    message = new ResultMessage(0, "Новое исследование", OperationResults.PackageGroupCreate);
                     Logger.Log("PackageSaveResponse.NewPackage");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupCreate);
+                    message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupCreate);
                     Logger.Log("PackageSaveResponse.NewPackage", e);
                     throw;
                 }
@@ -197,29 +197,29 @@ namespace Medcenter.Service.Interface.Services
             return new PackageGroupSaveResponse
             {
                 PackageGroupId = id,
-                Message = _message
+                Message = message
             };
         }
 
         public PackageGroupDeleteResponse Get(PackageGroupDelete req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var res = Db.SqlList<int>("EXEC sp_PackageGroups_Delete @Id", new
                 {
                     Id = req.PackageGroupId
                 });
-                _message = new ResultMessage(0, "Инспекции:", OperationResults.PackageGroupDelete);
+                message = new ResultMessage(0, "Инспекции:", OperationResults.PackageGroupDelete);
                 Logger.Log("PackageGroupDeleteResponse");
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupDelete);
+                message = new ResultMessage(2, e.Source, OperationErrors.PackageGroupDelete);
                 Logger.Log("PackageGroupDeleteResponse", e);
                 throw;
             }
-            return new PackageGroupDeleteResponse { Message = _message };
+            return new PackageGroupDeleteResponse { Message = message };
         }
 
         #endregion
@@ -229,14 +229,17 @@ namespace Medcenter.Service.Interface.Services
         {
             var rows = Db.SqlList<Package>("EXEC sp_Packages_Select");
             foreach (var r in rows)
-                r.PackageGroupIds = Db.SqlList<int>("EXEC sp_Package_SelectGroups @PackageId", new { PackageId = r.Id });
+            {
+                r.PackageGroupIds = Db.SqlList<int>("EXEC sp_Package_SelectGroups @PackageId", new {PackageId = r.Id});
+                r.Cost = r.Cost/100;
+            }
             return new PackagesSelectResponse {Packages = new List<Package>(rows)};
         }
 
         public PackageSaveResponse Post(PackageSave req)
         {
             int id = 0;
-            ResultMessage _message;
+            ResultMessage message;
             if (req.Package.Id > 0) // Package exists so we're saving 
             {
                 try
@@ -247,14 +250,14 @@ namespace Medcenter.Service.Interface.Services
                         ShortName = req.Package.ShortName,
                         Name = req.Package.Name,
                         Duration = req.Package.Duration,
-                        Cost = req.Package.Cost,
+                        Cost = req.Package.Cost*100
                     });
-                    _message = new ResultMessage(0, "Сохранение исследования", OperationResults.PackageSave);
+                    message = new ResultMessage(0, "Сохранение исследования", OperationResults.PackageSave);
                     Logger.Log("PackageSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.PackageSave);
+                    message = new ResultMessage(2, e.Source, OperationErrors.PackageSave);
                     Logger.Log("PackageSaveResponse.Saving", e);
                     throw;
                 }
@@ -268,14 +271,14 @@ namespace Medcenter.Service.Interface.Services
                         ShortName = req.Package.ShortName,
                         Name = req.Package.Name,
                         Duration = req.Package.Duration,
-                        Cost = req.Package.Cost,
+                        Cost = req.Package.Cost*100,
                     });
-                    _message = new ResultMessage(0, "Новое исследование", OperationResults.PackageCreate);
+                    message = new ResultMessage(0, "Новое исследование", OperationResults.PackageCreate);
                     Logger.Log("PackageSaveResponse.NewPackage");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.PackageCreate);
+                    message = new ResultMessage(2, e.Source, OperationErrors.PackageCreate);
                     Logger.Log("PackageSaveResponse.NewPackage", e);
                     throw;
                 }
@@ -284,29 +287,29 @@ namespace Medcenter.Service.Interface.Services
             return new PackageSaveResponse
             {
                 PackageId = id,
-                Message = _message
+                Message = message
             };
         }
 
         public PackageDeleteResponse Get(PackageDelete req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var res = Db.SqlList<int>("EXEC sp_Packages_Delete @Id", new
                 {
                     Id = req.PackageId
                 });
-                _message = new ResultMessage(0, "Инспекции:", OperationResults.PackageDelete);
+                message = new ResultMessage(0, "Инспекции:", OperationResults.PackageDelete);
                 Logger.Log("PackageDeleteResponse");
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.PackageDelete);
+                message = new ResultMessage(2, e.Source, OperationErrors.PackageDelete);
                 Logger.Log("PackageDeleteResponse", e);
                 throw;
             }
-            return new PackageDeleteResponse {Message = _message};
+            return new PackageDeleteResponse {Message = message};
         }
 
         #endregion
@@ -317,14 +320,17 @@ namespace Medcenter.Service.Interface.Services
         {
             var rows = Db.SqlList<Inspection>("EXEC sp_Inspections_Select");
             foreach (var r in rows)
+            {
                 r.PackageIds = Db.SqlList<int>("EXEC sp_Inspection_SelectPackages @InspectionId", new { InspectionId = r.Id });
+                r.Cost = r.Cost/100;
+            }
             return new InspectionsSelectResponse { Inspections = new List<Inspection>(rows) };
         }
 
         public InspectionSaveResponse Post(InspectionSave req)
         {
             int id = 0;
-            ResultMessage _message;
+            ResultMessage message;
             if (req.Inspection.Id > 0) // Inspection exists so we're saving 
             {
                 try
@@ -334,14 +340,14 @@ namespace Medcenter.Service.Interface.Services
                         Id = req.Inspection.Id,
                         ShortName = req.Inspection.ShortName,
                         Name = req.Inspection.Name,
-                        Cost = req.Inspection.Cost,
+                        Cost = req.Inspection.Cost*100
                     });
-                    _message = new ResultMessage(0, "Сохранение исследования", OperationResults.InspectionSave);
+                    message = new ResultMessage(0, "Сохранение исследования", OperationResults.InspectionSave);
                     Logger.Log("InspectionSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.InspectionSave);
+                    message = new ResultMessage(2, e.Source, OperationErrors.InspectionSave);
                     Logger.Log("InspectionSaveResponse.Saving", e);
                     throw;
                 }
@@ -354,14 +360,14 @@ namespace Medcenter.Service.Interface.Services
                     {
                         ShortName = req.Inspection.ShortName,
                         Name = req.Inspection.Name,
-                        Cost = req.Inspection.Cost,
+                        Cost = req.Inspection.Cost*100
                     });
-                    _message = new ResultMessage(0, "Новое исследование", OperationResults.InspectionCreate);
+                    message = new ResultMessage(0, "Новое исследование", OperationResults.InspectionCreate);
                     Logger.Log("InspectionSaveResponse.NewInspection");
                 }
                 catch (Exception e)
                 {
-                    _message = new ResultMessage(2, e.Source, OperationErrors.InspectionCreate);
+                    message = new ResultMessage(2, e.Source, OperationErrors.InspectionCreate);
                     Logger.Log("InspectionSaveResponse.NewInspection", e);
                     throw;
                 }
@@ -370,29 +376,29 @@ namespace Medcenter.Service.Interface.Services
             return new InspectionSaveResponse
             {
                 InspectionId = id,
-                Message = _message
+                Message = message
             };
         }
 
         public InspectionDeleteResponse Get(InspectionDelete req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var res = Db.SqlList<int>("EXEC sp_Inspections_Delete @Id", new
                 {
                     Id = req.InspectionId
                 });
-                _message = new ResultMessage(0, "Инспекции:", OperationResults.InspectionDelete);
+                message = new ResultMessage(0, "Инспекции:", OperationResults.InspectionDelete);
                 Logger.Log("InspectionDeleteResponse");
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionDelete);
+                message = new ResultMessage(2, e.Source, OperationErrors.InspectionDelete);
                 Logger.Log("InspectionDeleteResponse", e);
                 throw;
             }
-            return new InspectionDeleteResponse { Message = _message };
+            return new InspectionDeleteResponse { Message = message };
         }
 
         #endregion
@@ -418,7 +424,7 @@ namespace Medcenter.Service.Interface.Services
         }
         public InspectionsPackagesBindResponse Get(InspectionsPackagesBind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var rows = Db.SqlList<int>("EXEC sp_InspectionsInPackages_Insert @PackageId, @InspectionId", new
@@ -428,31 +434,31 @@ namespace Medcenter.Service.Interface.Services
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesBindZero);
+                    message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesBindZero);
                     Logger.Log("InspectionsPackages.Bind 0");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesBind);
+                    message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesBind);
                     Logger.Log("InspectionsPackages.Bind 1");
                 }
 
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesBind);
+                message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesBind);
                 Logger.Log("InspectionsPackages.Bind", e);
                 throw;
             }
             return new InspectionsPackagesBindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 
         public InspectionsPackagesUnbindResponse Get(InspectionsPackagesUnbind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var rows = Db.SqlList<int>("EXEC sp_InspectionsInPackages_Delete @PackageId, @InspectionId", new
@@ -462,25 +468,25 @@ namespace Medcenter.Service.Interface.Services
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesUnbindZero);
+                    message = new ResultMessage(2, "Связывание", OperationErrors.InspectionsPackagesUnbindZero);
                     Logger.Log("InspectionsPackages.Unbind 0");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesUnbind);
+                    message = new ResultMessage(0, "Связывание", OperationResults.InspectionsPackagesUnbind);
                     Logger.Log("InspectionsPackages.Unbind 1");
                 }
 
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesUnbind);
+                message = new ResultMessage(2, e.Source, OperationErrors.InspectionsPackagesUnbind);
                 Logger.Log("InspectionsPackages.Unbind", e);
                 throw;
             }
             return new InspectionsPackagesUnbindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 
@@ -507,7 +513,7 @@ namespace Medcenter.Service.Interface.Services
         }
         public DiscountsPackagesBindResponse Get(DiscountsPackagesBind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var rows = Db.SqlList<int>("EXEC sp_DiscountsInPackages_Insert @PackageId, @DiscountId", new
@@ -517,31 +523,31 @@ namespace Medcenter.Service.Interface.Services
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesBindZero);
+                    message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesBindZero);
                     Logger.Log("DiscountsPackages.Bind 0");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesBind);
+                    message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesBind);
                     Logger.Log("DiscountsPackages.Bind 1");
                 }
 
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesBind);
+                message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesBind);
                 Logger.Log("DiscountsPackages.Bind", e);
                 throw;
             }
             return new DiscountsPackagesBindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 
         public DiscountsPackagesUnbindResponse Get(DiscountsPackagesUnbind req)
         {
-            ResultMessage _message;
+            ResultMessage message;
             try
             {
                 var rows = Db.SqlList<int>("EXEC sp_DiscountsInPackages_Delete @PackageId, @DiscountId", new
@@ -551,25 +557,25 @@ namespace Medcenter.Service.Interface.Services
                 });
                 if (rows[0] == 0)
                 {
-                    _message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesUnbindZero);
+                    message = new ResultMessage(2, "Связывание", OperationErrors.DiscountsPackagesUnbindZero);
                     Logger.Log("DiscountsPackages.Unbind 0");
                 }
                 else
                 {
-                    _message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesUnbind);
+                    message = new ResultMessage(0, "Связывание", OperationResults.DiscountsPackagesUnbind);
                     Logger.Log("DiscountsPackages.Unbind 1");
                 }
 
             }
             catch (Exception e)
             {
-                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesUnbind);
+                message = new ResultMessage(2, e.Source, OperationErrors.DiscountsPackagesUnbind);
                 Logger.Log("DiscountsPackages.Unbind", e);
                 throw;
             }
             return new DiscountsPackagesUnbindResponse
             {
-                Message = _message
+                Message = message
             };
         }
 

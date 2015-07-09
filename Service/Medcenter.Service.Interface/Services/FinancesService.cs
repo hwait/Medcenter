@@ -28,7 +28,7 @@ namespace Medcenter.Service.Interface.Services
                 {
                     discount = JsonConvert.DeserializeObject<Discount>(r.Requirements);
                     discount.Id = r.Id;
-                    discount.PackageIds = Db.SqlList<int>("EXEC sp_Inspection_SelectPackages @InspectionId", new { InspectionId = r.Id });
+                    discount.PackageIds = Db.SqlList<int>("EXEC sp_Discount_SelectPackages @DiscountId", new { DiscountId = r.Id });
                     discounts.Add(discount);
                 }
                 _message = new ResultMessage(0, "Загрузка скидок", OperationResults.DiscountLoad);
