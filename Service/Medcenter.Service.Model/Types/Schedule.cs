@@ -15,6 +15,7 @@ namespace Medcenter.Service.Model.Types
         public int Id { get; set; }
         [DataMember]
         public int CabinetId { get; set; }
+
         [DataMember]
         public string DoctorName { get; set; }
         [DataMember]
@@ -25,6 +26,7 @@ namespace Medcenter.Service.Model.Types
         public DateTime Start { get; set; }
         [DataMember]
         public DateTime End { get; set; }
+        public Doctor CurrentDoctor { get; set; }
         public int Duration
         {
             get { return (int) End.Subtract(Start).TotalMinutes; }

@@ -64,33 +64,53 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 };
             }
         }
+
+        private static Doctor Bacula
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 1,
+                    Name = "Бацула Людмила Пантелеевна",
+                    ShortName = "Бацула Л.П.",
+                    Color = Colors.Bisque.ToString()
+                };
+            }
+        }
+        private static Doctor VVA
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 2,
+                    Name = "Вдовиченко Владимир Андреевич",
+                    ShortName = "Вдовиченко В.А.",
+                    Color = Colors.LightSkyBlue.ToString()
+                };
+            }
+        }
+        private static Doctor LGV
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 3,
+                    Name = "Лосева Галина Викторовна",
+                    ShortName = "Лосева Г.В.",
+                    Color = Colors.LightGreen.ToString()
+                };
+            }
+        }
         public ObservableCollection<Doctor> Doctors
         {
             get
             {
                 return new ObservableCollection<Doctor>
                 {
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Бацула Людмила Пантелеевна",
-                        ShortName = "Бацула Л.П.",
-                        Color = Colors.Bisque.ToString()
-                    },
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Вдовиченко Владимир Андреевич",
-                        ShortName = "Вдовиченко В.А.",
-                        Color = Colors.LightSkyBlue.ToString()
-                    },
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Лосева Галина Викторовна",
-                        ShortName = "Лосева Г.В.",
-                        Color = Colors.LightGreen.ToString()
-                    }
+                    Bacula,VVA,LGV
                 };
             }
         }
@@ -442,9 +462,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Бацула Л.П.",
-                    DoctorId = 3,
-                    DoctorColor = Colors.Bisque.ToString(),
+                    DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 8, 0, 0),
                     End = new DateTime(2015, 7, 11, 12, 45, 0)
                 },
@@ -462,9 +483,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Вдовиченко В.А.",
-                    DoctorId = 1,
-                    DoctorColor = Colors.Turquoise.ToString(),
+                    DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 13, 0, 0),
                     End = new DateTime(2015, 7, 11, 18, 30, 0)
                 },
@@ -482,9 +504,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Лосева Г.В.",
-                    DoctorId = 2,
-                    DoctorColor = Colors.LightPink.ToString(),
+                    DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 45, 0),
                     End = new DateTime(2015, 7, 11, 20, 0, 0)
                 }
@@ -500,9 +523,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Бацула Л.П.",
-                    DoctorId = 3,
-                    DoctorColor = Colors.Bisque.ToString(),
+                    DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 7, 30, 0),
                     End = new DateTime(2015, 7, 11, 11, 55, 0)
                 },
@@ -520,9 +544,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Вдовиченко В.А.",
-                    DoctorId = 1,
-                    DoctorColor = Colors.Turquoise.ToString(),
+                    DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
                     End = new DateTime(2015, 7, 11, 18, 0, 0)
                 },
@@ -540,9 +565,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Лосева Г.В.",
-                    DoctorId = 2,
-                    DoctorColor = Colors.LightPink.ToString(),
+                    DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 5, 0),
                     End = new DateTime(2015, 7, 11, 20, 0, 0)
                 }
@@ -568,9 +594,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Вдовиченко В.А.",
-                    DoctorId = 1,
-                    DoctorColor = Colors.Turquoise.ToString(),
+                    DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
                     End = new DateTime(2015, 7, 11, 16, 30, 0)
                 },
@@ -596,9 +623,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 2,
-                    DoctorName = "Бацула Л.П.",
-                    DoctorId = 3,
-                    DoctorColor = Colors.Bisque.ToString(),
+                    DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 8, 0, 0),
                     End = new DateTime(2015, 7, 11, 12, 45, 0)
                 },
@@ -616,9 +644,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 2,
-                    DoctorName = "Вдовиченко В.А.",
-                    DoctorId = 1,
-                    DoctorColor = Colors.Turquoise.ToString(),
+                    DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 13, 0, 0),
                     End = new DateTime(2015, 7, 11, 18, 30, 0)
                 },
@@ -636,9 +665,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 2,
-                    DoctorName = "Лосева Г.В.",
-                    DoctorId = 2,
-                    DoctorColor = Colors.LightPink.ToString(),
+                    DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 45, 0),
                     End = new DateTime(2015, 7, 11, 20, 0, 0)
                 }
@@ -664,9 +694,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Бацула Л.П.",
-                    DoctorId = 3,
-                    DoctorColor = Colors.Bisque.ToString(),
+                    DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 8, 30, 0),
                     End = new DateTime(2015, 7, 11, 11, 55, 0)
                 },
@@ -684,9 +715,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Вдовиченко В.А.",
-                    DoctorId = 1,
-                    DoctorColor = Colors.Turquoise.ToString(),
+                    DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
                     End = new DateTime(2015, 7, 11, 16, 30, 0)
                 },
@@ -704,9 +736,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Лосева Г.В.",
-                    DoctorId = 2,
-                    DoctorColor = Colors.LightPink.ToString(),
+                    DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 5, 0),
                     End = new DateTime(2015, 7, 11, 20, 0, 0)
                 }
@@ -743,9 +776,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 1,
-                        DoctorName = "Бацула Л.П.",
-                        DoctorId = 3,
-                        DoctorColor = Colors.Bisque.ToString(),
+                        DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                         Start = new DateTime(2015,7,11,8,0,0),
                         End = new DateTime(2015,7,11,12,45,0)
                     },
@@ -763,9 +797,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 1,
-                        DoctorName = "Вдовиченко В.А.",
-                        DoctorId = 1,
-                        DoctorColor = Colors.Turquoise.ToString(),
+                        DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                         Start = new DateTime(2015,7,11,13,0,0),
                         End = new DateTime(2015,7,11,18,30,0)
                     },
@@ -783,9 +818,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 1,
-                        DoctorName = "Лосева Г.В.",
-                        DoctorId = 2,
-                        DoctorColor = Colors.LightPink.ToString(),
+                        DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                         Start = new DateTime(2015,7,11,18,45,0),
                         End = new DateTime(2015,7,11,20,0,0)
                     },
@@ -793,9 +829,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 2,
-                        DoctorName = "Вдовиченко В.А.",
-                        DoctorId = 1,
-                        DoctorColor = Colors.PaleGreen.ToString(),
+                        DoctorName = VVA.ShortName,
+                    DoctorId = VVA.Id,
+                    DoctorColor = VVA.Color,
+                    CurrentDoctor = VVA,
                         Start = new DateTime(2015,7,11,7,30,0),
                         End = new DateTime(2015,7,11,10,0,0)
                     },
@@ -813,9 +850,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 2,
-                        DoctorName = "Лосева Г.В.",
-                        DoctorId = 2,
-                        DoctorColor = Colors.LightSkyBlue.ToString(),
+                        DoctorName = LGV.ShortName,
+                    DoctorId = LGV.Id,
+                    DoctorColor = LGV.Color,
+                    CurrentDoctor = LGV,
                         Start = new DateTime(2015,7,11,10,15,0),
                         End = new DateTime(2015,7,11,14,0,0)
                     },
@@ -834,9 +872,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     {
                         Id = 0,
                         CabinetId = 2,
-                        DoctorName = "Бацула Л.П.",
-                        DoctorId = 3,
-                        DoctorColor = Colors.PaleVioletRed.ToString(),
+                        DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    DoctorColor = Bacula.Color,
+                    CurrentDoctor = Bacula,
                         Start = new DateTime(2015,7,11,18,0,0),
                         End = new DateTime(2015,7,11,19,45,0)
                     },

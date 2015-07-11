@@ -65,6 +65,30 @@
 				</Grid>
 			</StackPanel>
 		</DataTemplate>
+		<DataTemplate x:Key="EditFormDataTemplate">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding AddDoctorToDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
+					<ComboBox ItemsSource="{Binding DataContext.Doctors, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CurrentDoctor}" Width="220" FontSize="13.333" VerticalAlignment="Center" Margin="10,0,0,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding RemoveDoctorFromDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}"  Tag="Default" Height="32" Width="32" Margin="10,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="40,0,0,0" VerticalAlignment="Center" Command="{Binding CopyDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
 	</UserControl.Resources>
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
@@ -80,5 +104,6 @@
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
 		<ListBox ItemTemplate="{DynamicResource ScheduleDayTemplate}" ItemsSource="{Binding CurrentWeek}" Grid.Row="1" />
+		<ContentControl Content="{Binding CurrentSchedule}" Margin="0" ContentTemplate="{DynamicResource EditFormDataTemplate}"/>
 	</Grid>
 </UserControl>
