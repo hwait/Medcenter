@@ -14,9 +14,6 @@
 			 mc:Ignorable="d"
 			 >
 	<UserControl.Resources>
-		
-		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
-		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
 		<ds:DesignData x:Key="DesignData"/>
 		<Style TargetType="ListBox">
 			<Style.Resources>

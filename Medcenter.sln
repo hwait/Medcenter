@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Service.Interface", "Service\Medcenter.Service.Interface\Medcenter.Service.Interface.csproj", "{0ED96ED9-AD4D-4965-A563-0C92A159381C}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.DoctorsManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.DoctorsManagerModule\Medcenter.Desktop.Modules.DoctorsManagerModule.csproj", "{49494E8B-047F-4AAE-BEF7-2BE0E6B32817}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.FinancesManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.FinancesManagerModule\Medcenter.Desktop.Modules.FinancesManagerModule.csproj", "{456DDA22-2819-44C0-88BA-9960ED5DD9D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Desktop.Modules.ScheduleManagerModule", "Desktop\Modules\Medcenter.Desktop.Modules.ScheduleManagerModule\Medcenter.Desktop.Modules.ScheduleManagerModule.csproj", "{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,13 +92,17 @@ Global
 		{456DDA22-2819-44C0-88BA-9960ED5DD9D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{456DDA22-2819-44C0-88BA-9960ED5DD9D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{456DDA22-2819-44C0-88BA-9960ED5DD9D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0ED96ED9-AD4D-4965-A563-0C92A159381C} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
 		{516014F5-CF33-4A89-8D6F-CF7AFDE2514D} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
+		{0ED96ED9-AD4D-4965-A563-0C92A159381C} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
 		{CD86012D-881F-4484-81D2-284CA11E1D1A} = {EB07F6E5-343D-420A-BD9F-9F2553FD39B0}
 		{F0F723AC-FFB1-40C9-B5FC-369B0477AAEA} = {86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}
 		{E108FB46-A0FA-46C8-9545-0FF99AA1490F} = {86FA6815-FFEB-4B8C-A682-9B7E8C0612F5}
@@ -108,5 +114,6 @@ Global
 		{789E597C-9C24-4D11-B181-87EA153F78E0} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 		{49494E8B-047F-4AAE-BEF7-2BE0E6B32817} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 		{456DDA22-2819-44C0-88BA-9960ED5DD9D4} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
+		{59781918-DCDD-4E89-BB1F-2A3FD6FE49C6} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 	EndGlobalSection
 EndGlobal

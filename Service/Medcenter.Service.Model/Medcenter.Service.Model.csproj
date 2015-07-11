@@ -78,6 +78,7 @@
     <Compile Include="Types\PackageGroup.cs" />
     <Compile Include="Types\Permissions.cs" />
     <Compile Include="Types\Roles.cs" />
+    <Compile Include="Types\Schedule.cs" />
     <Compile Include="Types\User.cs" />
   </ItemGroup>
   <ItemGroup>
