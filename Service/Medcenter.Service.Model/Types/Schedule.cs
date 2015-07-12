@@ -27,6 +27,47 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public DateTime End { get; set; }
         public Doctor CurrentDoctor { get; set; }
+        public string StartHour
+        {
+            get { return Start.Hour.ToString("00"); }
+            set
+            {
+                var val = 0;
+                int.TryParse(value, out val);
+                Start=new DateTime(Start.Year, Start.Month, Start.Day,val,Start.Minute,0);
+            }
+        }
+        public string StartMinute
+        {
+            get { return Start.Minute.ToString("00"); }
+            set
+            {
+                var val = 0;
+                int.TryParse(value, out val);
+                Start = new DateTime(Start.Year, Start.Month, Start.Day,Start.Hour, val, 0);
+            }
+        }
+        public string EndHour
+        {
+            get { return End.Hour.ToString("00"); }
+            set
+            {
+                var val = 0;
+                int.TryParse(value, out val);
+                End = new DateTime(End.Year, End.Month, End.Day, val, End.Minute, 0);
+            }
+        }
+        public string EndMinute
+        {
+            get { return End.Minute.ToString("00"); }
+            set
+            {
+                var val = 0;
+                int.TryParse(value, out val);
+                End = new DateTime(End.Year, End.Month, End.Day, End.Hour, val, 0);
+            }
+        }
+       
         public int Duration
         {
             get { return (int) End.Subtract(Start).TotalMinutes; }

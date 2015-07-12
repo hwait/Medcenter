@@ -55,14 +55,7 @@
 		</DataTemplate>
 		<DataTemplate x:Key="ScheduleTemplate">
 			<StackPanel Orientation="Horizontal">
-				<Grid>
-					<Rectangle Width="{Binding Duration, Mode=OneWay}" Height="Auto" HorizontalAlignment="Left">
-						<Rectangle.Fill>
-							<SolidColorBrush Color="{Binding DoctorColor}" />
-						</Rectangle.Fill>
-					</Rectangle>
-					<TextBlock Text="{Binding DoctorName}" HorizontalAlignment="Left"/>
-				</Grid>
+				<Button Content="{Binding DoctorName}" Style="{DynamicResource ButtonStyle}"/>
 			</StackPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="EditFormDataTemplate">
@@ -71,24 +64,59 @@
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
-				<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
-				</StackPanel>
 				<StackPanel Orientation="Horizontal">
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding AddDoctorToDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
-					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
-					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding MakeStartJointCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding MakeStartGapedJointCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="5,0,0,0" Tag="Default" Height="32" Width="32"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding StartHour}" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding StartMinute}" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
 					<ComboBox ItemsSource="{Binding DataContext.Doctors, RelativeSource={RelativeSource AncestorType=UserControl}}" SelectedValuePath="Id" DisplayMemberPath="Name" SelectedValue="{Binding CurrentDoctor}" Width="220" FontSize="13.333" VerticalAlignment="Center" Margin="10,0,0,0"/>
-					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
-					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding RemoveDoctorFromDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}"  Tag="Default" Height="32" Width="32" Margin="10,0,0,0"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="40,0,0,0" VerticalAlignment="Center" Command="{Binding CopyDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding EndHour}" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="10,0,0,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding EndMinute}" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="2,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding MakeEndJointCommand}" Style="{DynamicResource ButtonMenuStyle}"  Tag="Default" Height="32" Width="32" Margin="10,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding MakeEndGapedJointCommand}" Style="{DynamicResource ButtonMenuStyle}"  Tag="Default" Height="32" Width="32" Margin="5,0,0,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding RemoveScheduleCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Delete" Height="32" Width="32" Margin="20,0,5,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding SaveScheduleCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 				</StackPanel>
+				
 			</Grid>
 		</DataTemplate>
+		<Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<ControlTemplate.Resources>
+							<Storyboard x:Key="Storyboard1">
+								<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)" Storyboard.TargetName="rectangle">
+									<EasingColorKeyFrame KeyTime="0:0:0.4" Value="#FFDE4624"/>
+								</ColorAnimationUsingKeyFrames>
+							</Storyboard>
+						</ControlTemplate.Resources>
+						<Grid>
+							<Rectangle x:Name="rectangle" Width="{Binding Duration, Mode=OneWay}" Height="Auto" HorizontalAlignment="Left">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="{Binding DoctorColor}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True"/>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Trigger.ExitActions>
+									<BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+								</Trigger.ExitActions>
+								<Trigger.EnterActions>
+									<BeginStoryboard Storyboard="{StaticResource Storyboard1}"/>
+								</Trigger.EnterActions>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True"/>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
@@ -101,9 +129,15 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition/>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
-		<ListBox ItemTemplate="{DynamicResource ScheduleDayTemplate}" ItemsSource="{Binding CurrentWeek}" Grid.Row="1" />
-		<ContentControl Content="{Binding CurrentSchedule}" Margin="0" ContentTemplate="{DynamicResource EditFormDataTemplate}"/>
+		<ListBox ItemTemplate="{DynamicResource ScheduleDayTemplate}" ItemsSource="{Binding CurrentWeek}" Grid.Row="1" Grid.ColumnSpan="3" />
+		<ContentControl Content="{Binding CurrentSchedule}" Margin="0,0,0,0" ContentTemplate="{DynamicResource EditFormDataTemplate}" Grid.Column="1"/>
+		<DatePicker HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="167.15" Margin="0,0,20,0" FirstDayOfWeek="Monday" DisplayDate="{Binding CurrentData, Mode=OneWay}"/>
+		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center">
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyScheduleToNextWeekCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+		</StackPanel>
 	</Grid>
 </UserControl>

@@ -220,7 +220,6 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         private void CopyPackage(object obj)
         {
             CurrentPackage = CurrentPackage.CopyInstance();
-
         }
 
         private bool CanRemovePackage(object arg)

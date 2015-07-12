@@ -56,54 +56,24 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     Id = 0,
                     CabinetId = 1,
-                    DoctorName = "Бацула Л.П.",
-                    DoctorId = 3,
-                    DoctorColor = Colors.Bisque.ToString(),
+                    DoctorName = Bacula.ShortName,
+                    DoctorId = Bacula.Id,
+                    CurrentDoctor = Bacula,
+                    DoctorColor = Bacula.Color,
                     Start = new DateTime(2015, 7, 11, 8, 0, 0),
                     End = new DateTime(2015, 7, 11, 12, 45, 0)
                 };
             }
         }
 
-        private static Doctor Bacula
+        public DateTime CurrentData
         {
             get
             {
-                return new Doctor
-                {
-                    Id = 1,
-                    Name = "Бацула Людмила Пантелеевна",
-                    ShortName = "Бацула Л.П.",
-                    Color = Colors.Bisque.ToString()
-                };
+                return DateTime.Now;
             }
         }
-        private static Doctor VVA
-        {
-            get
-            {
-                return new Doctor
-                {
-                    Id = 2,
-                    Name = "Вдовиченко Владимир Андреевич",
-                    ShortName = "Вдовиченко В.А.",
-                    Color = Colors.LightSkyBlue.ToString()
-                };
-            }
-        }
-        private static Doctor LGV
-        {
-            get
-            {
-                return new Doctor
-                {
-                    Id = 3,
-                    Name = "Лосева Галина Викторовна",
-                    ShortName = "Лосева Г.В.",
-                    Color = Colors.LightGreen.ToString()
-                };
-            }
-        }
+        
         public ObservableCollection<Doctor> Doctors
         {
             get
@@ -193,7 +163,46 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             }
         }
 
-        #region CabVariants
+        #region Static
+        private static Doctor Bacula
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 1,
+                    Name = "Бацула Людмила Пантелеевна",
+                    ShortName = "Бацула Л.П.",
+                    Color = Colors.Bisque.ToString()
+                };
+            }
+        }
+        private static Doctor VVA
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 2,
+                    Name = "Вдовиченко Владимир Андреевич",
+                    ShortName = "Вдовиченко В.А.",
+                    Color = Colors.LightSkyBlue.ToString()
+                };
+            }
+        }
+        private static Doctor LGV
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 3,
+                    Name = "Лосева Галина Викторовна",
+                    ShortName = "Лосева Г.В.",
+                    Color = Colors.LightGreen.ToString()
+                };
+            }
+        }
         private ScheduleCabinet CabinetHours = new ScheduleCabinet
         {
             CabinetId = "",

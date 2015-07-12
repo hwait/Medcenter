@@ -12,10 +12,22 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.Model
     {
         public string CabinetId { get; set; }
         public ObservableCollection<Schedule> Schedules { get; set; }
+
+        public ScheduleCabinet(string cabinet)
+        {
+            CabinetId = (cabinet == "") ? "" : "Каб. " + cabinet;
+            Schedules=new ObservableCollection<Schedule>();
+        }
     }
     public class ScheduleDay
     {
         public DateTime Date { get; set; }
         public ObservableCollection<ScheduleCabinet> ScheduleCabinets { get; set; }
+
+        public ScheduleDay(DateTime date)
+        {
+            Date = date;
+            ScheduleCabinets=new ObservableCollection<ScheduleCabinet>();
+        }
     }
 }

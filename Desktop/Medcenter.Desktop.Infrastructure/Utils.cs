@@ -4,11 +4,76 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Configuration;
+using System.Globalization;
 
 namespace Medcenter.Desktop.Infrastructure
 {
     public static class Utils
     {
+        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek)
+        {
+            CultureInfo defaultCultureInfo = CultureInfo.CurrentCulture;
+            return GetFirstDayOfWeek(dayInWeek, defaultCultureInfo);
+        }
+
+        /// <summary>
+        /// Returns the first day of the week that the specified date 
+        /// is in. 
+        /// </summary>
+        public static DateTime GetFirstDayOfWeek(DateTime dayInWeek, CultureInfo cultureInfo)
+        {
+            DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
+            DateTime firstDayInWeek = dayInWeek.Date;
+            while (firstDayInWeek.DayOfWeek != firstDay)
+                firstDayInWeek = firstDayInWeek.AddDays(-1);
+
+            return firstDayInWeek;
+        }
+        public static DateTime GetLastDayOfWeek(DateTime dayInWeek)
+        {
+            int delta = (dayInWeek.DayOfWeek > 0) ? 7 - (int) dayInWeek.DayOfWeek : 0;
+            DateTime lastDayInWeek = dayInWeek.AddDays(delta);
+            return lastDayInWeek;
+        }
+        public static string ReadSetting(string key)
+        {
+            string result;
+            try
+            {
+                var appSettings = ConfigurationManager.AppSettings;
+                result = appSettings[key];
+            }
+            catch (ConfigurationErrorsException)
+            {
+                result = "-1";
+            }
+            return result;
+        }
+
+        public static bool SaveSetting(string key, string value)
+        {
+            try
+            {
+                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                var settings = configFile.AppSettings.Settings;
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                configFile.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
+                return true;
+            }
+            catch (ConfigurationErrorsException)
+            {
+                return false;
+            }
+        }
         public static Dictionary<int, string> MonthsDictionary
         {
             get

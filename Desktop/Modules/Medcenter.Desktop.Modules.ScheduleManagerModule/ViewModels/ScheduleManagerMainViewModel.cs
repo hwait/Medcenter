@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Medcenter.Desktop.Infrastructure;
+using Medcenter.Desktop.Modules.ScheduleManagerModule.Model;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
@@ -35,138 +36,103 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        private readonly DelegateCommand<object> _copyPackageCommand;
-        private readonly DelegateCommand<object> _addPackageToScheduleCommand;
-        private readonly DelegateCommand<object> _removePackageFromScheduleCommand;
-        private readonly DelegateCommand<object> _newPackageCommand;
-        private readonly DelegateCommand<object> _removePackageCommand;
-        private readonly DelegateCommand<object> _savePackageCommand;
-        private readonly DelegateCommand<object> _newScheduleCommand;
-        private readonly DelegateCommand<object> _removeScheduleCommand;
-        private readonly DelegateCommand<object> _saveScheduleCommand;
+        
         #region Properties
 
-        public ICommand CopyPackageCommand
+        private int _startHour;
+        private int _endHour;
+        private string[] _cabinets;
+        private readonly DelegateCommand<object> _copyScheduleToNextWeekCommand;
+        private readonly DelegateCommand<object> _makeStartJointCommand;
+        private readonly DelegateCommand<object> _makeStartGapedJointCommand;
+        private readonly DelegateCommand<object> _makeEndJointCommand;
+        private readonly DelegateCommand<object> _makeEndGapedJointCommand;
+        private readonly DelegateCommand<object> _removeScheduleCommand;
+        private readonly DelegateCommand<object> _saveScheduleCommand;
+
+        #region Commands Implementation
+
+        public ICommand CopyScheduleToNextWeekCommand
         {
-            get { return this._copyPackageCommand; }
+            get { return this._copyScheduleToNextWeekCommand; }
         }
-        public ICommand AddPackageToScheduleCommand
+
+        public ICommand MakeStartJointCommand
         {
-            get { return this._addPackageToScheduleCommand; }
+            get { return this._makeStartJointCommand; }
         }
-        public ICommand RemovePackageFromScheduleCommand
+
+        public ICommand MakeStartGapedJointCommand
         {
-            get { return this._removePackageFromScheduleCommand; }
+            get { return this._makeStartGapedJointCommand; }
         }
-        public ICommand NewPackageCommand
+
+        public ICommand MakeEndJointCommand
         {
-            get { return this._newPackageCommand; }
+            get { return this._makeEndJointCommand; }
         }
-        public ICommand RemovePackageCommand
+
+        public ICommand MakeEndGapedJointCommand
         {
-            get { return this._removePackageCommand; }
+            get { return this._makeEndGapedJointCommand; }
         }
-        public ICommand SavePackageCommand
-        {
-            get { return this._savePackageCommand; }
-        }
-        public ICommand NewScheduleCommand
-        {
-            get { return this._newScheduleCommand; }
-        }
+
         public ICommand RemoveScheduleCommand
         {
             get { return this._removeScheduleCommand; }
         }
+
         public ICommand SaveScheduleCommand
         {
             get { return this._saveScheduleCommand; }
         }
-        private List<ResultMessage> _errors;
 
+        #endregion
+
+        private DateTime _currentDate;
+        private ObservableCollection<Doctor> _doctors;
+        private ObservableCollection<Schedule> _schedules;
+        private Schedule _currentSchedule;
+        private ObservableCollection<ScheduleDay> _currentWeek;
+        private List<ResultMessage> _errors;
+        
+        #region Binding Fields Implementation
+
+        public DateTime CurrentDate
+        {
+            get { return _currentDate; }
+            set { SetProperty(ref _currentDate, value); }
+        }
+
+        public ObservableCollection<Doctor> Doctors
+        {
+            get { return _doctors; }
+            set { SetProperty(ref _doctors, value); }
+        }
+
+        public ObservableCollection<Schedule> Schedules
+        {
+            get { return _schedules; }
+            set { SetProperty(ref _schedules, value); }
+        }
+
+        public Schedule CurrentSchedule
+        {
+            get { return _currentSchedule; }
+            set { SetProperty(ref _currentSchedule, value); }
+        }
+
+        public ObservableCollection<ScheduleDay> CurrentWeek
+        {
+            get { return _currentWeek; }
+            set { SetProperty(ref _currentWeek, value); }
+        }
         public List<ResultMessage> Errors
         {
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _schedule;
-        public ListCollectionView Schedule
-        {
-            get { return _schedule; }
-            set { SetProperty(ref _schedule, value); }
-        }
-        private ListCollectionView _packagesInSchedule;
-        public ListCollectionView PackagesInSchedule
-        {
-            get { return _packagesInSchedule; }
-            set
-            {
-                SetProperty(ref _packagesInSchedule, value);
-            }
-        }
-        private ListCollectionView _packagesBase;
-        public ListCollectionView PackagesBase
-        {
-            get { return _packagesBase; }
-            set { SetProperty(ref _packagesBase, value); }
-        }
-        private ListCollectionView _packages;
-        public ListCollectionView Packages
-        {
-            get { return _packages; }
-            set { SetProperty(ref _packages, value); }
-        }
-        private Package _currentPackageInSchedule;
-
-        public Package CurrentPackageInSchedule
-        {
-            get { return _currentPackageInSchedule; }
-            set
-            {
-                if (value.Id == 0) _currentBasePackage = new Package();
-                else
-                {
-                    for (int i = 0; i < PackagesBase.Count; i++)
-                    {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPackageInSchedule, value);
-            }
-        }
-        private Package _currentPackage;
-
-        public Package CurrentPackage
-        {
-            get { return _currentPackage; }
-            set
-            {
-                if (value.Id == 0) _currentBasePackage = new Package();
-                else
-                {
-                    for (int i = 0; i < PackagesBase.Count; i++)
-                    {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPackage, value);
-
-            }
-        }
-        private Package _currentBasePackage;
-
-        private Schedule _currentSchedule;
-
-        public Schedule CurrentSchedule
-        {
-            get { return _currentSchedule; }
-            set
-            {
-                SetProperty(ref _currentSchedule, value);
-            }
-        }
+        #endregion
 
         #endregion
 
@@ -176,67 +142,64 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
-            _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
-            _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
-            _savePackageCommand = new DelegateCommand<object>(SavePackage);
-            _newScheduleCommand = new DelegateCommand<object>(NewSchedule, CanAddSchedule);
+            _copyScheduleToNextWeekCommand = new DelegateCommand<object>(CopyScheduleToNextWeek);
+            _makeStartJointCommand = new DelegateCommand<object>(MakeStartJoint, CanMakeStartJoint);
+            _makeStartGapedJointCommand = new DelegateCommand<object>(MakeStartGapedJoint, CanMakeStartGapedJoint);
+            _makeEndJointCommand = new DelegateCommand<object>(MakeEndJoint, CanMakeEndJoint);
+            _makeEndGapedJointCommand = new DelegateCommand<object>(MakeEndGapedJoint, CanMakeEndGapedJoint);
             _removeScheduleCommand = new DelegateCommand<object>(RemoveSchedule);
             _saveScheduleCommand = new DelegateCommand<object>(SaveSchedule);
+
+            _startHour = int.Parse(Utils.ReadSetting("StartHour"));
+            _endHour = int.Parse(Utils.ReadSetting("EndHour"));
+            _cabinets = Utils.ReadSetting("Cabinets").Split(',');
+
+            _currentDate=DateTime.Now;
+
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //_jsonClient.GetAsync(new PackagesSelect())
-            //.Success(ri =>
-            //{
-            //    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //    PackagesBase = new ListCollectionView(ri.Packages);
-            //    _jsonClient.GetAsync(new ScheduleSelect())
-            //    .Success(rig =>
-            //    {
-            //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //        Schedule = new ListCollectionView(rig.Schedule);
-            //        Schedule.CurrentChanged += Schedule_CurrentChanged;
 
-            //        CurrentSchedule = new Schedule();
-            //        PackagesInSchedule.CurrentChanged += PackagesInSchedule_CurrentChanged;
-            //        PackagesReload(ri.Packages);
-            //        Schedule.MoveCurrentTo(null);
-            //    })
-            //    .Error(ex =>
-            //    {
-            //        throw ex;
-            //    });
-            //})
-            //.Error(ex =>
-            //{
-            //    throw ex;
-            //});
+            _jsonClient.GetAsync(new DoctorsSelect())
+            .Success(rig =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Doctors = new ObservableCollection<Doctor>(rig.Doctors);
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+
+            //Get Schedules here
+
+            Schedules=new ObservableCollection<Schedule>();
+            DateTime startDate = Utils.GetFirstDayOfWeek(_currentDate);
+            DateTime endDate = Utils.GetLastDayOfWeek(_currentDate);
+
+            MakeCurrentWeek(startDate, endDate,_cabinets);
         }
 
-        private void CopyPackage(object obj)
+        private void MakeCurrentWeek(DateTime startDate, DateTime endDate, string[] cabinets)
         {
-            CurrentPackage = CurrentPackage.CopyInstance();
+            CurrentWeek=new ObservableCollection<ScheduleDay>();
+            ScheduleDay scheduleDay;
+            ScheduleCabinet scheduleCabinet;
+            while (startDate<=endDate)
+            {
+                scheduleDay = new ScheduleDay(startDate);
+                foreach (var cabinet in cabinets)
+                {
+                    scheduleCabinet = new ScheduleCabinet(cabinet);
 
+                }
+                startDate = startDate.AddDays(1);
+            }
         }
 
-        private bool CanRemovePackage(object arg)
+        private void CopyScheduleToNextWeek(object obj)
         {
-            return (CurrentPackage != null) ? CurrentPackage.Name != "" : false;
-        }
-
-        private void Schedule_CurrentChanged(object sender, EventArgs e)
-        {
-            CurrentSchedule = Schedule.CurrentItem != null ? (Schedule)Schedule.CurrentItem : new Schedule();
-        }
-
-        private void Packages_CurrentChanged(object sender, EventArgs e)
-        {
-            CurrentPackage = Packages.CurrentItem != null ? (Package)Packages.CurrentItem : new Package();
-        }
-        private void PackagesInSchedule_CurrentChanged(object sender, EventArgs e)
-        {
-            CurrentPackageInSchedule = PackagesInSchedule.CurrentItem != null ? (Package)PackagesInSchedule.CurrentItem : new Package();
+            //
         }
 
         #region Schedule
@@ -283,7 +246,6 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         if (isNew)
                         {
                             CurrentSchedule = new Schedule();
-                            _newScheduleCommand.RaiseCanExecuteChanged();
                         }
                         else
                         {
@@ -292,7 +254,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                             //{
                             //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false); _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                             //    r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
-                            //    RemovePackageFromScheduleByIGID(CurrentSchedule.Id);
+                            //    RemoveScheduleFromScheduleByIGID(CurrentSchedule.Id);
                             //    Schedule.Remove(Schedule.CurrentItem);
                             //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                             //    _newScheduleCommand.RaiseCanExecuteChanged();
@@ -305,90 +267,43 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                     }
                 });
         }
-        private bool CanAddSchedule(object arg)
-        {
-            //return CurrentSchedule == null || CurrentSchedule.Id != 0;
-            return true;
-        }
         #endregion
 
-        #region Package
-        private void NewPackage(object obj)
+        #region Joints
+        private void MakeStartJoint(object obj)
         {
-            CurrentPackage = new Package();
+            
         }
-
-        private void SavePackage(object obj)
+        private bool CanMakeStartJoint(object arg)
         {
-            bool isNew = CurrentPackage.Id <= 0;
-            Errors = CurrentPackage.Validate();
-            if (Errors.Count == 0)
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                //_jsonClient.PostAsync(new PackageSave { Package = CurrentPackage })
-                //    .Success(r =>
-                //    {
-                //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                //        CurrentPackage.Id = r.PackageId;
-                //        if (isNew)
-                //        {
-                //            PackagesBase.AddNewItem(CurrentPackage);
-                //            PackagesInScheduleRefresh();
-                //        }
-                //        r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
-                //        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                //        _newPackageCommand.RaiseCanExecuteChanged();
-                //    })
-                //    .Error(ex =>
-                //    {
-                //        throw ex;
-                //    });
-            }
-        }
-
-        private void RemovePackage(object obj)
-        {
-            bool isNew = CurrentPackage.Id == 0;
-            ConfirmationRequest.Raise(
-                new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
-                c =>
-                {
-                    if (c.Confirmed)
-                    {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                        if (isNew)
-                        {
-                            CurrentPackage = new Package();
-                            _newPackageCommand.RaiseCanExecuteChanged();
-                        }
-                        else
-                        {
-                            //_jsonClient.GetAsync(new PackageDelete { PackageId = CurrentPackage.Id })
-                            //.Success(r =>
-                            //{
-                            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                            //    r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
-                            //    RemovePackageFromScheduleByIID(_currentBasePackage.Id);
-                            //    PackagesBase.Remove(_currentBasePackage);
-                            //    //Packages.Remove(Packages.CurrentItem);
-                            //    PackagesInScheduleRefresh();
-                            //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                            //    _newPackageCommand.RaiseCanExecuteChanged();
-                            //})
-                            //.Error(ex =>
-                            //{
-                            //    throw ex;
-                            //});
-                        }
-                    }
-                });
-        }
-        private bool CanAddPackage(object arg)
-        {
-            //return CurrentPackage == null || CurrentPackage.Id != 0;
             return true;
         }
 
+        private void MakeStartGapedJoint(object obj)
+        {
+
+        }
+        private bool CanMakeStartGapedJoint(object arg)
+        {
+            return true;
+        }
+        private void MakeEndJoint(object obj)
+        {
+
+        }
+        private bool CanMakeEndJoint(object arg)
+        {
+            return true;
+        }
+
+        private void MakeEndGapedJoint(object obj)
+        {
+
+        }
+        private bool CanMakeEndGapedJoint(object arg)
+        {
+            return true;
+        }
         #endregion
     }
 }
