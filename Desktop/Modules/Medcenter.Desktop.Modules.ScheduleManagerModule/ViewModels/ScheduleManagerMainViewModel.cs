@@ -153,27 +153,34 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _currentDate=DateTime.Now;
             MakeCabinetHours();
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
-
+            _startDate = Utils.GetFirstDayOfWeek(_currentDate);
+            _endDate = Utils.GetLastDayOfWeek(_currentDate);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
 
             _jsonClient.GetAsync(new DoctorsSelect())
             .Success(rig =>
             {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 Doctors = new ObservableCollection<Doctor>(rig.Doctors);
+                _jsonClient.PostAsync(new SchedulesSelect { TimeStart = _startDate, TimeEnd = _endDate })
+                .Success(rs =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Schedules = new ObservableCollection<Schedule>(rs.Schedules);
+                    
+
+                    MakeCurrentWeek();
+                })
+                .Error(ex =>
+                {
+                    Schedules = new ObservableCollection<Schedule>();
+                    throw ex;
+                });
             })
             .Error(ex =>
             {
                 throw ex;
             });
-
-            //Get Schedules here
-
-            Schedules=new ObservableCollection<Schedule>();
-            _startDate = Utils.GetFirstDayOfWeek(_currentDate);
-            _endDate = Utils.GetLastDayOfWeek(_currentDate);
-
-            MakeCurrentWeek();
+            
         }
 
         private void MakeCabinetHours()
@@ -323,44 +330,45 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                //_jsonClient.PostAsync(new scheduleave { Schedule = CurrentSchedule })
-                //    .Success(r =>
-                //    {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                //        CurrentSchedule.Id = r.ScheduleId;
-                //        if (isNew) Schedule.AddNewItem(CurrentSchedule);
-                //        r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
-                //        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                //        _newScheduleCommand.RaiseCanExecuteChanged();
-                //    })
-                //    .Error(ex =>
-                //    {
-                //        throw ex;
-                //    });
-
-                if (isNew)
-                {
-                    schedule.Id = 1; // Get Id from service
-                    
-                    CopyScheduleToWeekdays(schedule);
-                    schedule.ResetFlags();
-                    Schedules.Add(schedule);
-                }
-                else
-                {
-                    if (CurrentSchedule.ReplaceEverywhere)
+                _jsonClient.PostAsync(new ScheduleSave {Schedule = schedule})
+                    .Success(r =>
                     {
-                        ObservableCollection<Schedule> schedules = FilterSchedules(_oldDoctorId);
-                        foreach (var s in schedules)
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        if (isNew)
                         {
-                            s.CurrentDoctor = schedule.CurrentDoctor;
+                            CurrentSchedule.Id = r.ScheduleId;
+                            schedule.Id = r.ScheduleId;
+
+                            CopyScheduleToWeekdays(schedule);
+                            schedule.ResetFlags();
+                            Schedules.Add(schedule);
                         }
-                        _oldDoctorId = schedule.CurrentDoctor.Id;
-                        
-                    }
-                }
-                MakeCurrentWeek();
-                CurrentSchedule = new Schedule();
+                        else
+                        {
+                            if (CurrentSchedule.ReplaceEverywhere)
+                            {
+                                ObservableCollection<Schedule> schedules = FilterSchedules(_oldDoctorId);
+                                foreach (var s in schedules)
+                                {
+                                    s.CurrentDoctor = schedule.CurrentDoctor;
+                                    SaveSchedule(s);
+                                }
+                                _oldDoctorId = schedule.CurrentDoctor.Id;
+                            }
+                        }
+                        r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
+                            schedule.Start.ToString("D"), schedule.End.ToString("D"), schedule.CurrentDoctor.ShortName);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        MakeCurrentWeek();
+                        CurrentSchedule = new Schedule();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+
+
+
             }
         }
 
@@ -393,12 +401,8 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private void RemoveSchedule(object obj)
         {
             bool isNew = CurrentSchedule.Id == 0;
-            if (isNew)
+            if (!isNew)
             {
-                MakeCurrentWeek();
-                CurrentSchedule = new Schedule();
-            }
-            else
                 ConfirmationRequest.Raise(
                     new Confirmation
                     {
@@ -410,33 +414,31 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         if (c.Confirmed)
                         {
                             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                            if (isNew)
-                            {
-                                CurrentSchedule = new Schedule();
-                            }
-                            else
-                            {
-                                //_jsonClient.GetAsync(new ScheduleDelete { ScheduleId = CurrentSchedule.Id })
-                                //.Success(r =>
-                                //{
-                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                                //    r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
-                                //    RemoveScheduleFromScheduleByIGID(CurrentSchedule.Id);
-                                //    Schedule.Remove(Schedule.CurrentItem);
-                                //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                                //    _newScheduleCommand.RaiseCanExecuteChanged();
-                                //})
-                                //.Error(ex =>
-                                //{
-                                //    throw ex;
-                                //});
-                                Schedules.Remove(CurrentSchedule);
-                                MakeCurrentWeek();
-                                CurrentSchedule = new Schedule();
-                            }
+                            _jsonClient.GetAsync(new ScheduleDelete {ScheduleId = CurrentSchedule.Id})
+                                .Success(r =>
+                                {
+                                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                    Schedules.Remove(CurrentSchedule);
+                                    r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.CabinetId,
+                                        CurrentSchedule.Start.ToString("D"), CurrentSchedule.End.ToString("D"),
+                                        CurrentSchedule.CurrentDoctor.ShortName);
+                                    MakeCurrentWeek();
+                                    CurrentSchedule = new Schedule();
+                                })
+                                .Error(ex =>
+                                {
+                                    throw ex;
+                                });
+
+
                         }
                     });
+            }
+            else
+            {
+                MakeCurrentWeek();
+                CurrentSchedule = new Schedule();
+            }
         }
         #endregion
 
