@@ -20,6 +20,18 @@ namespace Medcenter.Service.Model.Types
         public Doctor()
         {
             PackageIds = new List<int>();
+            Color = "#FFFFFFFF";
+            Id = 0;
+            ShortName = "";
+            Name = "";
+        }
+        public Doctor(string shortName)
+        {
+            PackageIds = new List<int>();
+            Color = "#FFFFFFFF";
+            Id = 0;
+            ShortName = shortName;
+            Name = "";
         }
         [DataMember]
         public int Id { get; set; }

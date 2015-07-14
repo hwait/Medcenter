@@ -13,10 +13,16 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.Model
         public string CabinetId { get; set; }
         public ObservableCollection<Schedule> Schedules { get; set; }
 
-        public ScheduleCabinet(string cabinet)
+        public ScheduleCabinet(int cabinet)
         {
-            CabinetId = (cabinet == "") ? "" : "Каб. " + cabinet;
+            CabinetId = (cabinet == 0) ? "" : "Каб. " + cabinet;
             Schedules=new ObservableCollection<Schedule>();
+        }
+
+        public ScheduleCabinet()
+        {
+            CabinetId = "";
+            Schedules = new ObservableCollection<Schedule>();
         }
     }
     public class ScheduleDay
@@ -28,6 +34,11 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.Model
         {
             Date = date;
             ScheduleCabinets=new ObservableCollection<ScheduleCabinet>();
+        }
+
+        public ScheduleDay()
+        {
+            
         }
     }
 }

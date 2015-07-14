@@ -26,6 +26,7 @@ using Microsoft.Practices.Prism.Regions;
 //using Syncfusion.Windows.Shared;
 using Microsoft.Win32;
 using ServiceStack;
+using Telerik.Windows.Controls.Animation;
 
 namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 {
@@ -39,39 +40,28 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         
         #region Properties
 
-        private int _startHour;
-        private int _endHour;
+        private int _startHour,_endHour, _oldDoctorId, _gap;
         private string[] _cabinets;
+        private readonly DelegateCommand<Schedule> _scheduleChooseCommand;
         private readonly DelegateCommand<object> _copyScheduleToNextWeekCommand;
-        private readonly DelegateCommand<object> _makeStartJointCommand;
         private readonly DelegateCommand<object> _makeStartGapedJointCommand;
-        private readonly DelegateCommand<object> _makeEndJointCommand;
         private readonly DelegateCommand<object> _makeEndGapedJointCommand;
         private readonly DelegateCommand<object> _removeScheduleCommand;
-        private readonly DelegateCommand<object> _saveScheduleCommand;
+        private readonly DelegateCommand<Schedule> _saveScheduleCommand;
 
         #region Commands Implementation
-
+        public ICommand ScheduleChooseCommand
+        {
+            get { return this._scheduleChooseCommand; }
+        }
         public ICommand CopyScheduleToNextWeekCommand
         {
             get { return this._copyScheduleToNextWeekCommand; }
         }
-
-        public ICommand MakeStartJointCommand
-        {
-            get { return this._makeStartJointCommand; }
-        }
-
         public ICommand MakeStartGapedJointCommand
         {
             get { return this._makeStartGapedJointCommand; }
         }
-
-        public ICommand MakeEndJointCommand
-        {
-            get { return this._makeEndJointCommand; }
-        }
-
         public ICommand MakeEndGapedJointCommand
         {
             get { return this._makeEndGapedJointCommand; }
@@ -89,13 +79,13 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         #endregion
 
-        private DateTime _currentDate;
+        private DateTime _currentDate, _startDate, _endDate;
         private ObservableCollection<Doctor> _doctors;
         private ObservableCollection<Schedule> _schedules;
         private Schedule _currentSchedule;
         private ObservableCollection<ScheduleDay> _currentWeek;
         private List<ResultMessage> _errors;
-        
+        private string[] _cabinetHours;
         #region Binding Fields Implementation
 
         public DateTime CurrentDate
@@ -119,9 +109,16 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         public Schedule CurrentSchedule
         {
             get { return _currentSchedule; }
-            set { SetProperty(ref _currentSchedule, value); }
+            set
+            {
+                SetProperty(ref _currentSchedule, value);
+            }
         }
-
+        public string[] CabinetHours
+        {
+            get { return _cabinetHours; }
+            set { SetProperty(ref _cabinetHours, value); }
+        }
         public ObservableCollection<ScheduleDay> CurrentWeek
         {
             get { return _currentWeek; }
@@ -142,20 +139,19 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
+            _scheduleChooseCommand = new DelegateCommand<Schedule>(ScheduleChoose);
             _copyScheduleToNextWeekCommand = new DelegateCommand<object>(CopyScheduleToNextWeek);
-            _makeStartJointCommand = new DelegateCommand<object>(MakeStartJoint, CanMakeStartJoint);
             _makeStartGapedJointCommand = new DelegateCommand<object>(MakeStartGapedJoint, CanMakeStartGapedJoint);
-            _makeEndJointCommand = new DelegateCommand<object>(MakeEndJoint, CanMakeEndJoint);
             _makeEndGapedJointCommand = new DelegateCommand<object>(MakeEndGapedJoint, CanMakeEndGapedJoint);
             _removeScheduleCommand = new DelegateCommand<object>(RemoveSchedule);
-            _saveScheduleCommand = new DelegateCommand<object>(SaveSchedule);
+            _saveScheduleCommand = new DelegateCommand<Schedule>(SaveSchedule);
 
             _startHour = int.Parse(Utils.ReadSetting("StartHour"));
             _endHour = int.Parse(Utils.ReadSetting("EndHour"));
             _cabinets = Utils.ReadSetting("Cabinets").Split(',');
-
+            _gap = int.Parse(Utils.ReadSetting("RestGap"));
             _currentDate=DateTime.Now;
-
+            MakeCabinetHours();
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
@@ -174,28 +170,143 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             //Get Schedules here
 
             Schedules=new ObservableCollection<Schedule>();
-            DateTime startDate = Utils.GetFirstDayOfWeek(_currentDate);
-            DateTime endDate = Utils.GetLastDayOfWeek(_currentDate);
+            _startDate = Utils.GetFirstDayOfWeek(_currentDate);
+            _endDate = Utils.GetLastDayOfWeek(_currentDate);
 
-            MakeCurrentWeek(startDate, endDate,_cabinets);
+            MakeCurrentWeek();
         }
 
-        private void MakeCurrentWeek(DateTime startDate, DateTime endDate, string[] cabinets)
+        private void MakeCabinetHours()
         {
-            CurrentWeek=new ObservableCollection<ScheduleDay>();
+            CabinetHours = new string[_endHour - _startHour+1];
+            for (int i = _startHour; i <= _endHour; i++)
+            {
+                CabinetHours[i - _startHour] = i.ToString("00");
+            }
+            
+        }
+
+        private void ScheduleChoose(Schedule obj)
+        {
+            CurrentSchedule = obj;
+            _oldDoctorId = obj.CurrentDoctor.Id;
+        }
+
+        #region MakeCurrentWeek
+
+        private void MakeCurrentWeek()
+        {
+            CurrentWeek = new ObservableCollection<ScheduleDay>();
             ScheduleDay scheduleDay;
             ScheduleCabinet scheduleCabinet;
-            while (startDate<=endDate)
+            DateTime currentStartTime, startTime, endTime, startDate;
+            ObservableCollection<Schedule> schedules;
+            startDate = _startDate;
+            while (startDate <= _endDate)
             {
+                startTime = new DateTime(startDate.Year, startDate.Month, startDate.Day, _startHour, 0, 0);
+                    //Make a minimal start time for the current date
+                endTime = new DateTime(startDate.Year, startDate.Month, startDate.Day, _endHour, 59, 0);
+                    //Make a max start time for the current date
                 scheduleDay = new ScheduleDay(startDate);
-                foreach (var cabinet in cabinets)
+                foreach (var cabinet in _cabinets)
                 {
-                    scheduleCabinet = new ScheduleCabinet(cabinet);
-
+                    int cab = int.Parse(cabinet);
+                    currentStartTime = startTime; // renew currentStartTime before start new cycle
+                    scheduleCabinet = new ScheduleCabinet(cab);
+                    schedules = FilterSchedules(currentStartTime, cab);
+                    foreach (var schedule in schedules)
+                    {
+                        if (currentStartTime < schedule.Start) // Have to fill empty place with white bar
+                        {
+                            scheduleCabinet.Schedules.Add(MakeWhiteBar(currentStartTime, schedule.Start, cab));
+                            currentStartTime = schedule.Start; // new start time for real Schedule following
+                            scheduleCabinet.Schedules.Add(schedule);
+                            currentStartTime = schedule.End; // new start time for next Schedule
+                        }
+                        else // Have to fill real schedule info
+                        {
+                            scheduleCabinet.Schedules.Add(schedule);
+                            currentStartTime = schedule.End; // new start time for next Schedule
+                        }
+                    }
+                    if (currentStartTime < endTime) // Last schedule is empty if a gap exists
+                        scheduleCabinet.Schedules.Add(MakeWhiteBar(currentStartTime, endTime, cab));
+                    scheduleDay.ScheduleCabinets.Add(scheduleCabinet); //Add new cabinet here
                 }
+                //scheduleDay.ScheduleCabinets.Add(TimeRuler(startDate));
+                CurrentWeek.Add(scheduleDay); // Add new scheduleDay here
                 startDate = startDate.AddDays(1);
             }
         }
+
+        private ScheduleCabinet TimeRuler(DateTime startDate)
+        {
+            ScheduleCabinet cabinet=new ScheduleCabinet();
+            for (int i = _startHour; i <= _endHour; i++)
+            {
+                cabinet.Schedules.Add(
+                    new Schedule
+                    {
+                        Id = 0,
+                        CurrentDoctor = new Doctor {Id = 0, Name = "", ShortName = "", Color = Colors.Black.ToString()},
+                        Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 0, 0),
+                        End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0)
+                    });
+                cabinet.Schedules.Add(
+                    new Schedule
+                    {
+                        Id = 0,
+                        CurrentDoctor = new Doctor (i.ToString()),
+                        Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0),
+                        End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 59, 0)
+                    });
+            }
+            return cabinet;
+        }
+
+        private ObservableCollection<Schedule> FilterSchedules(DateTime time, int cabinet)
+        {
+            var schedules = new ObservableCollection<Schedule>();
+            DateTime ts = new DateTime(time.Year, time.Month, time.Day, 0, 0, 0);
+            DateTime te = new DateTime(time.Year, time.Month, time.Day + 1, 0, 0, 0);
+            var list = from s in Schedules
+                where
+                    s.CabinetId == cabinet
+                    && s.Start > ts
+                    && s.End < te
+                orderby s.Start
+                select s;
+            foreach (var s in list)
+            {
+                schedules.Add(s);
+            }
+            return schedules;
+        }
+        private ObservableCollection<Schedule> FilterSchedules(int doctorId)
+        {
+            var schedules = new ObservableCollection<Schedule>();
+            var list = from s in Schedules
+                       where
+                           s.CurrentDoctor.Id == doctorId
+                       select s;
+            foreach (var s in list)
+            {
+                schedules.Add(s);
+            }
+            return schedules;
+        }
+        private Schedule GetSchedule(int id)
+        {
+            var list = Schedules.FirstOrDefault(s => s.Id == id);
+            return list;
+        }
+        private Schedule MakeWhiteBar(DateTime startTime, DateTime endTime, int cabinet)
+        {
+            return new Schedule(startTime, endTime,cabinet);
+        }
+
+        #endregion
 
         private void CopyScheduleToNextWeek(object obj)
         {
@@ -204,22 +315,18 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         #region Schedule
 
-        private void NewSchedule(object obj)
+        private void SaveSchedule(Schedule schedule)
         {
-            CurrentSchedule = new Schedule();
-        }
-
-        private void SaveSchedule(object obj)
-        {
-            bool isNew = CurrentSchedule.Id <= 0;
-            Errors = CurrentSchedule.Validate();
+            //CurrentSchedule = schedule;
+            bool isNew = schedule.Id <= 0;
+            Errors = schedule.Validate();
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 //_jsonClient.PostAsync(new scheduleave { Schedule = CurrentSchedule })
                 //    .Success(r =>
                 //    {
-                //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 //        CurrentSchedule.Id = r.ScheduleId;
                 //        if (isNew) Schedule.AddNewItem(CurrentSchedule);
                 //        r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
@@ -230,75 +337,128 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                 //    {
                 //        throw ex;
                 //    });
+
+                if (isNew)
+                {
+                    schedule.Id = 1; // Get Id from service
+                    
+                    CopyScheduleToWeekdays(schedule);
+                    schedule.ResetFlags();
+                    Schedules.Add(schedule);
+                }
+                else
+                {
+                    if (CurrentSchedule.ReplaceEverywhere)
+                    {
+                        ObservableCollection<Schedule> schedules = FilterSchedules(_oldDoctorId);
+                        foreach (var s in schedules)
+                        {
+                            s.CurrentDoctor = schedule.CurrentDoctor;
+                        }
+                        _oldDoctorId = schedule.CurrentDoctor.Id;
+                        
+                    }
+                }
+                MakeCurrentWeek();
+                CurrentSchedule = new Schedule();
             }
+        }
+
+        private void CopyScheduleToWeekdays(Schedule schedule)
+        {
+            if (schedule.Monday) CopyScheduleToWeekday(schedule, _startDate);
+            if (schedule.Tuesday) CopyScheduleToWeekday(schedule, _startDate.AddDays(1));
+            if (schedule.Wednesday) CopyScheduleToWeekday(schedule, _startDate.AddDays(2));
+            if (schedule.Thursday) CopyScheduleToWeekday(schedule, _startDate.AddDays(3));
+            if (schedule.Friday) CopyScheduleToWeekday(schedule, _startDate.AddDays(4));
+            if (schedule.Saturday) CopyScheduleToWeekday(schedule, _startDate.AddDays(5));
+            if (schedule.Sunday) CopyScheduleToWeekday(schedule, _startDate.AddDays(6));
+        }
+
+        private void CopyScheduleToWeekday(Schedule schedule, DateTime date)
+        {
+            DateTime ds = new DateTime(date.Year, date.Month, date.Day, schedule.Start.Hour, schedule.Start.Minute,0);
+            DateTime de = new DateTime(date.Year, date.Month, date.Day, schedule.End.Hour, schedule.End.Minute, 0);
+            Schedule newSchedule = new Schedule(ds, de, schedule.CabinetId);
+            if (Schedules.Any(s =>
+                ((s.Start >= newSchedule.Start && s.Start < newSchedule.End) ||
+                (s.End > newSchedule.Start && s.End <= newSchedule.End) ||
+                (s.Start <= newSchedule.Start && s.End >= newSchedule.End)) && s.CabinetId == newSchedule.CabinetId)
+                || (schedule.Start == newSchedule.Start && schedule.End == newSchedule.End)) 
+                return;
+            newSchedule.CurrentDoctor = schedule.CurrentDoctor;
+            SaveSchedule(newSchedule);
         }
 
         private void RemoveSchedule(object obj)
         {
             bool isNew = CurrentSchedule.Id == 0;
-            ConfirmationRequest.Raise(
-                new Confirmation { Content = "Группа будет удалёна! Вы уверены?", Title = "Удаление группы инспекций." },
-                c =>
-                {
-                    if (c.Confirmed)
+            if (isNew)
+            {
+                MakeCurrentWeek();
+                CurrentSchedule = new Schedule();
+            }
+            else
+                ConfirmationRequest.Raise(
+                    new Confirmation
                     {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                        if (isNew)
+                        Content = "Расписание будет удалёно! Вы уверены?",
+                        Title = "Удаление расписания."
+                    },
+                    c =>
+                    {
+                        if (c.Confirmed)
                         {
-                            CurrentSchedule = new Schedule();
+                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                            if (isNew)
+                            {
+                                CurrentSchedule = new Schedule();
+                            }
+                            else
+                            {
+                                //_jsonClient.GetAsync(new ScheduleDelete { ScheduleId = CurrentSchedule.Id })
+                                //.Success(r =>
+                                //{
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                //    r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
+                                //    RemoveScheduleFromScheduleByIGID(CurrentSchedule.Id);
+                                //    Schedule.Remove(Schedule.CurrentItem);
+                                //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                //    _newScheduleCommand.RaiseCanExecuteChanged();
+                                //})
+                                //.Error(ex =>
+                                //{
+                                //    throw ex;
+                                //});
+                                Schedules.Remove(CurrentSchedule);
+                                MakeCurrentWeek();
+                                CurrentSchedule = new Schedule();
+                            }
                         }
-                        else
-                        {
-                            //_jsonClient.GetAsync(new ScheduleDelete { ScheduleId = CurrentSchedule.Id })
-                            //.Success(r =>
-                            //{
-                            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false); _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                            //    r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.Name);
-                            //    RemoveScheduleFromScheduleByIGID(CurrentSchedule.Id);
-                            //    Schedule.Remove(Schedule.CurrentItem);
-                            //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                            //    _newScheduleCommand.RaiseCanExecuteChanged();
-                            //})
-                            //.Error(ex =>
-                            //{
-                            //    throw ex;
-                            //});
-                        }
-                    }
-                });
+                    });
         }
         #endregion
 
         #region Joints
-        private void MakeStartJoint(object obj)
-        {
-            
-        }
-        private bool CanMakeStartJoint(object arg)
-        {
-            return true;
-        }
-
+        
         private void MakeStartGapedJoint(object obj)
         {
-
+            var t = CurrentSchedule.Start.AddMinutes(_gap);
+            CurrentSchedule.StartHour = t.Hour.ToString("00");
+            CurrentSchedule.StartMinute = t.Minute.ToString("00");
+            SetProperty(ref _currentSchedule, CurrentSchedule);
         }
         private bool CanMakeStartGapedJoint(object arg)
         {
             return true;
         }
-        private void MakeEndJoint(object obj)
-        {
-
-        }
-        private bool CanMakeEndJoint(object arg)
-        {
-            return true;
-        }
-
         private void MakeEndGapedJoint(object obj)
         {
-
+            var t = CurrentSchedule.Start.AddMinutes(_gap*-1);
+            CurrentSchedule.StartHour = t.Hour.ToString("00");
+            CurrentSchedule.StartMinute = t.Minute.ToString("00");
+            SetProperty(ref _currentSchedule, CurrentSchedule);
         }
         private bool CanMakeEndGapedJoint(object arg)
         {

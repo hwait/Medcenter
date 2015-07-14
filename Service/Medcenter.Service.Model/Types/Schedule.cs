@@ -17,19 +17,26 @@ namespace Medcenter.Service.Model.Types
         public int CabinetId { get; set; }
 
         [DataMember]
-        public string DoctorName { get; set; }
-        [DataMember]
-        public int DoctorId { get; set; }
-        [DataMember]
-        public string DoctorColor { get; set; }
-        [DataMember]
         public DateTime Start { get; set; }
         [DataMember]
         public DateTime End { get; set; }
+        [DataMember]
         public Doctor CurrentDoctor { get; set; }
+        public bool ReplaceEverywhere { get; set; }
+        public bool Monday { get; set; }
+        public bool Tuesday { get; set; }
+        public bool Wednesday { get; set; }
+        public bool Thursday { get; set; }
+        public bool Friday { get; set; }
+        public bool Saturday { get; set; }
+        public bool Sunday { get; set; }
         public string StartHour
         {
-            get { return Start.Hour.ToString("00"); }
+            get
+            {
+                return Start.Hour.ToString("00");
+                //return Start.Hour.ToString("00");
+            }
             set
             {
                 var val = 0;
@@ -72,13 +79,39 @@ namespace Medcenter.Service.Model.Types
         {
             get { return (int) End.Subtract(Start).TotalMinutes; }
         }
+
+        public Schedule(DateTime start, DateTime end, int cabinet)
+        {
+            CabinetId = cabinet;
+            Start = start;
+            End = end;
+            Id = 0;
+            CurrentDoctor=new Doctor();
+        }
+
+        public Schedule()
+        {
+            
+        }
+
+        public void ResetFlags()
+        {
+            ReplaceEverywhere =false;
+            Monday =false;
+            Tuesday =false;
+            Wednesday =false;
+            Thursday =false;
+            Friday =false;
+            Saturday =false;
+        }
+
         public List<ResultMessage> Validate()
         {
-            return new List<ResultMessage>();
-            //List<ResultMessage> em = new List<ResultMessage>();
-            //if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
-            //if (string.IsNullOrEmpty(ShortName)) em.Add(new ResultMessage(2, "Краткое наименование:", OperationErrors.EmptyString));
-            //return em;
+            //return new List<ResultMessage>();
+            List<ResultMessage> em = new List<ResultMessage>();
+            if (CurrentDoctor.Id==0) em.Add(new ResultMessage(2, "Доктор:", OperationErrors.VariantNotChoosen));
+            if (Start>=End) em.Add(new ResultMessage(2, "Время приёма:", OperationErrors.StartIsLaterThenEnd));
+            return em;
         }
     }
 }
