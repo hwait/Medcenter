@@ -33,7 +33,7 @@ namespace Medcenter.Desktop.Infrastructure
         public static DateTime GetLastDayOfWeek(DateTime dayInWeek)
         {
             int delta = (dayInWeek.DayOfWeek > 0) ? 7 - (int) dayInWeek.DayOfWeek : 0;
-            DateTime lastDayInWeek = dayInWeek.AddDays(delta);
+            DateTime lastDayInWeek = new DateTime(dayInWeek.AddDays(delta).Year, dayInWeek.AddDays(delta).Month, dayInWeek.AddDays(delta).Day, 23,59,0);
             return lastDayInWeek;
         }
         public static string ReadSetting(string key)

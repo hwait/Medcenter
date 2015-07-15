@@ -16,7 +16,7 @@ namespace Medcenter.Service.Interface.Services
         {
             var rows = Db.SqlList<Schedule>("EXEC sp_Schedules_Select @TimeStart, @TimeEnd", 
                 new { TimeStart = req.TimeStart, TimeEnd = req.TimeEnd });
-            return new SchedulesSelectResponse { Schedules = new List<Schedule>(rows) };
+            return new SchedulesSelectResponse { Schedules = rows };
         }
 
         public ScheduleSaveResponse Post(ScheduleSave req)
@@ -35,8 +35,8 @@ namespace Medcenter.Service.Interface.Services
                         CabinetId = req.Schedule.CabinetId,
                         DoctorId = req.Schedule.CurrentDoctor.Id,
                     });
-                    _message = new ResultMessage(0, "Сохранение расписания", OperationResults.ScheduleSave);
-                    Logger.Log("ScheduleSaveResponse.Saving");
+                    _message = new ResultMessage(0, "Расписание", OperationResults.ScheduleSave);
+                    //Logger.Log("ScheduleSaveResponse.Saving");
                 }
                 catch (Exception e)
                 {
@@ -56,8 +56,8 @@ namespace Medcenter.Service.Interface.Services
                         CabinetId = req.Schedule.CabinetId,
                         DoctorId = req.Schedule.CurrentDoctor.Id
                     });
-                    _message = new ResultMessage(0, "Новое расписание", OperationResults.ScheduleCreate);
-                    Logger.Log("PackageSaveResponse.NewPackage");
+                    _message = new ResultMessage(0, "Расписание", OperationResults.ScheduleCreate);
+                    //Logger.Log("PackageSaveResponse.NewPackage");
                 }
                 catch (Exception e)
                 {
@@ -84,7 +84,7 @@ namespace Medcenter.Service.Interface.Services
                     Id = req.ScheduleId
                 });
                 _message = new ResultMessage(0, "Расписание:", OperationResults.ScheduleDelete);
-                Logger.Log("ScheduleDeleteResponse");
+                //Logger.Log("ScheduleDeleteResponse");
             }
             catch (Exception e)
             {

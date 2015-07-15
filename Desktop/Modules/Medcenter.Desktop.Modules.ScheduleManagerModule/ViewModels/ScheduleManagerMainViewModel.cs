@@ -90,8 +90,15 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         public DateTime CurrentDate
         {
-            get { return _currentDate; }
-            set { SetProperty(ref _currentDate, value); }
+            get
+            {
+                return _currentDate;
+            }
+            set
+            {
+                SetProperty(ref _currentDate, value);
+                SchedulesReload();
+            }
         }
 
         public ObservableCollection<Doctor> Doctors
@@ -145,6 +152,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _makeEndGapedJointCommand = new DelegateCommand<object>(MakeEndGapedJoint, CanMakeEndGapedJoint);
             _removeScheduleCommand = new DelegateCommand<object>(RemoveSchedule);
             _saveScheduleCommand = new DelegateCommand<Schedule>(SaveSchedule);
+            this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _startHour = int.Parse(Utils.ReadSetting("StartHour"));
             _endHour = int.Parse(Utils.ReadSetting("EndHour"));
@@ -152,11 +160,17 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _gap = int.Parse(Utils.ReadSetting("RestGap"));
             _currentDate=DateTime.Now;
             MakeCabinetHours();
-            this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
+
+            SchedulesReload();
+
+        }
+
+        private void SchedulesReload()
+        {
             _startDate = Utils.GetFirstDayOfWeek(_currentDate);
             _endDate = Utils.GetLastDayOfWeek(_currentDate);
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
 
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new DoctorsSelect())
             .Success(rig =>
             {
@@ -166,8 +180,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Schedules = new ObservableCollection<Schedule>(rs.Schedules);
-                    
-
+                    foreach (var schedule in Schedules)
+                    {
+                        schedule.CurrentDoctor = Doctors.FirstOrDefault(s => s.Id == schedule.DoctorId);
+                    }
                     MakeCurrentWeek();
                 })
                 .Error(ex =>
@@ -180,17 +196,19 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             {
                 throw ex;
             });
-            
         }
+
+
+        #region MakeCurrentWeek
 
         private void MakeCabinetHours()
         {
-            CabinetHours = new string[_endHour - _startHour+1];
+            CabinetHours = new string[_endHour - _startHour + 1];
             for (int i = _startHour; i <= _endHour; i++)
             {
                 CabinetHours[i - _startHour] = i.ToString("00");
             }
-            
+
         }
 
         private void ScheduleChoose(Schedule obj)
@@ -198,9 +216,6 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             CurrentSchedule = obj;
             _oldDoctorId = obj.CurrentDoctor.Id;
         }
-
-        #region MakeCurrentWeek
-
         private void MakeCurrentWeek()
         {
             CurrentWeek = new ObservableCollection<ScheduleDay>();
@@ -276,7 +291,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         {
             var schedules = new ObservableCollection<Schedule>();
             DateTime ts = new DateTime(time.Year, time.Month, time.Day, 0, 0, 0);
-            DateTime te = new DateTime(time.Year, time.Month, time.Day + 1, 0, 0, 0);
+            DateTime te = new DateTime(time.AddDays(1).Year, time.AddDays(1).Month, time.AddDays(1).Day, 0, 0, 0);
             var list = from s in Schedules
                 where
                     s.CabinetId == cabinet
@@ -317,7 +332,12 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         private void CopyScheduleToNextWeek(object obj)
         {
-            //
+            foreach (var schedule in Schedules)
+            {
+                CopyScheduleToWeekday(schedule, schedule.Start.AddDays(7));
+            }
+            _currentDate = _currentDate.AddDays(7);
+            SchedulesReload();
         }
 
         #region Schedule
@@ -336,6 +356,8 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                         if (isNew)
                         {
+                            if (CurrentSchedule == null)
+                                CurrentSchedule = schedule;
                             CurrentSchedule.Id = r.ScheduleId;
                             schedule.Id = r.ScheduleId;
 
@@ -357,7 +379,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                             }
                         }
                         r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
-                            schedule.Start.ToString("D"), schedule.End.ToString("D"), schedule.CurrentDoctor.ShortName);
+                            schedule.Start.ToString("D"), schedule.Start.ToString("t"), schedule.End.ToString("t"), schedule.CurrentDoctor.ShortName);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                         MakeCurrentWeek();
                         CurrentSchedule = new Schedule();
@@ -420,7 +442,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                                     Schedules.Remove(CurrentSchedule);
                                     r.Message.Message = string.Format(r.Message.Message, CurrentSchedule.CabinetId,
-                                        CurrentSchedule.Start.ToString("D"), CurrentSchedule.End.ToString("D"),
+                                        CurrentSchedule.Start.ToString("D"), CurrentSchedule.Start.ToString("t"), CurrentSchedule.End.ToString("t"),
                                         CurrentSchedule.CurrentDoctor.ShortName);
                                     MakeCurrentWeek();
                                     CurrentSchedule = new Schedule();

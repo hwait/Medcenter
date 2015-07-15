@@ -63,7 +63,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             }
         }
 
-        public DateTime CurrentData
+        public DateTime CurrentDate
         {
             get
             {

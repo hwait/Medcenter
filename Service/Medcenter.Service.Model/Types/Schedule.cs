@@ -15,13 +15,27 @@ namespace Medcenter.Service.Model.Types
         public int Id { get; set; }
         [DataMember]
         public int CabinetId { get; set; }
-
+        [DataMember]
+        public int DoctorId { get; set; }
         [DataMember]
         public DateTime Start { get; set; }
         [DataMember]
         public DateTime End { get; set; }
+
+        private Doctor _currentDoctor;
         [DataMember]
-        public Doctor CurrentDoctor { get; set; }
+        public Doctor CurrentDoctor
+        {
+            get
+            {
+                return _currentDoctor;
+            }
+            set
+            {
+                _currentDoctor=value;
+                DoctorId = _currentDoctor.Id;
+            }
+        }
         public bool ReplaceEverywhere { get; set; }
         public bool Monday { get; set; }
         public bool Tuesday { get; set; }

@@ -85,6 +85,7 @@ namespace Medcenter.Service.Model.Messaging
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"c:\logs\log.txt", true))
                 {
                     file.WriteLine(JsonConvert.SerializeObject(logMessage));
+                    file.Close();
                 }
         }
     }
