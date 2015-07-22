@@ -86,7 +86,10 @@
     <Compile Include="Types\Inspection.cs" />
     <Compile Include="Types\Package.cs" />
     <Compile Include="Types\PackageGroup.cs" />
+    <Compile Include="Types\Patient.cs" />
+    <Compile Include="Types\Payment.cs" />
     <Compile Include="Types\Permissions.cs" />
+    <Compile Include="Types\Reception.cs" />
     <Compile Include="Types\Roles.cs" />
     <Compile Include="Types\Schedule.cs" />
     <Compile Include="Types\User.cs" />

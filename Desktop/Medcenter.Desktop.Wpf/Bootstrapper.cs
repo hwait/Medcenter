@@ -6,6 +6,7 @@ using Medcenter.Desktop.Modules.DoctorsManagerModule;
 using Medcenter.Desktop.Modules.FinancesManagerModule;
 using Medcenter.Desktop.Modules.PackagesManagerModule;
 using Medcenter.Desktop.Modules.LoginModule;
+using Medcenter.Desktop.Modules.RegistratureModule;
 using Medcenter.Desktop.Modules.ScheduleManagerModule;
 using Medcenter.Desktop.Modules.StatusbarModule;
 using Medcenter.Desktop.Modules.UserInfoModule;
@@ -39,6 +40,7 @@ namespace Medcenter.Desktop.Wpf
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScheduleManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(PackagesManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(DoctorsManagerModule).Assembly));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(RegistratureModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IUserRepository).Assembly));
         }
         //protected override IModuleCatalog CreateModuleCatalog()
@@ -63,6 +65,8 @@ namespace Medcenter.Desktop.Wpf
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = userInfoModuleType.Name, ModuleType = userInfoModuleType.AssemblyQualifiedName });
             var scheduleManagerModuleType = typeof(ScheduleManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = scheduleManagerModuleType.Name, ModuleType = scheduleManagerModuleType.AssemblyQualifiedName });
+            var registratureModuleType = typeof(ScheduleManagerModule);
+            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = registratureModuleType.Name, ModuleType = registratureModuleType.AssemblyQualifiedName });
         }
     }
 }

@@ -123,7 +123,7 @@ namespace Medcenter.Service.Model.Types
         {
             //return new List<ResultMessage>();
             List<ResultMessage> em = new List<ResultMessage>();
-            if (CurrentDoctor.Id==0) em.Add(new ResultMessage(2, "Доктор:", OperationErrors.VariantNotChoosen));
+            if (CurrentDoctor.Id==0) em.Add(new ResultMessage(2, "Доктор:", OperationErrors.VariantNotChosen));
             if (Start>=End) em.Add(new ResultMessage(2, "Время приёма:", OperationErrors.StartIsLaterThenEnd));
             return em;
         }

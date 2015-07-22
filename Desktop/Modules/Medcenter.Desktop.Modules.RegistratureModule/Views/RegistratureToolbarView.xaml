@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="Medcenter.Desktop.Modules.RegistratureModule.Views.RegistratureToolbarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" >
+        <StackPanel >
+        <RadioButton x:Name="NavigateToRegistratureRadioButton" GroupName="MainNavigation" Click="ButtonBase_OnClick" Style="{StaticResource MainViewRadioButtonStyle}" AutomationProperties.AutomationId="RegistratureRadioButton" Content="{DynamicResource IconButtons.Doctors}"/>
+        </StackPanel>
+</UserControl>

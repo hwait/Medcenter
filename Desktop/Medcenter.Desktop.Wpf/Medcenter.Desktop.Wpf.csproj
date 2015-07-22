@@ -162,6 +162,10 @@
       <Project>{b2534544-4596-4d21-b56d-db63b8783245}</Project>
       <Name>Medcenter.Desktop.Modules.LoginModule</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.RegistratureModule\Medcenter.Desktop.Modules.RegistratureModule.csproj">
+      <Project>{b1395ce5-e3ef-45e0-a71f-93df0e711b0d}</Project>
+      <Name>Medcenter.Desktop.Modules.RegistratureModule</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.ScheduleManagerModule\Medcenter.Desktop.Modules.ScheduleManagerModule.csproj">
       <Project>{59781918-dcdd-4e89-bb1f-2a3fd6fe49c6}</Project>
       <Name>Medcenter.Desktop.Modules.ScheduleManagerModule</Name>

@@ -79,6 +79,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         #endregion
 
+        private int _recursiveId=-1;
         private DateTime _currentDate, _startDate, _endDate;
         private ObservableCollection<Doctor> _doctors;
         private ObservableCollection<Schedule> _schedules;
@@ -332,12 +333,14 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         private void CopyScheduleToNextWeek(object obj)
         {
-            foreach (var schedule in Schedules)
-            {
-                CopyScheduleToWeekday(schedule, schedule.Start.AddDays(7));
-            }
-            _currentDate = _currentDate.AddDays(7);
-            SchedulesReload();
+            _recursiveId = Schedules.Count - 1;
+            CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
+            //foreach (var schedule in Schedules)
+            //{
+            //    CopyScheduleToWeekday(schedule, schedule.Start.AddDays(7));
+            //}
+            //_currentDate = _currentDate.AddDays(7);
+            //SchedulesReload();
         }
 
         #region Schedule
@@ -345,7 +348,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private void SaveSchedule(Schedule schedule)
         {
             //CurrentSchedule = schedule;
-            bool isNew = schedule.Id <= 0;
+            bool isNew = (_recursiveId >= 0) || schedule.Id <= 0;
             Errors = schedule.Validate();
             if (Errors.Count == 0)
             {
@@ -356,14 +359,17 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                         if (isNew)
                         {
-                            if (CurrentSchedule == null)
-                                CurrentSchedule = schedule;
-                            CurrentSchedule.Id = r.ScheduleId;
-                            schedule.Id = r.ScheduleId;
+                            if (_recursiveId < 0)
+                            {
+                                if (CurrentSchedule == null)
+                                    CurrentSchedule = schedule;
+                                CurrentSchedule.Id = r.ScheduleId;
+                                schedule.Id = r.ScheduleId;
 
-                            CopyScheduleToWeekdays(schedule);
-                            schedule.ResetFlags();
-                            Schedules.Add(schedule);
+                                CopyScheduleToWeekdays(schedule);
+                                schedule.ResetFlags();
+                                Schedules.Add(schedule);
+                            }
                         }
                         else
                         {
@@ -381,8 +387,21 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
                             schedule.Start.ToString("D"), schedule.Start.ToString("t"), schedule.End.ToString("t"), schedule.CurrentDoctor.ShortName);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        MakeCurrentWeek();
-                        CurrentSchedule = new Schedule();
+                        if (_recursiveId == 0)
+                        {
+                            _currentDate = _currentDate.AddDays(7);
+                            SchedulesReload();
+                        }
+                        else if (_recursiveId < 0)
+                        {
+                            MakeCurrentWeek();
+                            CurrentSchedule = new Schedule();
+                        }
+                        else
+                        {
+                            _recursiveId--;
+                            CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
+                        }
                     })
                     .Error(ex =>
                     {

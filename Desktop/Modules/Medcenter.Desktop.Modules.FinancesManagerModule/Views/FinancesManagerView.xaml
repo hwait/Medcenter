@@ -19,8 +19,8 @@
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
 	<UserControl.Resources>
-        <infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
-        <infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
+		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
 		<ds:DesignData x:Key="DesignData"></ds:DesignData>
 		<DataTemplate x:Key="DiscountTemplate">
@@ -49,11 +49,11 @@
 				<TextBlock Text="Наименование:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,7.633"/>
 				<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" HorizontalContentAlignment="Stretch" FontSize="13.333" MinWidth="240" Grid.ColumnSpan="4"/>
 				<TextBlock Text="Кратко: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Margin="0,7.633,5,7.633"/>
-                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                    <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding ShortName}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="130"/>
-                    <TextBlock Text="Скидка: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
-                    <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding ValueText}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="70"/>
-                </StackPanel>
+				<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding ShortName}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="130"/>
+					<TextBlock Text="Скидка: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0"/>
+					<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding ValueText}" VerticalAlignment="Center" Width="Auto" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="70"/>
+				</StackPanel>
 				<CheckBox Content="Дополнительная" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="2" Grid.Row="2"  IsChecked="{Binding IsIncrement}" Grid.ColumnSpan="2" Margin="5,6.773,0,4.999"/>
 				<CheckBox Content="Глобальная" Grid.Column="2" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Center" Width="Auto" Margin="5,0,0,0" IsChecked="{Binding IsGlobal}"/>
 				<TextBlock Text="Пол: " Grid.Row="2" Grid.Column="0" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,5,10,5"/>
@@ -145,7 +145,7 @@
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDiscountCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 					</StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1"  Visibility="{Binding CurrentDiscount, Converter={StaticResource ObjectToVisibility}}">
+					<StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1"  Visibility="{Binding CurrentDiscount, Converter={StaticResource ObjectToVisibility}}">
 						<ContentControl x:Name="EditForm" HorizontalContentAlignment="Stretch" 
 							Content="{Binding CurrentDiscount}" ContentTemplate="{StaticResource EditFormTemplate}"/>
 					</StackPanel>
