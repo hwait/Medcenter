@@ -11,6 +11,11 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.Model
     public class CabinetReceptions
     {
         public string CabinetId { get; set; }
+        public ObservableCollection<ScheduleReception> ScheduleReceptions { get; set; }
+    }
+    public class ScheduleReception
+    {
+        public Schedule Schedule { get; set; }
         public ObservableCollection<Reception> Receptions { get; set; }
     }
 }

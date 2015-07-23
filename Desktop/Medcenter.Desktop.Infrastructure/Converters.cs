@@ -6,11 +6,64 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Medcenter.Desktop.Infrastructure
 {
+    public class StatusToColorBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            switch ((byte)value)
+            {
+                //case 0:
+                //    return new SolidColorBrush(Colors.White);
+                //case 1:
+                //    return new SolidColorBrush(Colors.BurlyWood);
+                //case 2:
+                //    return new SolidColorBrush(Colors.GreenYellow);
+                //case 3:
+                //    return new SolidColorBrush(Colors.Coral);
+                //case 4:
+                //    return new SolidColorBrush(Colors.Aquamarine);
+                //default:
+                //    return new SolidColorBrush(Colors.White);
+                case 0:
+                    return Colors.White.ToString();
+                case 1:
+                    return Colors.BurlyWood.ToString();
+                case 2:
+                    return Colors.GreenYellow.ToString();
+                case 3:
+                    return Colors.Coral.ToString();
+                case 4:
+                    return Colors.Aquamarine.ToString();
+                default:
+                    return Colors.White.ToString();
+            }
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class DurationToHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return ((int)value)*3;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
     public class DateConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

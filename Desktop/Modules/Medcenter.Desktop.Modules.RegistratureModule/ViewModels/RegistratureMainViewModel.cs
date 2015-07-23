@@ -36,7 +36,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
         private readonly DelegateCommand<object> _copyPackageCommand;
-        private readonly DelegateCommand<object> _addPackageToDoctorCommand;
+        private readonly DelegateCommand<object> _receptionChooseCommand;
         private readonly DelegateCommand<object> _removePackageFromDoctorCommand;
         private readonly DelegateCommand<object> _newPackageCommand;
         private readonly DelegateCommand<object> _removePackageCommand;
@@ -50,9 +50,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             get { return this._copyPackageCommand; }
         }
-        public ICommand AddPackageToDoctorCommand
+        public ICommand ReceptionChooseCommand
         {
-            get { return this._addPackageToDoctorCommand; }
+            get { return this._receptionChooseCommand; }
         }
         public ICommand RemovePackageFromDoctorCommand
         {
@@ -179,7 +179,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _eventAggregator = eventAggregator;
             _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
             _removePackageFromDoctorCommand = new DelegateCommand<object>(RemovePackageFromDoctor);
-            _addPackageToDoctorCommand = new DelegateCommand<object>(AddPackageToDoctor);
+            _receptionChooseCommand = new DelegateCommand<object>(ReceptionChoose);
             _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
             _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
             _savePackageCommand = new DelegateCommand<object>(SavePackage);
@@ -215,6 +215,11 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             {
                 throw ex;
             });
+        }
+
+        private void ReceptionChoose(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void CopyPackage(object obj)

@@ -14,89 +14,111 @@
 			 mc:Ignorable="d"
 			 >
 	<UserControl.Resources>
-		
-		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
+		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
+		<infrastructure:DurationToHeightConverter x:Key="DurationToHeight" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVis"/>
 		<ds:DesignData x:Key="DesignData"/>
+		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
 		<Style TargetType="ListBox">
 			<Style.Resources>
 				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFB733" />
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFFFB733"/>
 			</Style.Resources>
 		</Style>
-		<DataTemplate x:Key="PaletteTemplate">
-			<Rectangle Width="10" Height="10">
-				<Rectangle.Fill>
-					<SolidColorBrush Color="{Binding CustomColor}" />
-				</Rectangle.Fill>
-			</Rectangle>
-		</DataTemplate>
+		<Style x:Key="ButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle" Height="{Binding Duration, Converter={StaticResource DurationToHeight}, Mode=OneWay}" Width="200" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter Width="160" HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Margin="3,0,0,0">
+								<ContentPresenter.Resources>
+									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource WrappingStyle}"/>
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+							<TextBlock Text="{Binding Start, StringFormat='{}{0:HH:mm}'}" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Vrinda" FontWeight="Bold" Padding="0,0,3,0"/>
+
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFDE4624"/>
+							</Trigger>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFDE4624"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 		<DataTemplate x:Key="ErrorMessageTemplate">
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="{Binding Source}" Foreground="Red" FontSize="13.333" FontWeight="Bold"/>
 				<TextBlock Text="{Binding Message}" Margin="5,0,0,0" Foreground="Red" FontSize="13.333"/>
 			</StackPanel>
 		</DataTemplate>
-		<DataTemplate x:Key="PackageDoctorTemplate">
-			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-				<Rectangle Width="30">
-					<Rectangle.Fill>
-						<SolidColorBrush Color="{Binding Color}" />
-					</Rectangle.Fill>
-				</Rectangle>
-				<TextBlock Text="{Binding Name}" Margin="5,0,0,0" FontSize="16"/>
+		<DataTemplate x:Key="CabinetReceptionsTemplate">
+			<StackPanel VerticalAlignment="Top" Margin="5,0,0,0">
+				<TextBlock Text="{Binding CabinetId}" FontSize="18.667" FontWeight="Bold" Background="#FF0348BF" Foreground="White"/>
+				<ItemsControl ItemsSource="{Binding ScheduleReceptions}" HorizontalContentAlignment="Stretch" Margin="0,0,0,0" BorderThickness="0" ItemTemplate="{DynamicResource ScheduleReceptionsTemplate}"/>
 			</StackPanel>
 		</DataTemplate>
-		<DataTemplate x:Key="DoctorTemplate">
-			<StackPanel Margin="5,5,0,0">
-				<TextBlock Text="{Binding ShortName}" FontSize="16"/>
+		<DataTemplate x:Key="ScheduleReceptionsTemplate">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="{Binding Schedule.Duration, Converter={StaticResource DurationToHeight}, Mode=OneWay}"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="200"/>
+				</Grid.ColumnDefinitions>
+				<Rectangle Grid.Column="0" Grid.Row="0" Fill="{Binding Schedule.CurrentDoctor.Color}"/>
+				<Rectangle Grid.Column="1" Grid.Row="0" Fill="{Binding Schedule.CurrentDoctor.Color}"/>
+				<TextBlock Text="{Binding Schedule.CurrentDoctor.ShortName}" VerticalAlignment="Top" RenderTransformOrigin="0,0" Margin="0,0,0,0" TextWrapping="Wrap" Padding="0,0,10,0" FontSize="13.333" FontWeight="Bold">
+					<TextBlock.LayoutTransform>
+						<RotateTransform Angle="-90"/>
+					</TextBlock.LayoutTransform>
+				</TextBlock>
+				<ItemsControl Grid.Column="1" ItemsSource="{Binding Receptions}" HorizontalContentAlignment="Stretch" Margin="0,0,0,0" BorderThickness="0" ItemTemplate="{DynamicResource ReceptionsDataTemplate}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="ReceptionsDataTemplate">
+			<StackPanel>
+				<Button Content="{Binding Text}" Style="{DynamicResource ButtonStyle}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ReceptionChooseCommand}" CommandParameter="{Binding }"/>
 			</StackPanel>
 		</DataTemplate>
-		<DataTemplate x:Key="CurrentPackageDoctorTemplate">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="44*"/>
-					<ColumnDefinition Width="70*"/>
-					<ColumnDefinition Width="50*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="3" Margin="3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="2" Grid.Row="1" Margin="3,0,3,3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				<StackPanel Grid.Column="1" Margin="0" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top"/>
-				<telerik:RadColorPicker Grid.Column="2" Grid.Row="1" HeaderPalette="Metro" StandardPalette="Standard" SelectedColor="{Binding Color, Mode=TwoWay}" />
-			</Grid>
-		</DataTemplate>
-		<DataTemplate x:Key="DoctorDataTemplate">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="4*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="2*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.ColumnSpan="3"/>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.Column="0" Grid.Row="1"/>
-				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="../Assets/IconClock.png" Height="25" Width="25"/>
-					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Duration}" VerticalAlignment="Center" Margin="5,0.001,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Width="25"/>
-				</StackPanel>
-				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1"  Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="../Assets/IconMoney.png" Height="25" Width="25"/>
-					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Cost}" VerticalAlignment="Center" Width="70" Margin="5,0,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				</StackPanel>
-
-			</Grid>
+		<DataTemplate x:Key="PatientTemplate">
+			<StackPanel>
+				<TextBlock Text="{Binding Address}"/>
+				<TextBlock Text="{Binding BirthDate}"/>
+				<TextBlock Text="{Binding CityId}"/>
+				<TextBlock Text="{Binding FirstName}"/>
+				<CheckBox IsChecked="{Binding Gender}"/>
+				<TextBlock Text="{Binding Id}"/>
+				<TextBlock Text="{Binding MobileCode}"/>
+				<TextBlock Text="{Binding MobileNumber}"/>
+				<TextBlock Text="{Binding PhoneNumber}"/>
+				<TextBlock Text="{Binding SecondName}"/>
+				<TextBlock Text="{Binding Surname}"/>
+			</StackPanel>
 		</DataTemplate>
 	</UserControl.Resources>
-	<!--<d:DataContext>
-		<Binding Source="{StaticResource DesignData}"/>
-	</d:DataContext>-->
+	<UserControl.DataContext>
+		<Binding Path="DayReceptions" Source="{StaticResource DesignData}"/>
+	</UserControl.DataContext>
+
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
@@ -104,51 +126,35 @@
 	</i:Interaction.Triggers>
 	<Grid Margin="40,40,40,0">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="80"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition/>
 			<RowDefinition Height="40"/>
 			<RowDefinition/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="184*"/>
-			<ColumnDefinition Width="130*"/>
-			<ColumnDefinition Width="215*"/>
-			<ColumnDefinition Width="30"/>
-			<ColumnDefinition Width="97*"/>
-			<ColumnDefinition Width="144*"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="400"/>
 		</Grid.ColumnDefinitions>
-		<Rectangle Grid.ColumnSpan="2" Grid.Column="0" Grid.RowSpan="5" Fill="#FFBAD7EE" />
-		<Rectangle Grid.ColumnSpan="4" Grid.Column="2" Grid.RowSpan="5" Grid.Row="0" Fill="#FFE6CBA9" />
-		<Rectangle Grid.ColumnSpan="2" Grid.Column="2" Grid.RowSpan="4" Grid.Row="1" Fill="#FFA1F9BE" />
-		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="6" Grid.Row="5"/>
-		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="100">
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding NewDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="Delete" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
-		</StackPanel>
-		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,1.892,0" Width="0">
+		<ItemsControl HorizontalAlignment="Left" ItemTemplate="{DynamicResource CabinetReceptionsTemplate}" ItemsSource="{Binding DayReceptions}" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Top" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+		</ItemsControl>
+
+		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="2" Grid.Row="2"/>
+		<StackPanel Grid.Column="1" Grid.RowSpan="2">
+			<StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+				<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+				<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
+				<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
 			
+			</StackPanel>
+			<StackPanel Margin="0,0,0,0" Orientation="Vertical" Visibility="{Binding IsSearchPatientPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+				<ListBox Height="300" ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}"/>
+			</StackPanel>
+
 		</StackPanel>
-		<StackPanel Grid.Column="5" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" Margin="0,5,10,5" Width="134">
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
-		</StackPanel>
-		<StackPanel Grid.Column="3" Orientation="Vertical" Grid.Row="2" HorizontalAlignment="Center" Width="30" VerticalAlignment="Center" Grid.RowSpan="3" Height="84" RenderTransformOrigin="-3.515,0.47">
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddDoctorToDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
-			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveDoctorFromDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
-		</StackPanel>
-		<ListBox Grid.Row="2" Margin="10,5" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackageDoctorTemplate}" ItemsSource="{Binding Doctors}" Grid.RowSpan="3"/>
-		<ListBox Grid.Column="2" Margin="10,5,5,5" Grid.Row="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding PackagesInDoctor}" MinWidth="200" Grid.RowSpan="3"/>
-		<ListBox Grid.Column="4" Margin="5,5,10,5" Grid.Row="2" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource DoctorTemplate}" ItemsSource="{Binding Packages}" MinWidth="200" Grid.RowSpan="3"/>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" Text="Доктора:" VerticalAlignment="Bottom" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Width="153.497"/>
-		<TextBlock HorizontalAlignment="Left" Margin="9.998,0,0,0" TextWrapping="Wrap" Text="Пакеты доктора:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="2" FontSize="16" FontWeight="Bold" Height="21.28" Width="163.786"/>
-		<TextBlock HorizontalAlignment="Left" Margin="4.998,0,0,0" TextWrapping="Wrap" Text="Пакеты:" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="4" FontSize="16" FontWeight="Bold" Height="21.28" Width="92.353"/>
-		<ContentControl Content="{Binding CurrentDoctor, Mode=OneWay}" Margin="5,5,5,0" Grid.ColumnSpan="2" ContentTemplate="{DynamicResource CurrentPackageDoctorTemplate}"/>
-		<ContentControl Content="{Binding CurrentPackage, Mode=OneWay}" Margin="5,5,5,0" Grid.Column="2" Grid.ColumnSpan="4" ContentTemplate="{DynamicResource DoctorDataTemplate}"/>
 		
 	</Grid>
 </UserControl>

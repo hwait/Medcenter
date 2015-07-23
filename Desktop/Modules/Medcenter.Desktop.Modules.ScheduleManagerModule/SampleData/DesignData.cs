@@ -63,12 +63,14 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             }
         }
 
+        private DateTime _currentDate;
         public DateTime CurrentDate
         {
             get
             {
                 return DateTime.Now;
             }
+            set { _currentDate = value; }
         }
         
         public ObservableCollection<Doctor> Doctors

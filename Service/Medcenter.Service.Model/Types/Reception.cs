@@ -28,6 +28,9 @@ namespace Medcenter.Service.Model.Types
         public byte Status { get; set; }
         [DataMember]
         public Payment Payment { get; set; }
+        public string Text {
+            get { return String.Join(", ", Packages.Select(i => i.ShortName).ToArray()); }
+            }
         public Reception()
         {
             Packages = new ObservableCollection<Package>();
