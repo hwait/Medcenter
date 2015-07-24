@@ -93,6 +93,7 @@
     <Compile Include="Types\Roles.cs" />
     <Compile Include="Types\Schedule.cs" />
     <Compile Include="Types\User.cs" />
+    <Compile Include="Types\City.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

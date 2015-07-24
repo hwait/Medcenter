@@ -18,10 +18,11 @@
 		<infrastructure:DurationToHeightConverter x:Key="DurationToHeight" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVis"/>
+		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<ds:DesignData x:Key="DesignData"/>
 		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
-            <Setter Property="TextWrapping" Value="Wrap"/>
-        </Style>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+		</Style>
 		<Style TargetType="ListBox">
 			<Style.Resources>
 				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFB733" />
@@ -100,18 +101,61 @@
 			</StackPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="PatientTemplate">
+			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+				<TextBlock Text="{Binding Name}" FontSize="13.333"/>
+				<TextBlock Text="{Binding City.Name}" Margin="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="13.333"/>				
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="PackagesInReceptionTemplate">
+			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+				<TextBlock Text="{Binding Cost}" FontSize="13.333" Padding="0,0,10,3"/>
+				<TextBlock Text="{Binding Name}" FontSize="13.333"/>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="PackagesGroupRowTemplate">
+			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+				<ItemsControl HorizontalAlignment="Left" Margin="0,0,0,0" ItemsSource="{Binding Mode=OneWay}" ItemTemplate="{DynamicResource PackagesRowTemplate}" >
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+				</ItemsControl>
+		</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="PackagesRowTemplate">
 			<StackPanel>
-				<TextBlock Text="{Binding Address}"/>
-				<TextBlock Text="{Binding BirthDate}"/>
-				<TextBlock Text="{Binding CityId}"/>
-				<TextBlock Text="{Binding FirstName}"/>
-				<CheckBox IsChecked="{Binding Gender}"/>
-				<TextBlock Text="{Binding Id}"/>
-				<TextBlock Text="{Binding MobileCode}"/>
-				<TextBlock Text="{Binding MobileNumber}"/>
-				<TextBlock Text="{Binding PhoneNumber}"/>
-				<TextBlock Text="{Binding SecondName}"/>
-				<TextBlock Text="{Binding Surname}"/>
+				<Button Content="{Binding}" Width="Auto" Template="{DynamicResource ButtonControlTemplate1}" Margin="5,5,5,0"/>
+				
+			</StackPanel>
+		</DataTemplate>
+		<ControlTemplate x:Key="ButtonControlTemplate1" TargetType="{x:Type Button}">
+			<Grid>
+				<Rectangle x:Name="rectangle" Height="25" Width="50" HorizontalAlignment="Left" StrokeThickness="1" Stroke="White">
+					<Rectangle.Fill>
+						<SolidColorBrush Color="{Binding Color}"/>
+					</Rectangle.Fill>
+				</Rectangle>
+				<TextBlock HorizontalAlignment="Center" Text="{Binding ShortName}" VerticalAlignment="Center" FontSize="14.667" FontWeight="Bold"/>
+			</Grid>
+			<ControlTemplate.Triggers>
+					<Trigger Property="IsFocused" Value="True">
+						<Setter Property="Fill" TargetName="rectangle" Value="#FFDE4624"/>
+					</Trigger>
+					<Trigger Property="IsDefaulted" Value="True"/>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter Property="Fill" TargetName="rectangle" Value="#FFDE4624"/>
+					</Trigger>
+					<Trigger Property="IsPressed" Value="True">
+						<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+					</Trigger>
+					<Trigger Property="IsEnabled" Value="False"/>
+				</ControlTemplate.Triggers>
+			</ControlTemplate>
+		<DataTemplate x:Key="PrintPackagesTemplate">
+			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+				<TextBlock Text="{Binding Cost}" FontSize="13.333" Padding="0,0,10,3"/>
+				<TextBlock Text="{Binding Name}" FontSize="13.333"/>
 			</StackPanel>
 		</DataTemplate>
 	</UserControl.Resources>
@@ -144,14 +188,160 @@
 
 		<ListBox Margin="10" ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.ColumnSpan="2" Grid.Row="2"/>
 		<StackPanel Grid.Column="1" Grid.RowSpan="2">
-			<StackPanel Margin="0,0,0,0" Orientation="Horizontal">
-				<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-				<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding NewDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
-				<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyDoctorCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
-			
+			<StackPanel Margin="0,0,0,0" Orientation="Vertical">
+				<StackPanel Height="32" Orientation="Horizontal">
+					<TextBox HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="320" FontSize="14.667"/>
+					<Button HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding SearchPatientCommand}" Height="30" Width="30" BorderBrush="{x:Null}" Margin="-30,0,0,0">
+						<Button.Background>
+							<ImageBrush ImageSource="/Medcenter.Desktop.Modules.RegistratureModule;component/Assets/IconSearch.png" Stretch="UniformToFill"/>
+						</Button.Background>
+					</Button>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding NewPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="New" Height="32" Width="32"/>
+				</StackPanel>
+				
 			</StackPanel>
+			<TextBlock TextWrapping="NoWrap" Text="{Binding CurrentPatient.Name}" FontSize="14.667" FontFamily="Vrinda"/>
 			<StackPanel Margin="0,0,0,0" Orientation="Vertical" Visibility="{Binding IsSearchPatientPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
-				<ListBox Height="300" ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}"/>
+				<ListBox Height="300" ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}" SelectedItem="{Binding CurrentPatient}"/>
+			</StackPanel>
+			<StackPanel Margin="0,10,0,0" Orientation="Vertical" Visibility="{Binding IsPaymentsPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+				<Grid Margin="5,0,0,0" VerticalAlignment="Top">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="100"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						
+					</Grid.RowDefinitions>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5" Width="Auto">
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Print}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PrintReceptionCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Call" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding CancelPaymentCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding ConfirmPaymentCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="1" Margin="10,5,0,5" >
+						<TextBlock FontSize="13.333" Text="Начало исследования в " VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text="{Binding CurrentReception.StartMinute}" VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text=":" VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text="{Binding CurrentReception.StartHour}" VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text=", стоимость " VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center"/>
+						<TextBlock FontSize="13.333" Text=" тенге." VerticalAlignment="Center"/>
+					</StackPanel>
+					<ItemsControl Height="Auto" Grid.Row="3" Grid.ColumnSpan="2" ItemsSource="{Binding Packages}" Padding="0,0,0,5" Margin="10,0,0,10" ItemTemplate="{DynamicResource PrintPackagesTemplate}"/>
+					
+					</Grid>
+			</StackPanel>
+			<StackPanel Margin="0,10,0,0" Orientation="Vertical" Visibility="{Binding IsReceptionPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+				<Grid Margin="5,0,0,0" VerticalAlignment="Top">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="100"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						
+					</Grid.RowDefinitions>
+					<TextBlock Height="23" Text="{Binding CurrentReception.Status}" VerticalAlignment="Center" Width="240" Grid.ColumnSpan="2" Margin="5,9.5,0,9.5" Grid.Row="0" FontSize="13.333" HorizontalAlignment="Left"/>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5" Width="Auto">
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Call}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding ConfirmReceptionCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Call" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Payment}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SavePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
+					</StackPanel>
+					
+					<TextBlock Text="Время:" Grid.Row="1" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,6.967"/>
+					<StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1" Margin="5,5,0,5" >
+						<TextBox HorizontalAlignment="Left" Height="23" Text="{Binding CurrentReception.StartMinute}" VerticalAlignment="Center" Width="30" FontSize="13.333"/>
+						<TextBox HorizontalAlignment="Left" Height="23" Text="{Binding CurrentReception.StartHour}" VerticalAlignment="Center" Width="30" FontSize="13.333" Margin="5,0,15,0"/>
+						<TextBlock Text="Продолжительность, мин.:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,6.967"/>
+						<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding CurrentReception.Duration}" VerticalAlignment="Center" Width="40" FontSize="13.333" Margin="5,0,0,0"/>
+					</StackPanel>
+									
+					<TextBlock Text="Стоимость:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2" Margin="0,4.974"/>
+					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="2">
+						<TextBox HorizontalAlignment="Left" Height="23" Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center" Width="60" FontSize="13.333" Margin="0,0,5,0"/>
+						<ComboBox ItemsSource="{Binding Discounts}" Width="220"  SelectedValue="{Binding CurrentReception.Discount}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3"/>
+					</StackPanel>
+					<TextBlock Text="Исследования:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="3"/>
+					<ListBox Height="Auto" ItemTemplate="{DynamicResource PackagesInReceptionTemplate}"  Grid.Row="3" Grid.Column="1" ItemsSource="{Binding CurrentReception.Packages}" SelectedItem="{Binding CurrentPackage}" Padding="0,0,0,5" Margin="0,0,0,10"/>
+					<StackPanel Orientation="Vertical" Grid.Row="4" HorizontalAlignment="Center" Width="30" VerticalAlignment="Top" Grid.RowSpan="3" Height="84" RenderTransformOrigin="0.5,0.5" Margin="0,-40,0,0">
+						<StackPanel.RenderTransform>
+							<TransformGroup>
+								<ScaleTransform/>
+								<SkewTransform/>
+								<RotateTransform Angle="90"/>
+								<TranslateTransform/>
+							</TransformGroup>
+						</StackPanel.RenderTransform>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowLeft}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding AddPackageToReceptionCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0" Tag="Default" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePackageFromReceptionCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,10,0,10"  Tag="Default" Height="32" Width="32"/>
+					</StackPanel>
+					<ListBox Height="200" ItemTemplate="{DynamicResource PackagesInReceptionTemplate}"  Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Packages}" SelectedItem="{Binding CurrentPackageInReception}" Padding="0,5,0,0"/>
+					<ItemsControl ItemsSource="{Binding РackageGroupsRows}" HorizontalContentAlignment="Stretch" Margin="0,0,0,0" BorderThickness="0" Grid.Row="5" Grid.ColumnSpan="2" ItemTemplate="{DynamicResource PackagesGroupRowTemplate}"/>
+				</Grid>
+			</StackPanel>
+			<StackPanel Margin="0,10,0,0" Orientation="Vertical" Visibility="{Binding IsNewPatientPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
+				<Grid Margin="5,0,0,0" VerticalAlignment="Top">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					<TextBlock Text="Фамилия:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,6.967"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.Surname}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" HorizontalContentAlignment="Stretch" FontSize="13.333" MinWidth="240"/>
+					<TextBlock Text="Имя: " FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Margin="5"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.FirstName}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="1" HorizontalContentAlignment="Stretch" FontSize="13.333"/>
+					<TextBlock Text="Отчество" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2" Margin="0,6.468,0,6.469"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.SecondName}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="2" HorizontalContentAlignment="Stretch" FontSize="13.333"/>
+					<TextBlock Text="День рождения:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="3" Margin="0,4.974"/>
+					<DatePicker HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="220" Margin="5" FirstDayOfWeek="Monday" SelectedDate="{Binding CurrentDate}" Grid.Row="3" Grid.Column="1"/>
+					<TextBlock Text="Пол:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="4"/>
+					<StackPanel Margin="10,5,5,5" Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
+						<RadioButton  Content="Мужской"  GroupName="GenderGroup" IsChecked="{Binding CurrentPatient.Gender, ConverterParameter=1, Converter={StaticResource RadioButtonCheckedConverter}}" VerticalAlignment="Center"/>
+						<RadioButton  Content="Женский"  GroupName="GenderGroup" IsChecked="{Binding CurrentPatient.Gender, ConverterParameter=2, Converter={StaticResource RadioButtonCheckedConverter}}" VerticalAlignment="Center"/>
+					</StackPanel>
+					<TextBlock Text="Город:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="5" Margin="0,4.974"/>
+					<ComboBox ItemsSource="{Binding Cities}" Width="Auto"  SelectedValue="{Binding CurrentPatient.City}" DisplayMemberPath="Name" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" FontSize="13.333" Margin="5"/>
+					<TextBlock Text="Адрес:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="6"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.Address}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="6" FontSize="13.333"/>
+					<TextBlock Text="Телефон:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="7"/>
+					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="7">
+						<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.PhoneCode}" VerticalAlignment="Center" Width="70" Margin="0,0,0,0" FontSize="13.333"/>
+						<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.PhoneNumber}" VerticalAlignment="Center" Width="165" Margin="5,0,0,0" FontSize="13.333"/>
+					</StackPanel>
+					<TextBlock Text="Мобильный:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="8"/>
+					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="8">
+						<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.MobileCode}" VerticalAlignment="Center" Width="70" Margin="0,0,0,0" FontSize="13.333"/>
+						<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.MobileNumber}" VerticalAlignment="Center" Width="165" Margin="5,0,0,0" FontSize="13.333"/>
+					</StackPanel>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="9" HorizontalAlignment="Right" Margin="0,5,10,5" Width="Auto">
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
+						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SavePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
+					</StackPanel>
+				</Grid>
 			</StackPanel>
 
 		</StackPanel>

@@ -85,6 +85,38 @@
 							<Setter Property="Fill" TargetName="rectangle" Value="MediumVioletRed"/>
 						</MultiDataTrigger>
 
+						<!--    Call button      -->
+
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Call"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="BlueViolet"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Call"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="Violet"/>
+						</MultiDataTrigger>
+
+						<!--    Pay button      -->
+
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Pay"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="Goldenrod"/>
+						</MultiDataTrigger>
+						<MultiDataTrigger>
+							<MultiDataTrigger.Conditions>
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+								<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Tag}" Value="Pay"/>
+							</MultiDataTrigger.Conditions>
+							<Setter Property="Fill" TargetName="rectangle" Value="Gold"/>
+						</MultiDataTrigger>
+						
 						<!--    Save button      -->
 
 						<MultiDataTrigger>

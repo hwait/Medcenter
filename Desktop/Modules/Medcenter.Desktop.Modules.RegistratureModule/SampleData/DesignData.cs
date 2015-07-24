@@ -55,6 +55,103 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         public bool IsPaymentsPanelVisible = true;
 
         public string PatientSearchString = "Петров";
+
+        #region Discounts
+        private static Discount _discount1
+        {
+            get
+            {
+                return new Discount
+                {
+                    Id = 1,
+                    Name = "Бесплатно"
+                };
+            }
+        }
+        private static Discount _discount2
+        {
+            get
+            {
+                return new Discount
+                {
+                    Id = 1,
+                    Name = "Пенсионерам 5"
+                };
+            }
+        }
+
+        private static Discount _discount3
+        {
+            get
+            {
+                return new Discount
+                {
+                    Id = 1,
+                    Name = "ВОВ 50"
+                };
+            }
+        }
+
+        public ObservableCollection<Discount> Discounts
+        {
+            get
+            {
+                return new ObservableCollection<Discount>() { _discount1, _discount2, _discount3 };
+            }
+        }
+
+        #endregion
+
+        #region Cities
+        private static City _city1
+        {
+            get
+            {
+                return new City
+                {
+                    Id = 1,
+                    Name = "Петропавловск",
+                    PhoneCode = "77152"
+                };
+            }
+        }
+        private static City _city2
+        {
+            get
+            {
+                return new City
+                {
+                    Id = 2,
+                    Name = "Петропавловск-Камчатский",
+                    PhoneCode = "7885"
+                };
+            }
+        }
+
+        private static City _city3
+        {
+            get
+            {
+                return new City
+                {
+                    Id = 3,
+                    Name = "Пресновка",
+                    PhoneCode = "77154"
+                };
+            }
+        }
+
+        public ObservableCollection<City> Cities
+        {
+            get
+            {
+                return new ObservableCollection<City>() { _city1, _city2, _city3};
+            }
+        }
+
+        #endregion
+
+
         #region Doctors
         private static Doctor GrayDoctor
         {
@@ -366,6 +463,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
+                    Cost=5600,
                     PatientId = 1,
                     Schedule = _schedule2,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
@@ -741,6 +839,66 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         }
 
         #endregion
+        private ObservableCollection<PackageGroup> _packageGroupsRow1
+        {
+            get
+            {
+                return new ObservableCollection<PackageGroup>
+                {
+                    new PackageGroup
+                    {
+                        Id = 0,
+                        Name = "Кардиология",
+                        ShortName = "КРД",
+                        Row = 0,
+                        Color = Colors.Bisque.ToString()
+                    },
+                    new PackageGroup
+                    {
+                        Id = 0,
+                        Name = "Абдоминальные",
+                        ShortName = "АБД",
+                        Row = 0,
+                        Color = Colors.LightSkyBlue.ToString()
+                    }
+                };
+            }
+        }
+        private ObservableCollection<PackageGroup> _packageGroupsRow2
+        {
+            get
+            {
+                return new ObservableCollection<PackageGroup>
+                {
+                    new PackageGroup
+                    {
+                        Id = 0,
+                        Name = "Моче-половая система",
+                        ShortName = "МПС",
+                        Row = 1,
+                        Color = Colors.LightGreen.ToString()
+                    },
+                    new PackageGroup
+                    {
+                        Id = 0,
+                        Name = "Прочие",
+                        ShortName = "ПРЧ",
+                        Row = 1,
+                        Color = Colors.HotPink.ToString()
+                    },
+                };
+            }
+        }
+        public ObservableCollection<ObservableCollection<PackageGroup>> РackageGroupsRows
+        {
+            get
+            {
+                return new ObservableCollection<ObservableCollection<PackageGroup>>
+                {
+                    _packageGroupsRow1,_packageGroupsRow2
+                };
+            }
+        }
         public ObservableCollection<Package> Packages
         {
             get
@@ -916,7 +1074,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     SecondName = "Адольфович",
                     BirthDate = new DateTime(1987, 11, 3),
                     Gender = true,
-                    CityId = 1,
+                    City = _city1,
                     Address = "Брауншвейгская, 23, кв 2",
                     PhoneNumber = "525356",
                     MobileCode = "7705",
@@ -939,7 +1097,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     SecondName = "Иосифович",
                     BirthDate = new DateTime(1947, 1, 23),
                     Gender = true,
-                    CityId = 1,
+                    City = _city2,
                     Address = "",
                     PhoneNumber = "",
                     MobileCode = "7777",
@@ -962,7 +1120,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     SecondName = "Львовна",
                     BirthDate = new DateTime(1997, 5, 13),
                     Gender = false,
-                    CityId = 1,
+                    City = _city3,
                     Address = "",
                     PhoneNumber = "",
                     MobileCode = "",

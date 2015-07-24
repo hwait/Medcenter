@@ -35,52 +35,65 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        private readonly DelegateCommand<object> _copyPackageCommand;
+        private readonly DelegateCommand<object> _newPatientCommand;
+        private readonly DelegateCommand<object> _removePatientCommand;
+        private readonly DelegateCommand<object> _savePatientCommand;
+        private readonly DelegateCommand<object> _copyPatientCommand;
+        private readonly DelegateCommand<object> _searchPatientCommand;
         private readonly DelegateCommand<object> _receptionChooseCommand;
-        private readonly DelegateCommand<object> _removePackageFromDoctorCommand;
-        private readonly DelegateCommand<object> _newPackageCommand;
-        private readonly DelegateCommand<object> _removePackageCommand;
-        private readonly DelegateCommand<object> _savePackageCommand;
-        private readonly DelegateCommand<object> _newDoctorCommand;
-        private readonly DelegateCommand<object> _removeDoctorCommand;
-        private readonly DelegateCommand<object> _saveDoctorCommand;
+        private readonly DelegateCommand<object> _addPackageToReceptionCommand;
+        private readonly DelegateCommand<object> _removePackageFromReceptionCommand;
+
+
+        private readonly DelegateCommand<object> _confirmReceptionCommand;
+        private readonly DelegateCommand<object> _receptionPaymentCommand;
+
+        private readonly DelegateCommand<object> _printReceptionCommand;
+        private readonly DelegateCommand<object> _confirmPaymentCommand;
+        private readonly DelegateCommand<object> _cancelPaymentCommand;
+        
+ 
         #region Properties
 
-        public ICommand CopyPackageCommand
+        public ICommand ConfirmPaymentCommand
         {
-            get { return this._copyPackageCommand; }
+            get { return this._confirmPaymentCommand; }
         }
-        public ICommand ReceptionChooseCommand
+        public ICommand CancelPaymentCommand
         {
-            get { return this._receptionChooseCommand; }
+            get { return this._cancelPaymentCommand; }
         }
-        public ICommand RemovePackageFromDoctorCommand
+        public ICommand PrintReceptionCommand
         {
-            get { return this._removePackageFromDoctorCommand; }
+            get { return this._printReceptionCommand; }
         }
-        public ICommand NewPackageCommand
+        public ICommand NewPatientCommand
         {
-            get { return this._newPackageCommand; }
+            get { return this._newPatientCommand; }
         }
-        public ICommand RemovePackageCommand
+        public ICommand RemovePatientCommand
         {
-            get { return this._removePackageCommand; }
+            get { return this._removePatientCommand; }
         }
-        public ICommand SavePackageCommand
+        public ICommand SavePatientCommand
         {
-            get { return this._savePackageCommand; }
+            get { return this._savePatientCommand; }
         }
-        public ICommand NewDoctorCommand
+        public ICommand AddPackageToReceptionCommand
         {
-            get { return this._newDoctorCommand; }
+            get { return this._addPackageToReceptionCommand; }
         }
-        public ICommand RemoveDoctorCommand
+        public ICommand RemovePackageFromReceptionCommand
         {
-            get { return this._removeDoctorCommand; }
+            get { return this._removePackageFromReceptionCommand; }
         }
-        public ICommand SaveDoctorCommand
+        public ICommand ConfirmReceptionCommand
         {
-            get { return this._saveDoctorCommand; }
+            get { return this._confirmReceptionCommand; }
+        }
+        public ICommand ReceptionPaymentCommand
+        {
+            get { return this._receptionPaymentCommand; }
         }
         private List<ResultMessage> _errors;
 
@@ -95,67 +108,69 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             get { return _doctors; }
             set { SetProperty(ref _doctors, value); }
         }
-        private ListCollectionView _packagesInDoctor;
-        public ListCollectionView PackagesInDoctor
+        private Package _currentPackageInReception;
+        public Package CurrentPackageInReception
         {
-            get { return _packagesInDoctor; }
+            get { return _currentPackageInReception; }
             set
             {
-                SetProperty(ref _packagesInDoctor, value);
+                SetProperty(ref _currentPackageInReception, value);
             }
         }
-        private ListCollectionView _packagesBase;
-        public ListCollectionView PackagesBase
-        {
-            get { return _packagesBase; }
-            set { SetProperty(ref _packagesBase, value); }
-        }
-        private ListCollectionView _packages;
-        public ListCollectionView Packages
-        {
-            get { return _packages; }
-            set { SetProperty(ref _packages, value); }
-        }
-        private Package _currentPackageInDoctor;
 
-        public Package CurrentPackageInDoctor
+
+        private ListCollectionView _PatientsBase;
+        public ListCollectionView PatientsBase
         {
-            get { return _currentPackageInDoctor; }
+            get { return _PatientsBase; }
+            set { SetProperty(ref _PatientsBase, value); }
+        }
+        private ListCollectionView _patients;
+        public ListCollectionView Patients
+        {
+            get { return _patients; }
+            set { SetProperty(ref _patients, value); }
+        }
+        private Patient _currentPatientInDoctor;
+
+        public Patient CurrentPatientInDoctor
+        {
+            get { return _currentPatientInDoctor; }
             set
             {
-                if (value.Id == 0) _currentBasePackage = new Package();
+                if (value.Id == 0) _currentBasePatient = new Patient();
                 else
                 {
-                    for (int i = 0; i < PackagesBase.Count; i++)
+                    for (int i = 0; i < PatientsBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Patient)PatientsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePatient = (Patient)PatientsBase.GetItemAt(i);
                     }
                 }
-                SetProperty(ref _currentPackageInDoctor, value);
+                SetProperty(ref _currentPatientInDoctor, value);
             }
         }
-        private Package _currentPackage;
+        private Patient _currentPatient;
 
-        public Package CurrentPackage
+        public Patient CurrentPatient
         {
-            get { return _currentPackage; }
+            get { return _currentPatient; }
             set
             {
-                if (value.Id == 0) _currentBasePackage = new Package();
+                if (value.Id == 0) _currentBasePatient = new Patient();
                 else
                 {
-                    for (int i = 0; i < PackagesBase.Count; i++)
+                    for (int i = 0; i < PatientsBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Patient)PatientsBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePatient = (Patient)PatientsBase.GetItemAt(i);
                     }
                 }
-                SetProperty(ref _currentPackage, value);
+                SetProperty(ref _currentPatient, value);
 
             }
         }
-        private Package _currentBasePackage;
+        private Patient _currentBasePatient;
 
         private Doctor _currentDoctor;
 
@@ -165,7 +180,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             set
             {
                 SetProperty(ref _currentDoctor, value);
-                PackagesInDoctorRefresh();
+                PatientsInDoctorRefresh();
             }
         }
 
@@ -177,44 +192,69 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
-            _removePackageFromDoctorCommand = new DelegateCommand<object>(RemovePackageFromDoctor);
+            _searchPatientCommand = new DelegateCommand<object>(SearchPatient);
+            _copyPatientCommand = new DelegateCommand<object>(CopyPatient);
             _receptionChooseCommand = new DelegateCommand<object>(ReceptionChoose);
-            _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
-            _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
-            _savePackageCommand = new DelegateCommand<object>(SavePackage);
-            _newDoctorCommand = new DelegateCommand<object>(NewDoctor, CanAddDoctor);
-            _removeDoctorCommand = new DelegateCommand<object>(RemoveDoctor);
-            _saveDoctorCommand = new DelegateCommand<object>(SaveDoctor);
+            _newPatientCommand = new DelegateCommand<object>(NewPatient, CanAddPatient);
+            _removePatientCommand = new DelegateCommand<object>(RemovePatient, CanRemovePatient);
+            _savePatientCommand = new DelegateCommand<object>(SavePatient);
+            _addPackageToReceptionCommand = new DelegateCommand<object>(AddPackageToReception);
+            _removePackageFromReceptionCommand = new DelegateCommand<object>(RemovePackageFromReception);
+            _confirmReceptionCommand = new DelegateCommand<object>(ConfirmReception);
+            _receptionPaymentCommand = new DelegateCommand<object>(ReceptionPayment);
+
+            _printReceptionCommand = new DelegateCommand<object>(PrintReception);
+            _confirmPaymentCommand = new DelegateCommand<object>(ConfirmPayment);
+            _cancelPaymentCommand = new DelegateCommand<object>(CancelPayment);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new PackagesSelect())
-            .Success(ri =>
-            {
-                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                PackagesBase = new ListCollectionView(ri.Packages);
-                _jsonClient.GetAsync(new DoctorsSelect())
-                .Success(rig =>
-                {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Doctors = new ListCollectionView(rig.Doctors);
-                    Doctors.CurrentChanged += Doctors_CurrentChanged;
+            //_jsonClient.GetAsync(new PatientsSelect())
+            //.Success(ri =>
+            //{
+            //    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //    PatientsBase = new ListCollectionView(ri.Patients);
+            //    _jsonClient.GetAsync(new DoctorsSelect())
+            //    .Success(rig =>
+            //    {
+            //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //        Doctors = new ListCollectionView(rig.Doctors);
+            //        Doctors.CurrentChanged += Doctors_CurrentChanged;
 
-                    CurrentDoctor = new Doctor();
-                    PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
-                    PackagesReload(ri.Packages);
-                    Doctors.MoveCurrentTo(null);
-                })
-                .Error(ex =>
-                {
-                    throw ex;
-                });
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+            //        CurrentDoctor = new Doctor();
+            //        PatientsInDoctor.CurrentChanged += PatientsInDoctor_CurrentChanged;
+            //        PatientsReload(ri.Patients);
+            //        Doctors.MoveCurrentTo(null);
+            //    })
+            //    .Error(ex =>
+            //    {
+            //        throw ex;
+            //    });
+            //})
+            //.Error(ex =>
+            //{
+            //    throw ex;
+            //});
+        }
+
+        private void ReceptionPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConfirmReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RemovePackageFromReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddPackageToReception(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void ReceptionChoose(object obj)
@@ -222,15 +262,13 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             throw new NotImplementedException();
         }
 
-        private void CopyPackage(object obj)
+        private void SearchPatient(object obj)
         {
-            CurrentPackage = CurrentPackage.CopyInstance();
-
         }
 
-        private bool CanRemovePackage(object arg)
+        private bool CanRemovePatient(object arg)
         {
-            return (CurrentPackage != null) ? CurrentPackage.Name != "" : false;
+            return true;
         }
 
         private void Doctors_CurrentChanged(object sender, EventArgs e)
@@ -238,13 +276,13 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentDoctor = Doctors.CurrentItem != null ? (Doctor)Doctors.CurrentItem : new Doctor();
         }
 
-        private void Packages_CurrentChanged(object sender, EventArgs e)
+        private void Patients_CurrentChanged(object sender, EventArgs e)
         {
-            CurrentPackage = Packages.CurrentItem != null ? (Package)Packages.CurrentItem : new Package();
+            CurrentPatient = Patients.CurrentItem != null ? (Patient)Patients.CurrentItem : new Patient();
         }
-        private void PackagesInDoctor_CurrentChanged(object sender, EventArgs e)
+        private void PatientsInDoctor_CurrentChanged(object sender, EventArgs e)
         {
-            CurrentPackageInDoctor = PackagesInDoctor.CurrentItem != null ? (Package)PackagesInDoctor.CurrentItem : new Package();
+            //CurrentPatientInDoctor = PatientsInDoctor.CurrentItem != null ? (Patient)PatientsInDoctor.CurrentItem : new Patient();
         }
 
         #region Doctor
@@ -269,7 +307,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                         if (isNew) Doctors.AddNewItem(CurrentDoctor);
                         r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
                         _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        _newDoctorCommand.RaiseCanExecuteChanged();
                     })
                     .Error(ex =>
                     {
@@ -291,7 +328,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                         if (isNew)
                         {
                             CurrentDoctor = new Doctor();
-                            _newDoctorCommand.RaiseCanExecuteChanged();
                         }
                         else
                         {
@@ -300,10 +336,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                             {
                                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false); _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                                 r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
-                                RemovePackageFromDoctorByIGID(CurrentDoctor.Id);
+                                CopyPatientByIGID(CurrentDoctor.Id);
                                 Doctors.Remove(Doctors.CurrentItem);
                                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                                _newDoctorCommand.RaiseCanExecuteChanged();
                             })
                             .Error(ex =>
                             {
@@ -320,185 +355,170 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         }
         #endregion
 
-        #region Package
-
-        private bool PackageFilter(object item)
+        #region Patient
+        private void NewPatient(object obj)
         {
-            Package Package = item as Package;
-            return Package.DoctorIds.Contains(CurrentDoctor.Id);
-        }
-        private void NewPackage(object obj)
-        {
-            CurrentPackage = new Package();
+            CurrentPatient = new Patient();
         }
 
-        private void SavePackage(object obj)
+        private void SavePatient(object obj)
         {
-            bool isNew = CurrentPackage.Id <= 0;
-            Errors = CurrentPackage.Validate();
-            if (Errors.Count == 0)
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.PostAsync(new PackageSave { Package = CurrentPackage })
-                    .Success(r =>
-                    {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                        CurrentPackage.Id = r.PackageId;
-                        if (isNew)
-                        {
-                            PackagesBase.AddNewItem(CurrentPackage);
-                            PackagesInDoctorRefresh();
-                        }
-                        r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
-                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        _newPackageCommand.RaiseCanExecuteChanged();
-                    })
-                    .Error(ex =>
-                    {
-                        throw ex;
-                    });
-            }
+            //bool isNew = CurrentPatient.Id <= 0;
+            //Errors = CurrentPatient.Validate();
+            //if (Errors.Count == 0)
+            //{
+            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //    _jsonClient.PostAsync(new PatientSave { Patient = CurrentPatient })
+            //        .Success(r =>
+            //        {
+            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //            CurrentPatient.Id = r.PatientId;
+            //            if (isNew)
+            //            {
+            //                PatientsBase.AddNewItem(CurrentPatient);
+            //                PatientsInDoctorRefresh();
+            //            }
+            //            r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Name);
+            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            //            _newPatientCommand.RaiseCanExecuteChanged();
+            //        })
+            //        .Error(ex =>
+            //        {
+            //            throw ex;
+            //        });
+            //}
         }
 
-        private void RemovePackage(object obj)
+        private void RemovePatient(object obj)
         {
-            bool isNew = CurrentPackage.Id == 0;
-            ConfirmationRequest.Raise(
-                new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
-                c =>
-                {
-                    if (c.Confirmed)
-                    {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                        if (isNew)
-                        {
-                            CurrentPackage = new Package();
-                            _newPackageCommand.RaiseCanExecuteChanged();
-                        }
-                        else
-                        {
-                            _jsonClient.GetAsync(new PackageDelete { PackageId = CurrentPackage.Id })
-                            .Success(r =>
-                            {
-                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                                r.Message.Message = string.Format(r.Message.Message, CurrentPackage.Name);
-                                RemovePackageFromDoctorByIID(_currentBasePackage.Id);
-                                PackagesBase.Remove(_currentBasePackage);
-                                //Packages.Remove(Packages.CurrentItem);
-                                PackagesInDoctorRefresh();
-                                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                                _newPackageCommand.RaiseCanExecuteChanged();
-                            })
-                            .Error(ex =>
-                            {
-                                throw ex;
-                            });
-                        }
-                    }
-                });
+            //bool isNew = CurrentPatient.Id == 0;
+            //ConfirmationRequest.Raise(
+            //    new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
+            //    c =>
+            //    {
+            //        if (c.Confirmed)
+            //        {
+            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //            if (isNew)
+            //            {
+            //                CurrentPatient = new Patient();
+            //                _newPatientCommand.RaiseCanExecuteChanged();
+            //            }
+            //            else
+            //            {
+            //                _jsonClient.GetAsync(new PatientDelete { PatientId = CurrentPatient.Id })
+            //                .Success(r =>
+            //                {
+            //                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //                    r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Name);
+            //                    CopyPatientByIID(_currentBasePatient.Id);
+            //                    PatientsBase.Remove(_currentBasePatient);
+            //                    //Patients.Remove(Patients.CurrentItem);
+            //                    PatientsInDoctorRefresh();
+            //                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            //                    _newPatientCommand.RaiseCanExecuteChanged();
+            //                })
+            //                .Error(ex =>
+            //                {
+            //                    throw ex;
+            //                });
+            //            }
+            //        }
+            //    });
         }
-        private bool CanAddPackage(object arg)
+        private bool CanAddPatient(object arg)
         {
-            //return CurrentPackage == null || CurrentPackage.Id != 0;
+            //return CurrentPatient == null || CurrentPatient.Id != 0;
             return true;
         }
 
         #endregion
 
-        #region Packages in Doctor
-        private bool PackagesFilter(object item)
+        #region Patients in Doctor
+        private void ClearPatients()
         {
-            Package Package = item as Package;
-            if (CurrentDoctor == null || CurrentDoctor.Id == 0)
-                return true;
-            else
-                return !Package.DoctorIds.Contains(CurrentDoctor.Id);
+            Patients.MoveCurrentTo(null);
+            //PatientsInDoctor.MoveCurrentTo(null);
+            CurrentPatient = new Patient();
+            CurrentPatientInDoctor = new Patient();
+        }
+        private void PatientsReload(List<Patient> Patients)
+        {
+            //Patients = new ListCollectionView(Patients);
+            //Patients.CurrentChanged += Patients_CurrentChanged;
+            //Patients.MoveCurrentTo(null);
+            //CurrentPatient = new Patient();
+        }
+        private void PatientsInDoctorReload(List<Patient> Patients)
+        {
+            //PatientsInDoctor = new ListCollectionView(Patients);
+            //PatientsInDoctor.CurrentChanged += PatientsInDoctor_CurrentChanged;
+            //PatientsInDoctor.MoveCurrentTo(null);
+            //CurrentPatientInDoctor = new Patient();
+        }
+        private void PatientsInDoctorRefresh()
+        {
+            //var list1 = new List<Patient>();
+            //var list2 = new List<Patient>();
+            //foreach (Patient Patient in PatientsBase)
+            //{
+            //    if (Patient.DoctorIds != null && Patient.DoctorIds.Contains(CurrentDoctor.Id)) list1.Add(Patient);
+            //    else list2.Add(Patient);
+            //}
+            //PatientsInDoctorReload(list1);
+            //PatientsReload(list2);
+        }
+        private void AddPatientToDoctor(object obj)
+        {
+            //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //_jsonClient.GetAsync(new PatientsDoctorsBind { PatientId = CurrentPatient.Id, DoctorId = CurrentDoctor.Id })
+            //.Success(r =>
+            //{
+            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            //    _currentBasePatient.DoctorIds.Add(CurrentDoctor.Id);
+            //    //CurrentPatient.DoctorIds.Add(CurrentDoctor.Id);
+            //    PatientsInDoctorRefresh();
+            //})
+            //.Error(ex =>
+            //{
+            //    throw ex;
+            //});
         }
 
-        private void ClearPackages()
+        private void CopyPatient(object obj)
         {
-            Packages.MoveCurrentTo(null);
-            PackagesInDoctor.MoveCurrentTo(null);
-            CurrentPackage = new Package();
-            CurrentPackageInDoctor = new Package();
-        }
-        private void PackagesReload(List<Package> packages)
-        {
-            Packages = new ListCollectionView(packages);
-            Packages.CurrentChanged += Packages_CurrentChanged;
-            Packages.MoveCurrentTo(null);
-            CurrentPackage = new Package();
-        }
-        private void PackagesInDoctorReload(List<Package> Packages)
-        {
-            PackagesInDoctor = new ListCollectionView(Packages);
-            PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
-            PackagesInDoctor.MoveCurrentTo(null);
-            CurrentPackageInDoctor = new Package();
-        }
-        private void PackagesInDoctorRefresh()
-        {
-            var list1 = new List<Package>();
-            var list2 = new List<Package>();
-            foreach (Package Package in PackagesBase)
-            {
-                if (Package.DoctorIds != null && Package.DoctorIds.Contains(CurrentDoctor.Id)) list1.Add(Package);
-                else list2.Add(Package);
-            }
-            PackagesInDoctorReload(list1);
-            PackagesReload(list2);
-        }
-        private void AddPackageToDoctor(object obj)
-        {
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new PackagesDoctorsBind { PackageId = CurrentPackage.Id, DoctorId = CurrentDoctor.Id })
-            .Success(r =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _currentBasePackage.DoctorIds.Add(CurrentDoctor.Id);
-                //CurrentPackage.DoctorIds.Add(CurrentDoctor.Id);
-                PackagesInDoctorRefresh();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+            //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //_jsonClient.GetAsync(new PatientsDoctorsUnbind { PatientId = CurrentPatientInDoctor.Id, DoctorId = CurrentDoctor.Id })
+            //.Success(r =>
+            //{
+            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            //    _currentBasePatient.DoctorIds.Remove(CurrentDoctor.Id);
+            //    //CurrentPatientInDoctor.DoctorIds.Remove(CurrentDoctor.Id);
+            //    PatientsInDoctorRefresh();
+            //})
+            //.Error(ex =>
+            //{
+            //    throw ex;
+            //});
         }
 
-        private void RemovePackageFromDoctor(object obj)
+        private void CopyPatientByIID(int id)
         {
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new PackagesDoctorsUnbind { PackageId = CurrentPackageInDoctor.Id, DoctorId = CurrentDoctor.Id })
-            .Success(r =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                _currentBasePackage.DoctorIds.Remove(CurrentDoctor.Id);
-                //CurrentPackageInDoctor.DoctorIds.Remove(CurrentDoctor.Id);
-                PackagesInDoctorRefresh();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+            //foreach (Doctor ig in Doctors)
+            //{
+            //    if (ig.PatientIds.Contains(id)) ig.PatientIds.Remove(id);
+            //}
+            //PatientsInDoctorRefresh();
         }
-
-        private void RemovePackageFromDoctorByIID(int id)
+        private void CopyPatientByIGID(int id)
         {
-            foreach (Doctor ig in Doctors)
-            {
-                if (ig.PackageIds.Contains(id)) ig.PackageIds.Remove(id);
-            }
-            //PackagesInDoctorRefresh();
-        }
-        private void RemovePackageFromDoctorByIGID(int id)
-        {
-            foreach (Package i in Packages)
-            {
-                if (i.DoctorIds.Contains(id)) Packages.Remove(i);
-            }
-            PackagesInDoctorRefresh();
+            //foreach (Patient i in Patients)
+            //{
+            //    if (i.DoctorIds.Contains(id)) Patients.Remove(i);
+            //}
+            //PatientsInDoctorRefresh();
         }
         #endregion
 

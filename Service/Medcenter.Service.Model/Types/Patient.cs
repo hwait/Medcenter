@@ -20,11 +20,11 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string SecondName { get; set; }
         [DataMember]
-        public DateTime? BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
         [DataMember]
         public bool? Gender { get; set; }
         [DataMember]
-        public int CityId { get; set; }
+        public City City { get; set; }
         [DataMember]
         public string Address { get; set; }
         [DataMember]
@@ -37,20 +37,36 @@ namespace Medcenter.Service.Model.Types
         public Dictionary<string,string> Contacts { get; set; }
         [DataMember]
         public List<Reception> Receptions { get; set; }
+        public string PhoneCode { get; set; }
+        public string Name
+        {
+            get
+            {
+                if (BirthDate == DateTime.MinValue) return "Пациент не выбран.";
+                DateTime today = DateTime.Today;
+                int age = today.Year - BirthDate.Year;
+                if (BirthDate > today.AddYears(-age)) age--;
+                string name = (age < 3) ? 
+                      string.Format("{0} {1} {2}, {3} мес. ", Surname, FirstName, SecondName, age * 12 + BirthDate.Month) 
+                    : string.Format("{0} {1} {2}, {3} лет ", Surname, FirstName, SecondName, age);
+                return name;
+            }
+        }
 
         public Patient()
         {
             Receptions=new List<Reception>();
             Contacts=new Dictionary<string, string>();
+            BirthDate=DateTime.MinValue;
         }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();
             if (string.IsNullOrEmpty(Surname)) em.Add(new ResultMessage(2, "Фамилия:", OperationErrors.EmptyString));
             if (string.IsNullOrEmpty(FirstName)) em.Add(new ResultMessage(2, "Имя:", OperationErrors.EmptyString));
-            if (BirthDate == null) em.Add(new ResultMessage(2, "Дата рождения:", OperationErrors.VariantNotChosen));
+            if (BirthDate == DateTime.MinValue) em.Add(new ResultMessage(2, "Дата рождения:", OperationErrors.VariantNotChosen));
             if (Gender == null) em.Add(new ResultMessage(2, "Пол:", OperationErrors.VariantNotChosen));
-            if (CityId<1) em.Add(new ResultMessage(2, "Город:", OperationErrors.VariantNotChosen));
+            if (City==null) em.Add(new ResultMessage(2, "Город:", OperationErrors.VariantNotChosen));
             if (string.IsNullOrEmpty(PhoneNumber) || (string.IsNullOrEmpty(MobileCode) || string.IsNullOrEmpty(MobileNumber))) em.Add(new ResultMessage(2, "Телефон:", OperationErrors.EmptyString));
             return em;
         }
