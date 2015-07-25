@@ -15,11 +15,13 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public int Cost { get; set; }
+        public int RefererId { get; set; }
         [DataMember]
         public int PatientId { get; set; }
         [DataMember]
-        public Schedule Schedule { get; set; }
+        public int ScheduleId { get; set; }
+        public int Cost { get; set; }
+        public int DiscountId { get; set; }
         [DataMember]
         public Discount Discount { get; set; }
         [DataMember]
@@ -31,7 +33,7 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public byte Status { get; set; }
         [DataMember]
-        public Payment Payment { get; set; }
+        public ObservableCollection<Payment> Payments { get; set; }
         public string Text {
             get { return String.Join(", ", Packages.Select(i => i.ShortName).ToArray()); }
             }

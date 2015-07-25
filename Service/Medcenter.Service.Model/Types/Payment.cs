@@ -15,18 +15,18 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         [DataMember]
-        public string Details { get; set; }
+        public int Cost { get; set; }
         [DataMember]
-        public int Sum { get; set; }
+        public int ReceptionId { get; set; }
         public Payment()
         {
         }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();
-            if (Sum==0) em.Add(new ResultMessage(2, "Сумма:", OperationErrors.ZeroNumber));
+            if (Cost == 0) em.Add(new ResultMessage(2, "Сумма:", OperationErrors.ZeroNumber));
             return em;
         }
     }

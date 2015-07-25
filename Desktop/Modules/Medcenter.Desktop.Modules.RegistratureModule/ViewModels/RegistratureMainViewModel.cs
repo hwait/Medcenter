@@ -237,6 +237,21 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             //});
         }
 
+        private void CancelPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConfirmPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrintReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ReceptionPayment(object obj)
         {
             throw new NotImplementedException();

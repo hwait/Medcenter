@@ -34,7 +34,7 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string MobileNumber { get; set; }
         [DataMember]
-        public Dictionary<string,string> Contacts { get; set; }
+        public string Email { get; set; }
         [DataMember]
         public List<Reception> Receptions { get; set; }
         public string PhoneCode { get; set; }
@@ -56,7 +56,6 @@ namespace Medcenter.Service.Model.Types
         public Patient()
         {
             Receptions=new List<Reception>();
-            Contacts=new Dictionary<string, string>();
             BirthDate=DateTime.MinValue;
         }
         public List<ResultMessage> Validate()

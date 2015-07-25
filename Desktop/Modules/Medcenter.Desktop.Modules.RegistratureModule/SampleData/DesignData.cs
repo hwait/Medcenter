@@ -335,12 +335,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 0,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 30, 0),
                     Duration = 90,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -353,12 +353,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 1,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0),
                     Duration = 15,
                     Packages = _packages4,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -371,12 +371,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 2,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 15, 0),
                     Duration = 5,
                     Packages = _packages3,
                     Status = 2,
-                    Payment = null
+                    
                 };
             }
         }
@@ -389,12 +389,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 0,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 20, 0),
                     Duration = 60,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -407,12 +407,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 10, 20, 0),
                     Duration = 10,
                     Packages = _packages2,
                     Status = 3,
-                    Payment = null
+                    
                 };
             }
         }
@@ -425,12 +425,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule1,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 10, 30, 0),
                     Duration = 85,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -446,31 +446,56 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 0,
-                    Schedule = _schedule2,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 30, 0),
                     Duration = 40,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
-
+        private Payment _payment1
+        {
+            get
+            {
+                return new Payment
+                {
+                    Id = 0,
+                    Cost = 5600,
+                    ReceptionId = 7,
+                    Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
+                };
+            }
+        }
+        private Payment _payment2
+        {
+            get
+            {
+                return new Payment
+                {
+                    Id = 0,
+                    Cost = 1400,
+                    ReceptionId = 7,
+                    Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
+                };
+            }
+        }
         private Reception _reception22
         {
             get
             {
                 return new Reception
                 {
-                    Id = 0,
-                    Cost=5600,
+                    Id = 7,
+                    Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
                     PatientId = 1,
-                    Schedule = _schedule2,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 25,
                     Packages = _packages1,
                     Status = 2,
-                    Payment = null
+                    
                 };
             }
         }
@@ -483,12 +508,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 2,
-                    Schedule = _schedule2,
+                    ScheduleId=2,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 35, 0),
                     Duration = 5,
                     Packages = _packages3,
                     Status = 3,
-                    Payment = null
+                    
                 };
             }
         }
@@ -501,12 +526,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 0,
-                    Schedule = _schedule2,
+                    ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 40, 0),
                     Duration = 10,
                     Packages = _packages2,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -519,12 +544,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule2,
+                    ScheduleId=2,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 50, 0),
                     Duration = 20,
                     Packages = _packages4,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -537,12 +562,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule2,
+                    ScheduleId=2,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 10, 0),
                     Duration = 225,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -558,12 +583,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 1,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 30, 0),
                     Duration = 20,
                     Packages = _packages3,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -576,12 +601,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 1,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 50, 0),
                     Duration = 15,
                     Packages = _packages1,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -594,12 +619,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 2,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 05, 0),
                     Duration = 5,
                     Packages = _packages3,
                     Status = 3,
-                    Payment = null
+                    
                 };
             }
         }
@@ -612,12 +637,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 0,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 10,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -630,12 +655,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 20, 0),
                     Duration = 15,
                     Packages = _packages1,
                     Status = 1,
-                    Payment = null
+                    
                 };
             }
         }
@@ -648,12 +673,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13,35, 0),
                     Duration = 55,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -665,12 +690,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule3,
+                    ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 30, 0),
                     Duration = 15,
                     Packages = _packages2,
                     Status = 2,
-                    Payment = null
+                    
                 };
             }
         }
@@ -682,12 +707,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     PatientId = 3,
-                    Schedule = _schedule1,
+                    ScheduleId=1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 45, 0),
                     Duration = 15,
                     Packages = new ObservableCollection<Package>(),
                     Status = 0,
-                    Payment = null
+                    
                 };
             }
         }
@@ -839,6 +864,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         }
 
         #endregion
+
+        #region PackageGroup
+
         private ObservableCollection<PackageGroup> _packageGroupsRow1
         {
             get
@@ -864,6 +892,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 };
             }
         }
+
         private ObservableCollection<PackageGroup> _packageGroupsRow2
         {
             get
@@ -889,16 +918,21 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 };
             }
         }
+
         public ObservableCollection<ObservableCollection<PackageGroup>> РackageGroupsRows
         {
             get
             {
                 return new ObservableCollection<ObservableCollection<PackageGroup>>
                 {
-                    _packageGroupsRow1,_packageGroupsRow2
+                    _packageGroupsRow1,
+                    _packageGroupsRow2
                 };
             }
         }
+
+        #endregion
+
         public ObservableCollection<Package> Packages
         {
             get
@@ -917,12 +951,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     new ScheduleReception
                     {
-                        Schedule = _scheduleFake1,
+                        Schedule=_scheduleFake1,
                         Receptions = new ObservableCollection<Reception>()
                     },
                     new ScheduleReception
                     {
-                        Schedule = _schedule1,
+                        Schedule=_schedule1,
                         Receptions = new ObservableCollection<Reception>
                         {
                             _reception11,
@@ -935,12 +969,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     },
                     new ScheduleReception
                     {
-                        Schedule = _scheduleFake2,
+                        Schedule=_scheduleFake2,
                         Receptions = new ObservableCollection<Reception>()
                     },
                     new ScheduleReception
                     {
-                        Schedule = _schedule2,
+                        Schedule=_schedule2,
                         Receptions = new ObservableCollection<Reception>
                         {
                             _reception21,
@@ -953,7 +987,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     },
                     new ScheduleReception
                     {
-                        Schedule = _scheduleFake3,
+                        Schedule=_scheduleFake3,
                         Receptions = new ObservableCollection<Reception>()
                     }
                 };
@@ -968,12 +1002,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     new ScheduleReception
                     {
-                        Schedule = _scheduleFake4,
+                        Schedule=_scheduleFake4,
                         Receptions = new ObservableCollection<Reception>()
                     },
                     new ScheduleReception
                     {
-                        Schedule = _schedule3,
+                        Schedule=_schedule3,
                         Receptions = new ObservableCollection<Reception>
                         {
                             _reception31,
@@ -988,7 +1022,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     },
                     new ScheduleReception
                     {
-                        Schedule = _scheduleFake5,
+                        Schedule=_scheduleFake5,
                         Receptions = new ObservableCollection<Reception>()
                     },
                 };
@@ -1017,49 +1051,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
             }
         }
 
-        #region Contacts
-
-        private Dictionary<string, string> _contacts1
-        {
-            get
-            {
-                return new Dictionary<string, string>()
-                {
-                    {"E-mail", "patient1@mail.ru"},
-                    {"VK", "patient1@mail.ru"},
-                    {"Skype", "patient1"}
-                };
-            }
-        }
-
-        private Dictionary<string, string> _contacts2
-        {
-            get
-            {
-                return new Dictionary<string, string>()
-                {
-                    {"E-mail", "patient2@mail.ru"},
-                    {"VK", "patient2@mail.ru"},
-                    {"Skype", "patient2"}
-                };
-            }
-        }
-
-        private Dictionary<string, string> _contacts3
-        {
-            get
-            {
-                return new Dictionary<string, string>()
-                {
-                    {"E-mail", "patient3@mail.ru"},
-                    {"VK", "patient3@mail.ru"},
-                    {"Skype", "patient3"}
-                };
-            }
-        }
-
-        #endregion
-
         #region Patients
 
         private Patient _patient1
@@ -1079,7 +1070,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     PhoneNumber = "525356",
                     MobileCode = "7705",
                     MobileNumber = "5048521",
-                    Contacts = _contacts1,
+                    Email = "patient1@mail.ru",
                     Receptions = _receptions1,
                 };
             }
@@ -1102,7 +1093,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     PhoneNumber = "",
                     MobileCode = "7777",
                     MobileNumber = "4568721",
-                    Contacts = _contacts2,
+                    Email = "patient2@mail.ru",
                     Receptions = new List<Reception>(),
                 };
             }
@@ -1125,7 +1116,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     PhoneNumber = "",
                     MobileCode = "",
                     MobileNumber = "",
-                    Contacts = _contacts3,
+                    Email = "patient3@mail.ru",
                     Receptions = _receptions2,
                 };
             }

@@ -270,7 +270,7 @@
 									
 					<TextBlock Text="Стоимость:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2" Margin="0,4.974"/>
 					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="2">
-						<TextBox HorizontalAlignment="Left" Height="23" Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center" Width="60" FontSize="13.333" Margin="0,0,5,0"/>
+						<TextBlock Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center" Width="60" FontSize="13.333" Margin="0,0,5,0" FontWeight="Bold"/>
 						<ComboBox ItemsSource="{Binding Discounts}" Width="220"  SelectedValue="{Binding CurrentReception.Discount}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3"/>
 					</StackPanel>
 					<TextBlock Text="Исследования:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="3"/>
@@ -298,6 +298,7 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
 						<RowDefinition Height="Auto"/>
@@ -336,7 +337,10 @@
 						<TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.MobileCode}" VerticalAlignment="Center" Width="70" Margin="0,0,0,0" FontSize="13.333"/>
 						<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.MobileNumber}" VerticalAlignment="Center" Width="165" Margin="5,0,0,0" FontSize="13.333"/>
 					</StackPanel>
-					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="9" HorizontalAlignment="Right" Margin="0,5,10,5" Width="Auto">
+					<TextBlock Text="Email:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="9"/>
+					<TextBox HorizontalAlignment="Stretch" Height="23" TextWrapping="Wrap" Text="{Binding CurrentPatient.Email}" VerticalAlignment="Center" Width="Auto" Grid.Column="1" Margin="5" Grid.Row="9" FontSize="13.333"/>
+					
+					<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="10" HorizontalAlignment="Right" Margin="0,5,10,5" Width="Auto">
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopyPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemovePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
 						<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SavePatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
