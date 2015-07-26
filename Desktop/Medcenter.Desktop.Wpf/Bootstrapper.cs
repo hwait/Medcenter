@@ -65,7 +65,7 @@ namespace Medcenter.Desktop.Wpf
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = userInfoModuleType.Name, ModuleType = userInfoModuleType.AssemblyQualifiedName });
             var scheduleManagerModuleType = typeof(ScheduleManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = scheduleManagerModuleType.Name, ModuleType = scheduleManagerModuleType.AssemblyQualifiedName });
-            var registratureModuleType = typeof(ScheduleManagerModule);
+            var registratureModuleType = typeof(RegistratureModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = registratureModuleType.Name, ModuleType = registratureModuleType.AssemblyQualifiedName });
         }
     }

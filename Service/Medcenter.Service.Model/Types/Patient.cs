@@ -22,9 +22,11 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public DateTime BirthDate { get; set; }
         [DataMember]
-        public bool? Gender { get; set; }
+        public int Gender { get; set; }
         [DataMember]
         public City City { get; set; }
+        [DataMember]
+        public int CityId { get; set; }
         [DataMember]
         public string Address { get; set; }
         [DataMember]
@@ -42,7 +44,7 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                if (BirthDate == DateTime.MinValue) return "Пациент не выбран.";
+                if (BirthDate.Year == DateTime.Now.Year && BirthDate.Month == DateTime.Now.Month && BirthDate.Day == DateTime.Now.Day) return "Пациент не выбран.";
                 DateTime today = DateTime.Today;
                 int age = today.Year - BirthDate.Year;
                 if (BirthDate > today.AddYears(-age)) age--;
@@ -56,17 +58,17 @@ namespace Medcenter.Service.Model.Types
         public Patient()
         {
             Receptions=new List<Reception>();
-            BirthDate=DateTime.MinValue;
+            BirthDate=DateTime.Now;
         }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();
             if (string.IsNullOrEmpty(Surname)) em.Add(new ResultMessage(2, "Фамилия:", OperationErrors.EmptyString));
             if (string.IsNullOrEmpty(FirstName)) em.Add(new ResultMessage(2, "Имя:", OperationErrors.EmptyString));
-            if (BirthDate == DateTime.MinValue) em.Add(new ResultMessage(2, "Дата рождения:", OperationErrors.VariantNotChosen));
-            if (Gender == null) em.Add(new ResultMessage(2, "Пол:", OperationErrors.VariantNotChosen));
+            if (BirthDate.Year == DateTime.Now.Year && BirthDate.Month == DateTime.Now.Month && BirthDate.Day == DateTime.Now.Day) em.Add(new ResultMessage(2, "Дата рождения:", OperationErrors.VariantNotChosen));
+            if (Gender == 0) em.Add(new ResultMessage(2, "Пол:", OperationErrors.VariantNotChosen));
             if (City==null) em.Add(new ResultMessage(2, "Город:", OperationErrors.VariantNotChosen));
-            if (string.IsNullOrEmpty(PhoneNumber) || (string.IsNullOrEmpty(MobileCode) || string.IsNullOrEmpty(MobileNumber))) em.Add(new ResultMessage(2, "Телефон:", OperationErrors.EmptyString));
+            //if (string.IsNullOrEmpty(PhoneNumber) || (string.IsNullOrEmpty(MobileCode) || string.IsNullOrEmpty(MobileNumber))) em.Add(new ResultMessage(2, "Телефон:", OperationErrors.EmptyString));
             return em;
         }
     }

@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Medcenter.Desktop.Infrastructure;
+using Medcenter.Desktop.Modules.RegistratureModule.Model;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
@@ -35,6 +36,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
+
+        #region Commands
+
         private readonly DelegateCommand<object> _newPatientCommand;
         private readonly DelegateCommand<object> _removePatientCommand;
         private readonly DelegateCommand<object> _savePatientCommand;
@@ -43,58 +47,222 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly DelegateCommand<object> _receptionChooseCommand;
         private readonly DelegateCommand<object> _addPackageToReceptionCommand;
         private readonly DelegateCommand<object> _removePackageFromReceptionCommand;
-
-
         private readonly DelegateCommand<object> _confirmReceptionCommand;
         private readonly DelegateCommand<object> _receptionPaymentCommand;
-
         private readonly DelegateCommand<object> _printReceptionCommand;
         private readonly DelegateCommand<object> _confirmPaymentCommand;
         private readonly DelegateCommand<object> _cancelPaymentCommand;
+        private readonly DelegateCommand<object> _saveCityCommand;
+        private readonly DelegateCommand<object> _confirmPatientCommand;
         
- 
-        #region Properties
+        
+
+        #region Commands Declaration
+        public ICommand ConfirmPatientCommand
+        {
+            get { return this._confirmPatientCommand; }
+        }
+        public ICommand SaveCityCommand
+        {
+            get { return this._saveCityCommand; }
+        }
+        public ICommand CopyPatientCommand
+        {
+            get { return this._copyPatientCommand; }
+        }
+
+        public ICommand SearchPatientCommand
+        {
+            get { return this._searchPatientCommand; }
+        }
+
+        public ICommand ReceptionChooseCommand
+        {
+            get { return this._receptionChooseCommand; }
+        }
 
         public ICommand ConfirmPaymentCommand
         {
             get { return this._confirmPaymentCommand; }
         }
+
         public ICommand CancelPaymentCommand
         {
             get { return this._cancelPaymentCommand; }
         }
+
         public ICommand PrintReceptionCommand
         {
             get { return this._printReceptionCommand; }
         }
+
         public ICommand NewPatientCommand
         {
             get { return this._newPatientCommand; }
         }
+
         public ICommand RemovePatientCommand
         {
             get { return this._removePatientCommand; }
         }
+
         public ICommand SavePatientCommand
         {
             get { return this._savePatientCommand; }
         }
+
         public ICommand AddPackageToReceptionCommand
         {
             get { return this._addPackageToReceptionCommand; }
         }
+
         public ICommand RemovePackageFromReceptionCommand
         {
             get { return this._removePackageFromReceptionCommand; }
         }
+
         public ICommand ConfirmReceptionCommand
         {
             get { return this._confirmReceptionCommand; }
         }
+
         public ICommand ReceptionPaymentCommand
         {
             get { return this._receptionPaymentCommand; }
         }
+
+        #endregion
+
+        #endregion
+
+        #region Properties
+        private int _startHour, _endHour;
+        private string[] _cabinets;
+        private DateTime _currentDate;
+        public DateTime CurrentDate
+        {
+            get
+            {
+                return _currentDate;
+            }
+            set
+            {
+                SetProperty(ref _currentDate, value);
+                SchedulesReload();
+            }
+        }
+
+        private bool _isNewPatientPanelVisible;
+        private bool _isSearchPatientPanelVisible;
+        //private bool _isAddPackagesPanelVisible;
+        private bool _isReceptionPanelVisible;
+        private bool _isPaymentsPanelVisible;
+
+        public bool IsNewPatientPanelVisible
+        {
+            get { return _isNewPatientPanelVisible; }
+            set { SetProperty(ref _isNewPatientPanelVisible, value); }
+        }
+        public bool IsSearchPatientPanelVisible
+        {
+            get { return _isSearchPatientPanelVisible; }
+            set { SetProperty(ref _isSearchPatientPanelVisible, value); }
+        }
+        //public bool IsAddPackagesPanelVisible
+        //{
+        //    get { return _isAddPackagesPanelVisible; }
+        //    set { SetProperty(ref _isAddPackagesPanelVisible, value); }
+        //}
+        public bool IsReceptionPanelVisible
+        {
+            get { return _isReceptionPanelVisible; }
+            set { SetProperty(ref _isReceptionPanelVisible, value); }
+        }
+        public bool IsPaymentsPanelVisible
+        {
+            get { return _isPaymentsPanelVisible; }
+            set { SetProperty(ref _isPaymentsPanelVisible, value); }
+        }
+
+        #region Packages and Reception
+
+        private Package _currentPackageInReception;
+
+        public Package CurrentPackageInReception
+        {
+            get { return _currentPackageInReception; }
+            set { SetProperty(ref _currentPackageInReception, value); }
+        }
+
+        private ListCollectionView _packagesBase;
+
+        public ListCollectionView PackagesBase
+        {
+            get { return _packagesBase; }
+            set { SetProperty(ref _packagesBase, value); }
+        }
+
+        #endregion
+
+        #region Patients
+
+        private string _patientSearchText;
+
+        public string PatientSearchText
+        {
+            get { return _patientSearchText; }
+            set { SetProperty(ref _patientSearchText, value); }
+        }
+        private List<City> _cities;
+
+        public List<City> Cities
+        {
+            get { return _cities; }
+            set { SetProperty(ref _cities, value); }
+        }
+        private List<Schedule> _schedules;
+
+        public List<Schedule> Schedules
+        {
+            get { return _schedules; }
+            set { _schedules=value; }
+        }
+        private List<Reception> _receptions;
+
+        public List<Reception> Receptions
+        {
+            get { return _receptions; }
+            set { _receptions = value; }
+        }
+
+        private ObservableCollection<CabinetReceptions> _dayReceptions;
+
+        public ObservableCollection<CabinetReceptions> DayReceptions
+        {
+            get { return _dayReceptions; }
+            set { SetProperty(ref _dayReceptions, value); }
+        }
+        
+        private ListCollectionView _patients;
+
+        public ListCollectionView Patients
+        {
+            get { return _patients; }
+            set { SetProperty(ref _patients, value); }
+        }
+
+        private Patient _currentPatient;
+
+        public Patient CurrentPatient
+        {
+            get { return _currentPatient; }
+            set { SetProperty(ref _currentPatient, value); }
+        }
+
+        #endregion
+
+        #region Others
+
         private List<ResultMessage> _errors;
 
         public List<ResultMessage> Errors
@@ -102,239 +270,304 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _doctors;
-        public ListCollectionView Doctors
-        {
-            get { return _doctors; }
-            set { SetProperty(ref _doctors, value); }
-        }
-        private Package _currentPackageInReception;
-        public Package CurrentPackageInReception
-        {
-            get { return _currentPackageInReception; }
-            set
-            {
-                SetProperty(ref _currentPackageInReception, value);
-            }
-        }
 
-
-        private ListCollectionView _PatientsBase;
-        public ListCollectionView PatientsBase
-        {
-            get { return _PatientsBase; }
-            set { SetProperty(ref _PatientsBase, value); }
-        }
-        private ListCollectionView _patients;
-        public ListCollectionView Patients
-        {
-            get { return _patients; }
-            set { SetProperty(ref _patients, value); }
-        }
-        private Patient _currentPatientInDoctor;
-
-        public Patient CurrentPatientInDoctor
-        {
-            get { return _currentPatientInDoctor; }
-            set
-            {
-                if (value.Id == 0) _currentBasePatient = new Patient();
-                else
-                {
-                    for (int i = 0; i < PatientsBase.Count; i++)
-                    {
-                        if (((Patient)PatientsBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePatient = (Patient)PatientsBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPatientInDoctor, value);
-            }
-        }
-        private Patient _currentPatient;
-
-        public Patient CurrentPatient
-        {
-            get { return _currentPatient; }
-            set
-            {
-                if (value.Id == 0) _currentBasePatient = new Patient();
-                else
-                {
-                    for (int i = 0; i < PatientsBase.Count; i++)
-                    {
-                        if (((Patient)PatientsBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePatient = (Patient)PatientsBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPatient, value);
-
-            }
-        }
-        private Patient _currentBasePatient;
-
-        private Doctor _currentDoctor;
-
-        public Doctor CurrentDoctor
-        {
-            get { return _currentDoctor; }
-            set
-            {
-                SetProperty(ref _currentDoctor, value);
-                PatientsInDoctorRefresh();
-            }
-        }
+        #endregion
 
         #endregion
 
         [ImportingConstructor]
         public RegistratureMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
+            #region Properties
+
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
             _searchPatientCommand = new DelegateCommand<object>(SearchPatient);
             _copyPatientCommand = new DelegateCommand<object>(CopyPatient);
             _receptionChooseCommand = new DelegateCommand<object>(ReceptionChoose);
-            _newPatientCommand = new DelegateCommand<object>(NewPatient, CanAddPatient);
-            _removePatientCommand = new DelegateCommand<object>(RemovePatient, CanRemovePatient);
+            _newPatientCommand = new DelegateCommand<object>(NewPatient);
+            _removePatientCommand = new DelegateCommand<object>(RemovePatient);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
+            _saveCityCommand = new DelegateCommand<object>(SaveCity);
             _addPackageToReceptionCommand = new DelegateCommand<object>(AddPackageToReception);
             _removePackageFromReceptionCommand = new DelegateCommand<object>(RemovePackageFromReception);
             _confirmReceptionCommand = new DelegateCommand<object>(ConfirmReception);
             _receptionPaymentCommand = new DelegateCommand<object>(ReceptionPayment);
-
             _printReceptionCommand = new DelegateCommand<object>(PrintReception);
             _confirmPaymentCommand = new DelegateCommand<object>(ConfirmPayment);
             _cancelPaymentCommand = new DelegateCommand<object>(CancelPayment);
+            _confirmPatientCommand = new DelegateCommand<object>(ConfirmPatient);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
+            Patients=new ListCollectionView(new List<Patient>());
+
+            #endregion
+            _startHour = int.Parse(Utils.ReadSetting("StartHour"));
+            _endHour = int.Parse(Utils.ReadSetting("EndHour"));
+            _cabinets = Utils.ReadSetting("Cabinets").Split(',');
+            _currentDate=DateTime.Today;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //_jsonClient.GetAsync(new PatientsSelect())
-            //.Success(ri =>
-            //{
-            //    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //    PatientsBase = new ListCollectionView(ri.Patients);
-            //    _jsonClient.GetAsync(new DoctorsSelect())
-            //    .Success(rig =>
-            //    {
-            //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //        Doctors = new ListCollectionView(rig.Doctors);
-            //        Doctors.CurrentChanged += Doctors_CurrentChanged;
-
-            //        CurrentDoctor = new Doctor();
-            //        PatientsInDoctor.CurrentChanged += PatientsInDoctor_CurrentChanged;
-            //        PatientsReload(ri.Patients);
-            //        Doctors.MoveCurrentTo(null);
-            //    })
-            //    .Error(ex =>
-            //    {
-            //        throw ex;
-            //    });
-            //})
-            //.Error(ex =>
-            //{
-            //    throw ex;
-            //});
+            _jsonClient.GetAsync(new CitiesSelect())
+            .Success(ri =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Cities = ri.Cities;
+                SchedulesReload();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
-        private void CancelPayment(object obj)
+        private void SchedulesReload()
         {
-            throw new NotImplementedException();
+
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.PostAsync(new SchedulesFullSelect { TimeStart = _currentDate })
+            .Success(rs =>
+            {
+                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Schedules = rs.Schedules;
+                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.GetAsync(new ReceptionsByDateSelect { StartDate = _currentDate })
+                .Success(rr =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Receptions = rr.Receptions;
+                    MakeCurrentDayReceptions();
+                })
+                .Error(ex =>
+                {
+                    Schedules = new List<Schedule>();
+                    throw ex;
+                });
+            })
+            .Error(ex =>
+            {
+                Schedules = new List<Schedule>();
+                throw ex;
+            });
         }
 
-        private void ConfirmPayment(object obj)
+        #region MakeCurrentWeek
+
+        private void ScheduleChoose(Schedule obj)
         {
-            throw new NotImplementedException();
+            //CurrentSchedule = obj;
+            //_oldDoctorId = obj.CurrentDoctor.Id;
+        }
+        private void MakeCurrentDayReceptions()
+        {
+            DayReceptions = new ObservableCollection<CabinetReceptions>();
+            CabinetReceptions cabinetReceptions;
+            ScheduleReception scheduleReception;
+            ObservableCollection<Schedule> schedules;
+            DateTime currentStartTime, startTime, endTime, startDate;
+            startTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _startHour, 0, 0);
+            //Make a minimal start time for the current date
+            endTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _endHour, 59, 0);
+           
+            foreach (var cabinet in _cabinets)
+            {
+                int cab = int.Parse(cabinet);
+                currentStartTime = startTime; // renew currentStartTime before start new cycle
+                cabinetReceptions = new CabinetReceptions(cab);
+                schedules = FilterSchedules(currentStartTime, cab);
+                foreach (var schedule in schedules)
+                {
+                    if (currentStartTime < schedule.Start) // Have to fill empty place with white bar
+                    {
+                        scheduleReception=new ScheduleReception(MakeWhiteBar(currentStartTime, schedule.Start, cab));
+                        currentStartTime = scheduleReception.Schedule.Start; // new start time for real Schedule following
+                        cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
+                        scheduleReception = new ScheduleReception(schedule, GetReceptionsInSchedule(schedule));
+                        cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
+                        currentStartTime = schedule.End; // new start time for next Schedule
+                    }
+                    else // Have to fill real schedule info
+                    {
+                        scheduleReception = new ScheduleReception(schedule, GetReceptionsInSchedule(schedule));
+                        cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
+                        currentStartTime = schedule.End; // new start time for next Schedule
+                    }
+                }
+                if (currentStartTime < endTime) // Last schedule is empty if a gap exists
+                {
+                    scheduleReception = new ScheduleReception(MakeWhiteBar(currentStartTime, endTime, cab));
+                    cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
+                }
+                DayReceptions.Add(cabinetReceptions); //Add new cabinet here
+            }
         }
 
-        private void PrintReception(object obj)
+        private ObservableCollection<Reception> GetReceptionsInSchedule(Schedule schedule)
         {
-            throw new NotImplementedException();
+            ObservableCollection<Reception> receptions=new ObservableCollection<Reception>();
+            var list = from r in Receptions
+                       where
+                           r.ScheduleId == schedule.Id
+                       select r;
+            foreach (var r in list)
+            {
+                receptions.Add(r);
+            }
+            return receptions;
         }
 
-        private void ReceptionPayment(object obj)
+        private ObservableCollection<Schedule> FilterSchedules(DateTime time, int cabinet)
         {
-            throw new NotImplementedException();
+            var schedules = new ObservableCollection<Schedule>();
+            DateTime ts = new DateTime(time.Year, time.Month, time.Day, 0, 0, 0);
+            DateTime te = new DateTime(time.AddDays(1).Year, time.AddDays(1).Month, time.AddDays(1).Day, 0, 0, 0);
+            var list = from s in Schedules
+                       where
+                           s.CabinetId == cabinet
+                           && s.Start > ts
+                           && s.End < te
+                       orderby s.Start
+                       select s;
+            foreach (var s in list)
+            {
+                schedules.Add(s);
+            }
+            return schedules;
+        }
+        private ObservableCollection<Schedule> FilterSchedules(int doctorId)
+        {
+            var schedules = new ObservableCollection<Schedule>();
+            var list = from s in Schedules
+                       where
+                           s.CurrentDoctor.Id == doctorId
+                       select s;
+            foreach (var s in list)
+            {
+                schedules.Add(s);
+            }
+            return schedules;
+        }
+        private Schedule GetSchedule(int id)
+        {
+            var list = Schedules.FirstOrDefault(s => s.Id == id);
+            return list;
+        }
+        private Schedule MakeWhiteBar(DateTime startTime, DateTime endTime, int cabinet)
+        {
+            return new Schedule(startTime, endTime, cabinet);
         }
 
-        private void ConfirmReception(object obj)
+        #endregion
+
+        private void SaveCity(object obj)
         {
-            throw new NotImplementedException();
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new CitySave { City = CurrentPatient.City })
+            .Success(rig =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
-        private void RemovePackageFromReception(object obj)
+        private void MakePanelVisible(string panel)
         {
-            throw new NotImplementedException();
+            IsNewPatientPanelVisible = false;
+            IsSearchPatientPanelVisible = false;
+            //IsAddPackagesPanelVisible = false;
+            IsReceptionPanelVisible = false;
+            IsPaymentsPanelVisible = false;
+            switch (panel)
+            {
+                case "Search":
+                    IsSearchPatientPanelVisible = true;
+                    break;
+                case "Patient":
+                    IsNewPatientPanelVisible = true;
+                    break;
+                case "Reception":
+                    IsReceptionPanelVisible = true;
+                    break;
+                case "Payment":
+                    IsPaymentsPanelVisible = true;
+                    break;
+            }
         }
+        #region Patient
 
-        private void AddPackageToReception(object obj)
+        private void ConfirmPatient(object obj)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ReceptionChoose(object obj)
-        {
-            throw new NotImplementedException();
+            MakePanelVisible("");
         }
 
         private void SearchPatient(object obj)
         {
-        }
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new PatientsSelect{ Text = PatientSearchText })
+            .Success(rig =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                foreach (var patient in rig.Patients)
+                {
+                    patient.City = Cities.Single(i => i.Id == patient.CityId);
+                }
 
-        private bool CanRemovePatient(object arg)
-        {
-            return true;
-        }
-
-        private void Doctors_CurrentChanged(object sender, EventArgs e)
-        {
-            CurrentDoctor = Doctors.CurrentItem != null ? (Doctor)Doctors.CurrentItem : new Doctor();
+                Patients = new ListCollectionView(rig.Patients);
+                Patients.MoveCurrentTo(null);
+                Patients.CurrentChanged += Patients_CurrentChanged;
+                CurrentPatient = new Patient();
+                MakePanelVisible("Search");
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
         private void Patients_CurrentChanged(object sender, EventArgs e)
         {
             CurrentPatient = Patients.CurrentItem != null ? (Patient)Patients.CurrentItem : new Patient();
         }
-        private void PatientsInDoctor_CurrentChanged(object sender, EventArgs e)
+        private void NewPatient(object obj)
         {
-            //CurrentPatientInDoctor = PatientsInDoctor.CurrentItem != null ? (Patient)PatientsInDoctor.CurrentItem : new Patient();
+            CurrentPatient = new Patient();
+            MakePanelVisible("Patient");
         }
 
-        #region Doctor
-
-        private void NewDoctor(object obj)
+        private void SavePatient(object obj)
         {
-            CurrentDoctor = new Doctor();
-        }
-
-        private void SaveDoctor(object obj)
-        {
-            bool isNew = CurrentDoctor.Id <= 0;
-            Errors = CurrentDoctor.Validate();
+            bool isNew = CurrentPatient.Id <= 0;
+            Errors = CurrentPatient.Validate();
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.PostAsync(new DoctorSave { Doctor = CurrentDoctor })
-                    .Success(r =>
+                _jsonClient.PostAsync(new PatientSave { Patient = CurrentPatient })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    CurrentPatient.Id = r.PatientId;
+                    if (isNew)
                     {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                        CurrentDoctor.Id = r.DoctorId;
-                        if (isNew) Doctors.AddNewItem(CurrentDoctor);
-                        r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
-                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                    })
-                    .Error(ex =>
-                    {
-                        throw ex;
-                    });
+                        Patients.AddNewItem(CurrentPatient);
+                    }
+                    r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Surname, CurrentPatient.FirstName, CurrentPatient.SecondName);
+                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
             }
         }
 
-        private void RemoveDoctor(object obj)
+        private void RemovePatient(object obj)
         {
-            bool isNew = CurrentDoctor.Id == 0;
+            bool isNew = CurrentPatient.Id == 0;
             ConfirmationRequest.Raise(
-                new Confirmation { Content = "Группа будет удалёна! Вы уверены?", Title = "Удаление группы инспекций." },
+                new Confirmation { Content = "Пациент будет удалён! Вы уверены?", Title = "Удаление пациента." },
                 c =>
                 {
                     if (c.Confirmed)
@@ -342,18 +575,20 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                         if (isNew)
                         {
-                            CurrentDoctor = new Doctor();
+                            CurrentPatient = new Patient();
+                            _newPatientCommand.RaiseCanExecuteChanged();
+                            MakePanelVisible("");
                         }
                         else
                         {
-                            _jsonClient.GetAsync(new DoctorDelete { DoctorId = CurrentDoctor.Id })
+                            _jsonClient.GetAsync(new PatientDelete { PatientId = CurrentPatient.Id })
                             .Success(r =>
                             {
-                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false); _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                                r.Message.Message = string.Format(r.Message.Message, CurrentDoctor.Name);
-                                CopyPatientByIGID(CurrentDoctor.Id);
-                                Doctors.Remove(Doctors.CurrentItem);
+                                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Surname, CurrentPatient.FirstName, CurrentPatient.SecondName);
+                                Patients.Remove(_currentPatient);
                                 _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                                MakePanelVisible("");
                             })
                             .Error(ex =>
                             {
@@ -363,99 +598,39 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     }
                 });
         }
-        private bool CanAddDoctor(object arg)
-        {
-            //return CurrentDoctor == null || CurrentDoctor.Id != 0;
-            return true;
-        }
+        
         #endregion
+        
+        #region Reception
 
-        #region Patient
-        private void NewPatient(object obj)
+        private void ConfirmReception(object obj)
         {
-            CurrentPatient = new Patient();
+            throw new NotImplementedException();
         }
 
-        private void SavePatient(object obj)
+        private void ReceptionChoose(object obj)
         {
-            //bool isNew = CurrentPatient.Id <= 0;
-            //Errors = CurrentPatient.Validate();
-            //if (Errors.Count == 0)
-            //{
-            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //    _jsonClient.PostAsync(new PatientSave { Patient = CurrentPatient })
-            //        .Success(r =>
-            //        {
-            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //            CurrentPatient.Id = r.PatientId;
-            //            if (isNew)
-            //            {
-            //                PatientsBase.AddNewItem(CurrentPatient);
-            //                PatientsInDoctorRefresh();
-            //            }
-            //            r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Name);
-            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-            //            _newPatientCommand.RaiseCanExecuteChanged();
-            //        })
-            //        .Error(ex =>
-            //        {
-            //            throw ex;
-            //        });
-            //}
-        }
-
-        private void RemovePatient(object obj)
-        {
-            //bool isNew = CurrentPatient.Id == 0;
-            //ConfirmationRequest.Raise(
-            //    new Confirmation { Content = "Инспекция будет удалёна! Вы уверены?", Title = "Удаление инспекции." },
-            //    c =>
-            //    {
-            //        if (c.Confirmed)
-            //        {
-            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //            if (isNew)
-            //            {
-            //                CurrentPatient = new Patient();
-            //                _newPatientCommand.RaiseCanExecuteChanged();
-            //            }
-            //            else
-            //            {
-            //                _jsonClient.GetAsync(new PatientDelete { PatientId = CurrentPatient.Id })
-            //                .Success(r =>
-            //                {
-            //                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //                    r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Name);
-            //                    CopyPatientByIID(_currentBasePatient.Id);
-            //                    PatientsBase.Remove(_currentBasePatient);
-            //                    //Patients.Remove(Patients.CurrentItem);
-            //                    PatientsInDoctorRefresh();
-            //                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-            //                    _newPatientCommand.RaiseCanExecuteChanged();
-            //                })
-            //                .Error(ex =>
-            //                {
-            //                    throw ex;
-            //                });
-            //            }
-            //        }
-            //    });
-        }
-        private bool CanAddPatient(object arg)
-        {
-            //return CurrentPatient == null || CurrentPatient.Id != 0;
-            return true;
+            throw new NotImplementedException();
         }
 
         #endregion
 
-        #region Patients in Doctor
+        #region Package in Reception
+        private void RemovePackageFromReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddPackageToReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
         private void ClearPatients()
         {
             Patients.MoveCurrentTo(null);
             //PatientsInDoctor.MoveCurrentTo(null);
-            CurrentPatient = new Patient();
-            CurrentPatientInDoctor = new Patient();
+            //CurrentPatient = new Patient();
+            //CurrentPatientInDoctor = new Patient();
         }
         private void PatientsReload(List<Patient> Patients)
         {
@@ -537,7 +712,29 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         }
         #endregion
 
+        #region Payment
 
+        private void CancelPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConfirmPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PrintReception(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ReceptionPayment(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
     }
 }

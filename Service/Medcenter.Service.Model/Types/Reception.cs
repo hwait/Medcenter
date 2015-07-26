@@ -32,6 +32,7 @@ namespace Medcenter.Service.Model.Types
         public ObservableCollection<Package> Packages { get; set; }
         [DataMember]
         public byte Status { get; set; }
+        public string StatusText { get; set; }
         [DataMember]
         public ObservableCollection<Payment> Payments { get; set; }
         public string Text {

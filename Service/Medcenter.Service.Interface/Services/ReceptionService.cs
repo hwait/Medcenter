@@ -19,8 +19,10 @@ namespace Medcenter.Service.Interface.Services
 
         public ReceptionsSelectResponse Get(ReceptionsByDateSelect req)
         {
+            var startDate = new DateTime(req.StartDate.Year, req.StartDate.Month, req.StartDate.Day, 0, 0, 0);
+            var endDate = new DateTime(req.StartDate.Year, req.StartDate.Month, req.StartDate.Day, 23, 59, 59);
             var rows = Db.SqlList<Reception>("EXEC sp_Receptions_Select_ByDate @Start, @End",
-                new { Start = req.StartDate, End = req.EndDate });
+                new { Start = startDate, End = endDate });
             return new ReceptionsSelectResponse { Receptions = FillReceptions(rows) };
         }
 

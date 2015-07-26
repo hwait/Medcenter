@@ -28,7 +28,24 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
         public List<Schedule> Schedules { get; set; }
     }
+    //[Authenticate]
+    [Route("/schedules/full/{TimeStart}", "POST")]
+    public class SchedulesFullSelect : IReturn<SchedulesFullSelectResponse>
+    {
+        public DateTime TimeStart { get; set; }
+    }
 
+    public class SchedulesFullSelectResponse : IHasResponseStatus
+    {
+        public SchedulesFullSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Schedule> Schedules { get; set; }
+    }
     [RequiresAnyRole("Admin", "Manager")]
     [Route("/schedule/save", "POST")]
     public class ScheduleSave : IReturn<ScheduleSaveResponse>

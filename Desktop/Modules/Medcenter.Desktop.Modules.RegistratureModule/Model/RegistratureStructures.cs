@@ -12,10 +12,38 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.Model
     {
         public string CabinetId { get; set; }
         public ObservableCollection<ScheduleReception> ScheduleReceptions { get; set; }
+        public CabinetReceptions(int cabinet)
+        {
+            CabinetId = (cabinet == 0) ? "" : "Каб. " + cabinet;
+            ScheduleReceptions = new ObservableCollection<ScheduleReception>();
+        }
+
+        public CabinetReceptions()
+        {
+            CabinetId = "";
+            ScheduleReceptions = new ObservableCollection<ScheduleReception>();
+        }
+
     }
     public class ScheduleReception
     {
         public Schedule Schedule { get; set; }
         public ObservableCollection<Reception> Receptions { get; set; }
+
+        public ScheduleReception(Schedule schedule)
+        {
+            Schedule = schedule;
+            Receptions=new ObservableCollection<Reception>();
+        }
+        public ScheduleReception(Schedule schedule, ObservableCollection<Reception> receptions)
+        {
+            Schedule = schedule;
+            Receptions = receptions;
+        }
+
+        public ScheduleReception()
+        {
+            
+        }
     }
 }

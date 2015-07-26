@@ -18,7 +18,29 @@ namespace Medcenter.Service.Interface.Services
                 new { TimeStart = req.TimeStart, TimeEnd = req.TimeEnd });
             return new SchedulesSelectResponse { Schedules = rows };
         }
+        public SchedulesFullSelectResponse Post(SchedulesFullSelect req)
+        {
+            var rows=new List<Schedule>();
+            try
+            {
+                var startDate = new DateTime(req.TimeStart.Year, req.TimeStart.Month, req.TimeStart.Day, 0, 0, 0);
+                var endDate = new DateTime(req.TimeStart.Year, req.TimeStart.Month, req.TimeStart.Day, 23, 59, 59);
 
+                rows = Db.SqlList<Schedule>("EXEC sp_Schedules_Select @TimeStart, @TimeEnd",
+                    new { TimeStart = startDate, TimeEnd = endDate });
+                foreach (var schedule in rows)
+                {
+                    schedule.CurrentDoctor = Db.Single<Doctor>("select * from Doctors where Id=@Id",
+                        new { Id = schedule.DoctorId });
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log("SchedulesFullSelectResponse ", e);
+                throw;
+            }
+            return new SchedulesFullSelectResponse { Schedules = rows };
+        }
         public ScheduleSaveResponse Post(ScheduleSave req)
         {
             int id = 0;

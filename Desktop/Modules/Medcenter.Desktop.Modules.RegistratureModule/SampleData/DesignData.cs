@@ -495,7 +495,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     Duration = 25,
                     Packages = _packages1,
                     Status = 2,
-                    
+                    StatusText = "Идёт исследование"
                 };
             }
         }
@@ -1064,7 +1064,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     FirstName = "Вениамин",
                     SecondName = "Адольфович",
                     BirthDate = new DateTime(1987, 11, 3),
-                    Gender = true,
+                    Gender = 1,
                     City = _city1,
                     Address = "Брауншвейгская, 23, кв 2",
                     PhoneNumber = "525356",
@@ -1087,7 +1087,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     FirstName = "Аристарх",
                     SecondName = "Иосифович",
                     BirthDate = new DateTime(1947, 1, 23),
-                    Gender = true,
+                    Gender = 1,
                     City = _city2,
                     Address = "",
                     PhoneNumber = "",
@@ -1110,7 +1110,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     FirstName = "Агриппина",
                     SecondName = "Львовна",
                     BirthDate = new DateTime(1997, 5, 13),
-                    Gender = false,
+                    Gender = 2,
                     City = _city3,
                     Address = "",
                     PhoneNumber = "",

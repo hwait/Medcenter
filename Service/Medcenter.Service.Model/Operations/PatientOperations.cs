@@ -68,7 +68,7 @@ namespace Medcenter.Service.Model.Operations
     }
 
     [RequiresAnyRole("Admin", "Manager")]
-    [Route("/Patient/delete/{PatientId}", "GET")]
+    [Route("/patient/delete/{PatientId}", "GET")]
     public class PatientDelete : IReturn<PatientDeleteResponse>
     {
         public int PatientId { get; set; }
