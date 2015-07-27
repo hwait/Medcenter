@@ -20,7 +20,7 @@ namespace Medcenter.Service.Model.Types
         public Doctor()
         {
             PackageIds = new List<int>();
-            Color = "#FFFFFFFF";
+            Color = "#FFEEEEEE";
             Id = 0;
             ShortName = "";
             Name = "";

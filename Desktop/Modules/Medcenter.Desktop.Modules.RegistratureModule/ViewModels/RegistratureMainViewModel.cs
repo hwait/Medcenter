@@ -44,20 +44,39 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly DelegateCommand<object> _savePatientCommand;
         private readonly DelegateCommand<object> _copyPatientCommand;
         private readonly DelegateCommand<object> _searchPatientCommand;
-        private readonly DelegateCommand<object> _receptionChooseCommand;
+        private readonly DelegateCommand<Reception> _receptionChooseCommand;
         private readonly DelegateCommand<object> _addPackageToReceptionCommand;
         private readonly DelegateCommand<object> _removePackageFromReceptionCommand;
         private readonly DelegateCommand<object> _confirmReceptionCommand;
+        private readonly DelegateCommand<object> _removeReceptionCommand;
+        private readonly DelegateCommand<object> _payReceptionCommand;
+        private readonly DelegateCommand<object> _saveReceptionCommand;
         private readonly DelegateCommand<object> _receptionPaymentCommand;
         private readonly DelegateCommand<object> _printReceptionCommand;
         private readonly DelegateCommand<object> _confirmPaymentCommand;
         private readonly DelegateCommand<object> _cancelPaymentCommand;
         private readonly DelegateCommand<object> _saveCityCommand;
         private readonly DelegateCommand<object> _confirmPatientCommand;
-        
+        private readonly DelegateCommand<PackageGroup> _packagesGroupChooseCommand;
         
 
         #region Commands Declaration
+        public ICommand RemoveReceptionCommand
+        {
+            get { return this._removeReceptionCommand; }
+        }
+        public ICommand PayReceptionCommand
+        {
+            get { return this._payReceptionCommand; }
+        }
+        public ICommand SaveReceptionCommand
+        {
+            get { return this._saveReceptionCommand; }
+        }
+        public ICommand PackagesGroupChooseCommand
+        {
+            get { return this._packagesGroupChooseCommand; }
+        }
         public ICommand ConfirmPatientCommand
         {
             get { return this._confirmPatientCommand; }
@@ -136,75 +155,47 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         #endregion
 
         #region Properties
-        private int _startHour, _endHour;
-        private string[] _cabinets;
-        private DateTime _currentDate;
-        public DateTime CurrentDate
-        {
-            get
-            {
-                return _currentDate;
-            }
-            set
-            {
-                SetProperty(ref _currentDate, value);
-                SchedulesReload();
-            }
-        }
-
-        private bool _isNewPatientPanelVisible;
-        private bool _isSearchPatientPanelVisible;
-        //private bool _isAddPackagesPanelVisible;
-        private bool _isReceptionPanelVisible;
-        private bool _isPaymentsPanelVisible;
-
-        public bool IsNewPatientPanelVisible
-        {
-            get { return _isNewPatientPanelVisible; }
-            set { SetProperty(ref _isNewPatientPanelVisible, value); }
-        }
-        public bool IsSearchPatientPanelVisible
-        {
-            get { return _isSearchPatientPanelVisible; }
-            set { SetProperty(ref _isSearchPatientPanelVisible, value); }
-        }
-        //public bool IsAddPackagesPanelVisible
-        //{
-        //    get { return _isAddPackagesPanelVisible; }
-        //    set { SetProperty(ref _isAddPackagesPanelVisible, value); }
-        //}
-        public bool IsReceptionPanelVisible
-        {
-            get { return _isReceptionPanelVisible; }
-            set { SetProperty(ref _isReceptionPanelVisible, value); }
-        }
-        public bool IsPaymentsPanelVisible
-        {
-            get { return _isPaymentsPanelVisible; }
-            set { SetProperty(ref _isPaymentsPanelVisible, value); }
-        }
+        
 
         #region Packages and Reception
 
+        private Package _currentPackage;
+        public Package CurrentPackage
+        {
+            get { return _currentPackage; }
+            set { SetProperty(ref _currentPackage, value); }
+        }
         private Package _currentPackageInReception;
-
         public Package CurrentPackageInReception
         {
             get { return _currentPackageInReception; }
             set { SetProperty(ref _currentPackageInReception, value); }
         }
+        private List<Package> _packagesBase;
 
-        private ListCollectionView _packagesBase;
-
-        public ListCollectionView PackagesBase
+        public List<Package> PackagesBase
         {
             get { return _packagesBase; }
             set { SetProperty(ref _packagesBase, value); }
         }
 
+        private ListCollectionView _packages;
+
+        public ListCollectionView Packages
+        {
+            get { return _packages; }
+            set { SetProperty(ref _packages, value); }
+        }
+        private List<List<PackageGroup>> _packageGroupsRows;
+
+        public List<List<PackageGroup>> РackageGroupsRows
+        {
+            get { return _packageGroupsRows; }
+            set { SetProperty(ref _packageGroupsRows, value); }
+        }
         #endregion
 
-        #region Patients
+        #region Patient
 
         private string _patientSearchText;
 
@@ -219,28 +210,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             get { return _cities; }
             set { SetProperty(ref _cities, value); }
-        }
-        private List<Schedule> _schedules;
-
-        public List<Schedule> Schedules
-        {
-            get { return _schedules; }
-            set { _schedules=value; }
-        }
-        private List<Reception> _receptions;
-
-        public List<Reception> Receptions
-        {
-            get { return _receptions; }
-            set { _receptions = value; }
-        }
-
-        private ObservableCollection<CabinetReceptions> _dayReceptions;
-
-        public ObservableCollection<CabinetReceptions> DayReceptions
-        {
-            get { return _dayReceptions; }
-            set { SetProperty(ref _dayReceptions, value); }
         }
         
         private ListCollectionView _patients;
@@ -261,8 +230,89 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         #endregion
 
+        #region Reception
+
+        private Reception _currentReception;
+
+        public Reception CurrentReception
+        {
+            get { return _currentReception; }
+            set { SetProperty(ref _currentReception, value); }
+        }
+        private List<Discount> _discounts;
+
+        public List<Discount> Discounts
+        {
+            get { return _discounts; }
+            set { SetProperty(ref _discounts, value); }
+        }
+        private List<Schedule> _schedules;
+
+        public List<Schedule> Schedules
+        {
+            get { return _schedules; }
+            set { _schedules = value; }
+        }
+        private List<Reception> _receptions;
+
+        public List<Reception> Receptions
+        {
+            get { return _receptions; }
+            set { _receptions = value; }
+        }
+
+        private ObservableCollection<CabinetReceptions> _dayReceptions;
+
+        public ObservableCollection<CabinetReceptions> DayReceptions
+        {
+            get { return _dayReceptions; }
+            set { SetProperty(ref _dayReceptions, value); }
+        }
+        #endregion
+
         #region Others
 
+        private int _startHour, _endHour;
+        private string[] _cabinets;
+        private DateTime _currentDate;
+        public DateTime CurrentDate
+        {
+            get
+            {
+                return _currentDate;
+            }
+            set
+            {
+                SetProperty(ref _currentDate, value);
+                SchedulesReload();
+            }
+        }
+
+        private bool _isNewPatientPanelVisible;
+        private bool _isSearchPatientPanelVisible;
+        private bool _isReceptionPanelVisible;
+        private bool _isPaymentsPanelVisible;
+
+        public bool IsNewPatientPanelVisible
+        {
+            get { return _isNewPatientPanelVisible; }
+            set { SetProperty(ref _isNewPatientPanelVisible, value); }
+        }
+        public bool IsSearchPatientPanelVisible
+        {
+            get { return _isSearchPatientPanelVisible; }
+            set { SetProperty(ref _isSearchPatientPanelVisible, value); }
+        }
+        public bool IsReceptionPanelVisible
+        {
+            get { return _isReceptionPanelVisible; }
+            set { SetProperty(ref _isReceptionPanelVisible, value); }
+        }
+        public bool IsPaymentsPanelVisible
+        {
+            get { return _isPaymentsPanelVisible; }
+            set { SetProperty(ref _isPaymentsPanelVisible, value); }
+        }
         private List<ResultMessage> _errors;
 
         public List<ResultMessage> Errors
@@ -278,6 +328,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         [ImportingConstructor]
         public RegistratureMainViewModel(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
+
             #region Properties
 
             _regionManager = regionManager;
@@ -285,7 +336,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _eventAggregator = eventAggregator;
             _searchPatientCommand = new DelegateCommand<object>(SearchPatient);
             _copyPatientCommand = new DelegateCommand<object>(CopyPatient);
-            _receptionChooseCommand = new DelegateCommand<object>(ReceptionChoose);
+            _receptionChooseCommand = new DelegateCommand<Reception>(ReceptionChoose);
             _newPatientCommand = new DelegateCommand<object>(NewPatient);
             _removePatientCommand = new DelegateCommand<object>(RemovePatient);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
@@ -295,14 +346,21 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _confirmReceptionCommand = new DelegateCommand<object>(ConfirmReception);
             _receptionPaymentCommand = new DelegateCommand<object>(ReceptionPayment);
             _printReceptionCommand = new DelegateCommand<object>(PrintReception);
+
+            _removeReceptionCommand = new DelegateCommand<object>(RemoveReception);
+            _payReceptionCommand = new DelegateCommand<object>(PayReception);
+            _saveReceptionCommand = new DelegateCommand<object>(SaveReception);
+
             _confirmPaymentCommand = new DelegateCommand<object>(ConfirmPayment);
             _cancelPaymentCommand = new DelegateCommand<object>(CancelPayment);
             _confirmPatientCommand = new DelegateCommand<object>(ConfirmPatient);
+            _packagesGroupChooseCommand = new DelegateCommand<PackageGroup>(PackagesGroupChoose);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             Patients=new ListCollectionView(new List<Patient>());
 
             #endregion
+
             _startHour = int.Parse(Utils.ReadSetting("StartHour"));
             _endHour = int.Parse(Utils.ReadSetting("EndHour"));
             _cabinets = Utils.ReadSetting("Cabinets").Split(',');
@@ -311,46 +369,128 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _jsonClient.GetAsync(new CitiesSelect())
             .Success(ri =>
             {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 Cities = ri.Cities;
                 SchedulesReload();
+                _jsonClient.GetAsync(new PackageGroupsSelect())
+                .Success(pg =>
+                {
+                    РackageGroupsRows = GetРackageGroupsRows(pg.PackageGroups, int.Parse(Utils.ReadSetting("PackageGroupRowNumber")));
+
+                    _jsonClient.GetAsync(new PackagesSelect())
+                    .Success(p =>
+                    {
+                        PackagesBase=p.Packages;
+                        _jsonClient.GetAsync(new DiscountsSelect())
+                        .Success(d =>
+                        {
+                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                            Discounts = d.Discounts;
+                        })
+                        .Error(ex =>
+                        {
+                            throw ex;
+                        });
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
             })
             .Error(ex =>
             {
                 throw ex;
             });
+        }
+
+
+
+        #region Visualization
+        private void PackagesGroupChoose(PackageGroup pg)
+        {
+            PackagesRefresh(pg);
+        }
+        private void PackagesRefresh(PackageGroup packageGroup)
+        {
+            CurrentPackage=new Package();
+            List<Package> list =
+                packageGroup.PackageIds.Select(packageId => PackagesBase.Single(i => i.Id == packageId)).ToList();
+            Packages = new ListCollectionView(list);
+
+        }
+
+        private List<List<PackageGroup>> GetРackageGroupsRows(List<PackageGroup> packageGroups, int n)
+        {
+            List<List<PackageGroup>> packageGroupsRows = new List<List<PackageGroup>>();
+            for (int i = 0; i < n; i++)
+            {
+                var list = from r in packageGroups
+                    where
+                        r.Row == i
+                    select r;
+                packageGroupsRows.Add(list.ToList());
+            }
+            return packageGroupsRows;
         }
 
         private void SchedulesReload()
         {
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.PostAsync(new SchedulesFullSelect { TimeStart = _currentDate })
-            .Success(rs =>
-            {
-                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                Schedules = rs.Schedules;
-                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.GetAsync(new ReceptionsByDateSelect { StartDate = _currentDate })
-                .Success(rr =>
+            _jsonClient.PostAsync(new SchedulesFullSelect {TimeStart = _currentDate})
+                .Success(rs =>
                 {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Receptions = rr.Receptions;
-                    MakeCurrentDayReceptions();
+                    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Schedules = rs.Schedules;
+                    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                    _jsonClient.GetAsync(new ReceptionsByDateSelect {StartDate = _currentDate})
+                        .Success(rr =>
+                        {
+                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                            Receptions = rr.Receptions;
+                            MakeCurrentDayReceptions();
+                        })
+                        .Error(ex =>
+                        {
+                            Schedules = new List<Schedule>();
+                            throw ex;
+                        });
                 })
                 .Error(ex =>
                 {
                     Schedules = new List<Schedule>();
                     throw ex;
                 });
-            })
-            .Error(ex =>
-            {
-                Schedules = new List<Schedule>();
-                throw ex;
-            });
         }
-
+        private void MakePanelVisible(string panel)
+        {
+            IsNewPatientPanelVisible = false;
+            IsSearchPatientPanelVisible = false;
+            //IsAddPackagesPanelVisible = false;
+            IsReceptionPanelVisible = false;
+            IsPaymentsPanelVisible = false;
+            switch (panel)
+            {
+                case "Search":
+                    IsSearchPatientPanelVisible = true;
+                    break;
+                case "Patient":
+                    IsNewPatientPanelVisible = true;
+                    break;
+                case "Reception":
+                    IsReceptionPanelVisible = true;
+                    break;
+                case "Payment":
+                    IsPaymentsPanelVisible = true;
+                    break;
+            }
+        }
+        #endregion
+        
         #region MakeCurrentWeek
 
         private void ScheduleChoose(Schedule obj)
@@ -380,7 +520,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     if (currentStartTime < schedule.Start) // Have to fill empty place with white bar
                     {
                         scheduleReception=new ScheduleReception(MakeWhiteBar(currentStartTime, schedule.Start, cab));
-                        currentStartTime = scheduleReception.Schedule.Start; // new start time for real Schedule following
+                        //currentStartTime = scheduleReception.Schedule.Start; // new start time for real Schedule following
                         cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
                         scheduleReception = new ScheduleReception(schedule, GetReceptionsInSchedule(schedule));
                         cabinetReceptions.ScheduleReceptions.Add(scheduleReception);
@@ -404,14 +544,33 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private ObservableCollection<Reception> GetReceptionsInSchedule(Schedule schedule)
         {
+            DateTime currentStartTime, startTime, endTime;
+            Reception reception;
             ObservableCollection<Reception> receptions=new ObservableCollection<Reception>();
             var list = from r in Receptions
-                       where
-                           r.ScheduleId == schedule.Id
-                       select r;
+                        where
+                            r.ScheduleId == schedule.Id
+                        select r;
+            startTime = schedule.Start;
             foreach (var r in list)
             {
-                receptions.Add(r);
+                if (startTime < r.Start) // Have to fill empty place with white bar
+                {
+                    reception = new Reception(schedule.Id, startTime, (int) r.Start.Subtract(startTime).TotalMinutes); // white bar
+                    receptions.Add(reception);
+                    receptions.Add(r);
+                    startTime = r.Start.AddMinutes(r.Duration); // new start time for next Reception
+                }
+                else // Have to fill real schedule info
+                {
+                    receptions.Add(r);
+                    startTime = r.Start.AddMinutes(r.Duration); // new start time for next Reception
+                }
+            }
+            if (startTime < schedule.End) // Last Reception is empty if a gap exists
+            {
+                reception = new Reception(schedule.Id, startTime, (int)schedule.End.Subtract(startTime).TotalMinutes); // white bar
+                receptions.Add(reception);
             }
             return receptions;
         }
@@ -459,6 +618,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         #endregion
 
+        #region Patient
         private void SaveCity(object obj)
         {
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
@@ -472,32 +632,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                 throw ex;
             });
         }
-
-        private void MakePanelVisible(string panel)
-        {
-            IsNewPatientPanelVisible = false;
-            IsSearchPatientPanelVisible = false;
-            //IsAddPackagesPanelVisible = false;
-            IsReceptionPanelVisible = false;
-            IsPaymentsPanelVisible = false;
-            switch (panel)
-            {
-                case "Search":
-                    IsSearchPatientPanelVisible = true;
-                    break;
-                case "Patient":
-                    IsNewPatientPanelVisible = true;
-                    break;
-                case "Reception":
-                    IsReceptionPanelVisible = true;
-                    break;
-                case "Payment":
-                    IsPaymentsPanelVisible = true;
-                    break;
-            }
-        }
-        #region Patient
-
         private void ConfirmPatient(object obj)
         {
             MakePanelVisible("");
@@ -505,6 +639,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void SearchPatient(object obj)
         {
+            if (PatientSearchText.IsNullOrEmpty()||PatientSearchText.Length < 3) return;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new PatientsSelect{ Text = PatientSearchText })
             .Success(rig =>
@@ -603,28 +738,78 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         
         #region Reception
 
-        private void ConfirmReception(object obj)
+        private void SaveReception(object obj)
         {
-            throw new NotImplementedException();
+            bool isNew = CurrentReception.Id <= 0;
+            Errors = CurrentReception.Validate();
+            if (CurrentPatient == null || CurrentPatient.Id==0)
+                Errors.Add(new ResultMessage(2, "Пациент:", OperationErrors.VariantNotChosen));
+            if (Errors.Count == 0)
+            {
+                if (CurrentReception.Status == 0) CurrentReception.Status = 1;
+                CurrentReception.PatientId = CurrentPatient.Id;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.PostAsync(new ReceptionSave { Reception = CurrentReception })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    CurrentReception.Id = r.ReceptionId;
+                    if (isNew)
+                    {
+                        Receptions.Add(CurrentReception);
+                        MakeCurrentDayReceptions();
+                    }
+                    r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
+                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                    ClearReceptionForms();
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
         }
 
-        private void ReceptionChoose(object obj)
+        private void ClearReceptionForms()
         {
-            throw new NotImplementedException();
+            CurrentReception = new Reception();
+            Patients = new ListCollectionView(new List<Patient>());
+            CurrentPatient=new Patient();
+        }
+
+        private void ConfirmReception(object obj)
+        {
+        }
+
+        private void PayReception(object obj)
+        {
+        }
+
+        private void RemoveReception(object obj)
+        {
+        }
+        private void ReceptionChoose(Reception obj)
+        {
+            CurrentReception = obj;
+            MakePanelVisible("Reception");
         }
 
         #endregion
 
         #region Package in Reception
-        private void RemovePackageFromReception(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
         private void AddPackageToReception(object obj)
         {
-            throw new NotImplementedException();
+            if (CurrentPackage == null) return;
+            if (!CurrentReception.Packages.Contains(CurrentPackage)) CurrentReception.Packages.Add(CurrentPackage);
+            CurrentReception.Calc();
         }
+
+        private void RemovePackageFromReception(object obj)
+        {
+            CurrentReception.Packages.Remove(CurrentPackageInReception);
+            CurrentReception.Calc();
+        }
+         
         private void ClearPatients()
         {
             Patients.MoveCurrentTo(null);

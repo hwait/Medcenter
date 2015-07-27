@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
+using Newtonsoft.Json;
 using ServiceStack.Messaging;
 using ServiceStack.OrmLite;
 
@@ -67,23 +68,33 @@ namespace Medcenter.Service.Interface.Services
         {
             int id = 0;
             ResultMessage _message;
+            int? did;
+            if (req.Reception.Discount == null) 
+                did=null;
+            else
+                did=req.Reception.Discount.Id;
+            int? rid;
+            if (req.Reception.RefererId == 0)
+                rid = null;
+            else
+                rid = req.Reception.RefererId;
             if (req.Reception.Id > 0) // Package exists so we're saving 
             {
                 try
                 {
                     id =
                         Db.Single<int>(
-                            "EXEC sp_Receptions_Update @Id, @PatientId, @ScheduleId,@DiscountId,@Duration,@Start,@PaymentId,@Status,@RefererId",
+                            "EXEC sp_Receptions_Update @Id, @PatientId, @ScheduleId,@DiscountId,@Duration,@Status,@Start,@RefererId",
                             new
                             {
                                 Id          = req.Reception.Id,
                                 PatientId	= req.Reception.PatientId,
                                 ScheduleId  = req.Reception.ScheduleId,
-                                DiscountId  = req.Reception.Discount.Id, 
+                                DiscountId = did, 
                                 Duration	= req.Reception.Duration,	
                                 Status		= req.Reception.Status,		
-                                Start		= req.Reception.Start,		
-                                RefererId	= req.Reception.RefererId	
+                                Start		= req.Reception.Start,
+                                RefererId = rid	
                             });
                     _message = new ResultMessage(0, "Запись", OperationResults.ReceptionSave);
                 }
@@ -100,23 +111,23 @@ namespace Medcenter.Service.Interface.Services
                 {
                     id =
                         Db.Single<int>(
-                            "EXEC sp_Receptions_Insert  @PatientId, @ScheduleId,@DiscountId,@Duration,@Start,@PaymentId,@Status,@RefererId",
+                            "EXEC sp_Receptions_Insert  @PatientId, @ScheduleId,@DiscountId,@Duration,@Status,@Start,@RefererId",
                             new
                             {
                                 PatientId = req.Reception.PatientId,
                                 ScheduleId = req.Reception.ScheduleId,
-                                DiscountId = req.Reception.Discount.Id,
+                                DiscountId = did,
                                 Duration = req.Reception.Duration,
                                 Status = req.Reception.Status,
                                 Start = req.Reception.Start,
-                                RefererId = req.Reception.RefererId
+                                RefererId = rid
                             });
                     _message = new ResultMessage(0, "Запись", OperationResults.ReceptionCreate);
                 }
                 catch (Exception e)
                 {
                     _message = new ResultMessage(2, e.Source, OperationErrors.ReceptionCreate);
-                    Logger.Log("ReceptionSaveResponse.NewPackage", e);
+                    Logger.Log("ReceptionSaveResponse.NewPackage", e,req.ToString());
                     throw;
                 }
             }

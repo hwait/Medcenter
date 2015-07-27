@@ -495,7 +495,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     Duration = 25,
                     Packages = _packages1,
                     Status = 2,
-                    StatusText = "Идёт исследование"
+                    Cost=7500
                 };
             }
         }
