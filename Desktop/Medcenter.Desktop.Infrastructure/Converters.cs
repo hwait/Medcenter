@@ -78,6 +78,20 @@ namespace Medcenter.Desktop.Infrastructure
             return null;
         }
     }
+    public class WeekDayConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return ((DateTime)value).ToString("ddd d", new CultureInfo("ru-RU"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
     public class RadioButtonCheckedConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

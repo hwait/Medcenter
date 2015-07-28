@@ -14,7 +14,26 @@ namespace Medcenter.Service.Interface.Services
     public class FinancesService : ServiceStack.Service
     {
         #region Discount
-
+        public DiscountsManualSelectResponse Get(DiscountsManualSelect req)
+        {
+            List<Discount> discounts = new List<Discount>();
+            List<Discount> rows = new List<Discount>();
+            Discount discount;
+            ResultMessage _message;
+            try
+            {
+                rows = Db.SqlList<Discount>("EXEC sp_Discounts_Select_Manual");
+                _message = new ResultMessage(0, "Загрузка скидок", OperationResults.DiscountLoad);
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.DiscountSave);
+                Logger.Log("DiscountsManualSelectResponse", e);
+                throw;
+            }
+            //r.DiscountPackageIds = Db.SqlList<int>("EXEC sp_Discount_SelectGroups @DiscountId", new { DiscountId = r.Id });
+            return new DiscountsManualSelectResponse { Discounts = rows, Message = _message };
+        }
         public DiscountsSelectResponse Get(DiscountsSelect req)
         {
             List<Discount> discounts=new List<Discount>();

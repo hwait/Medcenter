@@ -38,7 +38,8 @@ namespace Medcenter.Service.Interface.Services
         {
             foreach (var reception in rows)
             {
-                reception.Discount = Db.Single<Discount>("Select * from Discounts where Id=@Id", new { Id = reception.DiscountId });
+                //reception.Discount = Db.Single<Discount>("Select * from Discounts where Id=@Id", new { Id = reception.DiscountId });
+                reception.Patient = Db.Single<Patient>("Select * from Patients where Id=@Id", new { Id = reception.PatientId });
                 reception.Payments = new ObservableCollection<Payment>(
                     Db.SqlList<Payment>("EXEC sp_Reception_SelectPayments @ReceptionId", new { ReceptionId = reception.Id }));
                 reception.Packages = new ObservableCollection<Package>(
@@ -69,7 +70,7 @@ namespace Medcenter.Service.Interface.Services
             int id = 0;
             ResultMessage _message;
             int? did;
-            if (req.Reception.Discount == null) 
+            if (req.Reception.Discount == null || req.Reception.Discount.Id==0) 
                 did=null;
             else
                 did=req.Reception.Discount.Id;
@@ -78,7 +79,7 @@ namespace Medcenter.Service.Interface.Services
                 rid = null;
             else
                 rid = req.Reception.RefererId;
-            if (req.Reception.Id > 0) // Package exists so we're saving 
+            if (req.Reception.Id > 0) // Reception exists so we're saving 
             {
                 try
                 {
@@ -88,7 +89,7 @@ namespace Medcenter.Service.Interface.Services
                             new
                             {
                                 Id          = req.Reception.Id,
-                                PatientId	= req.Reception.PatientId,
+                                PatientId	= req.Reception.Patient.Id,
                                 ScheduleId  = req.Reception.ScheduleId,
                                 DiscountId = did, 
                                 Duration	= req.Reception.Duration,	
@@ -96,6 +97,22 @@ namespace Medcenter.Service.Interface.Services
                                 Start		= req.Reception.Start,
                                 RefererId = rid	
                             });
+                    Db.Single<int>(
+                            "EXEC sp_PackagesInReception_Delete @ReceptionId",
+                            new
+                            {
+                                ReceptionId = req.Reception.Id
+                            });
+                    foreach (var package in req.Reception.Packages)
+                    {
+                        Db.Single<int>(
+                            "EXEC sp_PackagesInReception_Insert @ReceptionId,@PackageId",
+                            new
+                            {
+                                ReceptionId = req.Reception.Id,
+                                PackageId = package.Id
+                            });
+                    }
                     _message = new ResultMessage(0, "Запись", OperationResults.ReceptionSave);
                 }
                 catch (Exception e)
@@ -114,7 +131,7 @@ namespace Medcenter.Service.Interface.Services
                             "EXEC sp_Receptions_Insert  @PatientId, @ScheduleId,@DiscountId,@Duration,@Status,@Start,@RefererId",
                             new
                             {
-                                PatientId = req.Reception.PatientId,
+                                PatientId = req.Reception.Patient.Id,
                                 ScheduleId = req.Reception.ScheduleId,
                                 DiscountId = did,
                                 Duration = req.Reception.Duration,
@@ -122,6 +139,22 @@ namespace Medcenter.Service.Interface.Services
                                 Start = req.Reception.Start,
                                 RefererId = rid
                             });
+                    Db.Single<int>(
+                            "EXEC sp_PackagesInReception_Delete @ReceptionId",
+                            new
+                            {
+                                ReceptionId = id
+                            });
+                    foreach (var package in req.Reception.Packages)
+                    {
+                        Db.Single<int>(
+                            "EXEC sp_PackagesInReception_Insert @ReceptionId,@PackageId",
+                            new
+                            {
+                                ReceptionId = id,
+                                PackageId = package.Id
+                            });
+                    }
                     _message = new ResultMessage(0, "Запись", OperationResults.ReceptionCreate);
                 }
                 catch (Exception e)

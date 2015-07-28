@@ -50,6 +50,7 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
+                if (ValueText == null) return _value;
                 int nmb=0;
                 int.TryParse(ValueText.Replace("%", "").Trim(), out nmb);
                 if (nmb>0)
@@ -113,6 +114,8 @@ namespace Medcenter.Service.Model.Types
         {
             PackageIds=new List<int>();
             WeekDays = "0000000";
+            ShortName = "Без скидки";
+            Name = "Без скидки";
         }
         public Discount CopyInstance()
         {

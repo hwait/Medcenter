@@ -54,7 +54,107 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         public bool IsReceptionPanelVisible = true;
         public bool IsPaymentsPanelVisible = true;
 
+        #region Date
+
+        public Week CurrentWeek
+        {
+            get
+            {
+                return new Week
+                {
+                    Days = new List<WeekDay> {_d1, _d2, _d3, _d4, _d5, _d6, _d7}
+                };
+            }
+        }
+
+        private WeekDay _d1
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 7, 27),
+                    Status = 1
+                };
+            }
+        }
+
+        private WeekDay _d2
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 7, 28),
+                    Status = 2
+                };
+            }
+        }
+
+        private WeekDay _d3
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 7, 29),
+                    Status = 1
+                };
+            }
+        }
+
+        private WeekDay _d4
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 7, 30),
+                    Status = 1
+                };
+            }
+        }
+
+        private WeekDay _d5
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 7, 31),
+                    Status = 1
+                };
+            }
+        }
+
+        private WeekDay _d6
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 8, 1),
+                    Status = 3
+                };
+            }
+        }
+
+        private WeekDay _d7
+        {
+            get
+            {
+                return new WeekDay
+                {
+                    Date = new DateTime(2015, 8, 2),
+                    Status = 3
+                };
+            }
+        }
+
+        #endregion
+
         public string PatientSearchString = "Петров";
+        private DateTime _currentDate;
 
         #region Discounts
         private static Discount _discount1
@@ -334,7 +434,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 0,
+                    PatientId = 1,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 30, 0),
                     Duration = 90,
@@ -352,7 +452,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 1,
+                    PatientId = 2,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0),
                     Duration = 15,
@@ -370,7 +470,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 2,
+                    PatientId = 3,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 15, 0),
                     Duration = 5,
@@ -388,7 +488,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 0,
+                    PatientId = 1,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 20, 0),
                     Duration = 60,
@@ -445,7 +545,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 0,
+                    PatientId = 1,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 30, 0),
                     Duration = 40,
@@ -489,7 +589,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 7,
                     Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
-                    PatientId = 1,
+                    PatientId = 2,
+                    Patient=_patient2,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 25,
@@ -507,7 +608,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 2,
+                    PatientId = 3,
                     ScheduleId=2,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 35, 0),
                     Duration = 5,
@@ -525,7 +626,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 0,
+                    PatientId = 1,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 40, 0),
                     Duration = 10,
@@ -582,7 +683,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 1,
+                    PatientId = 2,
                     ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 30, 0),
                     Duration = 20,
@@ -600,7 +701,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 1,
+                    PatientId = 2,
                     ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 12, 50, 0),
                     Duration = 15,
@@ -618,7 +719,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 2,
+                    PatientId = 3,
                     ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 05, 0),
                     Duration = 5,
@@ -636,7 +737,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Reception
                 {
                     Id = 0,
-                    PatientId = 0,
+                    PatientId = 1,
                     ScheduleId=3,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 10,

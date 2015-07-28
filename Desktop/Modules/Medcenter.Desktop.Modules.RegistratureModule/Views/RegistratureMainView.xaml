@@ -19,6 +19,8 @@
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVis"/>
 		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
+		<infrastructure:WeekDayConverter x:Key="WeekDateToAbb"/>
+		
 		<ds:DesignData x:Key="DesignData"/>
 		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
 			<Setter Property="TextWrapping" Value="Wrap"/>
@@ -178,6 +180,41 @@
 			<Setter Property="FontFamily" Value="Vrinda"/>
 			<Setter Property="FontSize" Value="14.667"/>
 		</Style>
+		<DataTemplate x:Key="WeekDayButtonsTemplate">
+			<Grid Margin="3,0,0,0">
+				<Button Content="{Binding Date, Converter={StaticResource WeekDateToAbb}}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseWeekDayCommand}"  CommandParameter="{Binding }" HorizontalAlignment="Left" Height="26" Style="{DynamicResource WeekButtonStyle}" VerticalAlignment="Top" Width="45"/>
+			</Grid>
+		</DataTemplate>
+		<Style x:Key="WeekButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle" Stroke="White" StrokeThickness="1">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
 	<UserControl.DataContext>
 		<Binding Path="DayReceptions" Source="{StaticResource DesignData}"/>
@@ -188,7 +225,7 @@
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
-	<Grid Margin="40,40,40,0">
+	<Grid Margin="20,20,20,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="40"/>
 			<RowDefinition Height="*"/>
@@ -198,9 +235,18 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="400"/>
 		</Grid.ColumnDefinitions>
-
-		<ScrollViewer HorizontalAlignment="Left" Margin="0,0,10,0" Grid.Row="1" VerticalAlignment="Top">
-			<ItemsControl ItemTemplate="{DynamicResource CabinetReceptionsTemplate}" ItemsSource="{Binding DayReceptions}" ScrollViewer.HorizontalScrollBarVisibility="Auto" Width="450" Margin="0,0,5,0">
+		<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+			<DatePicker VerticalAlignment="Center" FontSize="13.333" FirstDayOfWeek="Monday" SelectedDate="{Binding CurrentDate, Mode=TwoWay}" HorizontalAlignment="Left" Width="220"/>
+			<ItemsControl ItemsSource="{Binding CurrentWeek.Days}" Margin="0,0,5,0" ItemTemplate="{DynamicResource WeekDayButtonsTemplate}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+		</StackPanel>
+		<ScrollViewer Margin="0,0,10,0" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Left">
+			<ItemsControl ItemTemplate="{DynamicResource CabinetReceptionsTemplate}" ItemsSource="{Binding DayReceptions}" ScrollViewer.HorizontalScrollBarVisibility="Auto" Width="Auto" Margin="0,0,5,0">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal"/>
@@ -214,19 +260,19 @@
 		<StackPanel Grid.Column="1" Grid.RowSpan="2">
 			<StackPanel Margin="0,0,0,0" Orientation="Vertical">
 				<StackPanel Height="32" Orientation="Horizontal">
-					<TextBox HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" Text="{Binding PatientSearchText}" VerticalAlignment="Top" Width="320" FontSize="14.667"/>
+					<TextBox HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" Text="{Binding PatientSearchText}" VerticalAlignment="Center" Width="360" FontSize="14.667"/>
 					<Button HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding SearchPatientCommand}" Height="30" Width="30" BorderBrush="{x:Null}" Margin="-30,0,0,0">
 						<Button.Background>
 							<ImageBrush ImageSource="/Medcenter.Desktop.Modules.RegistratureModule;component/Assets/IconSearch.png" Stretch="UniformToFill"/>
 						</Button.Background>
 					</Button>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Right" VerticalAlignment="Top" Command="{Binding NewPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="New" Height="32" Width="32"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding NewPatientCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="New" Height="32" Width="32" Margin="12,0,0,0"/>
 				</StackPanel>
 				
 			</StackPanel>
-			<Button Content="{Binding CurrentPatient.Name}" Margin="0,5,0,9" Style="{DynamicResource TextButtonStyle}" Command="{Binding ConfirmPatientCommand}"/>
+			<Button Content="{Binding CurrentReception.Patient.Name}" Margin="0,5,0,9" Style="{DynamicResource TextButtonStyle}" Command="{Binding ConfirmPatientCommand}"/>
 			<StackPanel Margin="0,0,0,0" Orientation="Vertical" Visibility="{Binding IsSearchPatientPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
-				<ListBox ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}" SelectedItem="{Binding CurrentPatient}"/>
+				<ListBox ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}" SelectedItem="{Binding CurrentReception.Patient}"/>
 			</StackPanel>
 			<StackPanel Margin="0,10,0,0" Orientation="Vertical" Visibility="{Binding IsPaymentsPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
 				<Grid Margin="5,0,0,0" VerticalAlignment="Top">

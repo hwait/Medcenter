@@ -431,21 +431,24 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
                 throw ex;
             });
         }
+
+        #region Navigation
+
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (CurrentPackage==null) return;
+            if (CurrentPackage == null) return;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new DiscountsSelect())
-            .Success(rdisc =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                DiscountsBase = new ListCollectionView(rdisc.Discounts);
-                DiscountsInPackageRefresh();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+                .Success(rdisc =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    DiscountsBase = new ListCollectionView(rdisc.Discounts);
+                    DiscountsInPackageRefresh();
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -456,6 +459,9 @@ namespace Medcenter.Desktop.Modules.PackagesManagerModule.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
+        #endregion
+
         private void CopyPackage(object obj)
         {
             CurrentPackage = CurrentPackage.CopyInstance();

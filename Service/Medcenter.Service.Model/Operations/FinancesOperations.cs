@@ -28,7 +28,22 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
         public List<Discount> Discounts { get; set; }
     }
+    [Route("/discounts/manual", "GET")]
+    public class DiscountsManualSelect : IReturn<DiscountsManualSelectResponse>
+    {
+    }
 
+    public class DiscountsManualSelectResponse : IHasResponseStatus
+    {
+        public DiscountsManualSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Discount> Discounts { get; set; }
+    }
     [RequiresAnyRole("Admin", "Manager")]
     [Route("/discount/save", "POST")]
     public class DiscountSave : IReturn<DiscountSaveResponse>

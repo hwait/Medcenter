@@ -30,7 +30,7 @@ using ServiceStack;
 namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 {
     [Export]
-    public class RegistratureMainViewModel : BindableBase
+    public class RegistratureMainViewModel : BindableBase, INavigationAware
     {
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
@@ -58,9 +58,14 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly DelegateCommand<object> _saveCityCommand;
         private readonly DelegateCommand<object> _confirmPatientCommand;
         private readonly DelegateCommand<PackageGroup> _packagesGroupChooseCommand;
+        private readonly DelegateCommand<WeekDay> _chooseWeekDayCommand;
         
 
         #region Commands Declaration
+        public ICommand ChooseWeekDayCommand
+        {
+            get { return this._chooseWeekDayCommand; }
+        }
         public ICommand RemoveReceptionCommand
         {
             get { return this._removeReceptionCommand; }
@@ -284,7 +289,21 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             set
             {
                 SetProperty(ref _currentDate, value);
+                CurrentWeek = new Week(_currentDate);
                 SchedulesReload();
+            }
+        }
+
+        private Week _currentWeek;
+        public Week CurrentWeek
+        {
+            get
+            {
+                return _currentWeek;
+            }
+            set
+            {
+                SetProperty(ref _currentWeek, value);
             }
         }
 
@@ -346,7 +365,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _confirmReceptionCommand = new DelegateCommand<object>(ConfirmReception);
             _receptionPaymentCommand = new DelegateCommand<object>(ReceptionPayment);
             _printReceptionCommand = new DelegateCommand<object>(PrintReception);
-
+            _chooseWeekDayCommand = new DelegateCommand<WeekDay>(ChooseWeekDay);
+            
             _removeReceptionCommand = new DelegateCommand<object>(RemoveReception);
             _payReceptionCommand = new DelegateCommand<object>(PayReception);
             _saveReceptionCommand = new DelegateCommand<object>(SaveReception);
@@ -360,17 +380,18 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             Patients=new ListCollectionView(new List<Patient>());
 
             #endregion
-
+            
             _startHour = int.Parse(Utils.ReadSetting("StartHour"));
             _endHour = int.Parse(Utils.ReadSetting("EndHour"));
             _cabinets = Utils.ReadSetting("Cabinets").Split(',');
-            _currentDate=DateTime.Today;
+            CurrentDate=DateTime.Today;
+            //CurrentWeek = new Week(_currentDate);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new CitiesSelect())
             .Success(ri =>
             {
                 Cities = ri.Cities;
-                SchedulesReload();
+                //SchedulesReload();
                 _jsonClient.GetAsync(new PackageGroupsSelect())
                 .Success(pg =>
                 {
@@ -380,16 +401,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     .Success(p =>
                     {
                         PackagesBase=p.Packages;
-                        _jsonClient.GetAsync(new DiscountsSelect())
-                        .Success(d =>
-                        {
-                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                            Discounts = d.Discounts;
-                        })
-                        .Error(ex =>
-                        {
-                            throw ex;
-                        });
+                        MakeDiscounts();
                     })
                     .Error(ex =>
                     {
@@ -407,6 +419,47 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             });
         }
 
+        private void ChooseWeekDay(WeekDay day)
+        {
+            _currentDate = day.Date;
+            CurrentWeek.Activate(day.Date);
+            SchedulesReload();
+        }
+
+        private void MakeDiscounts()
+        {
+            Discounts = new List<Discount>();
+            Discounts.Add(new Discount());
+            _jsonClient.GetAsync(new DiscountsManualSelect())
+            .Success(d =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Discounts.AddRange(d.Discounts);
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+            SchedulesReload();
+        }
+
+        #region Navigation
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            MakeDiscounts();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+        }
+
+        #endregion
 
 
         #region Visualization
@@ -439,7 +492,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void SchedulesReload()
         {
-
+            
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new SchedulesFullSelect {TimeStart = _currentDate})
                 .Success(rs =>
@@ -486,6 +539,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     break;
                 case "Payment":
                     IsPaymentsPanelVisible = true;
+                    break;
+                default:
+                    if (CurrentReception != null && CurrentReception.Duration > 0) IsReceptionPanelVisible = true;
                     break;
             }
         }
@@ -586,19 +642,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                            && s.Start > ts
                            && s.End < te
                        orderby s.Start
-                       select s;
-            foreach (var s in list)
-            {
-                schedules.Add(s);
-            }
-            return schedules;
-        }
-        private ObservableCollection<Schedule> FilterSchedules(int doctorId)
-        {
-            var schedules = new ObservableCollection<Schedule>();
-            var list = from s in Schedules
-                       where
-                           s.CurrentDoctor.Id == doctorId
                        select s;
             foreach (var s in list)
             {
@@ -762,6 +805,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     ClearReceptionForms();
+
                 })
                 .Error(ex =>
                 {
@@ -775,6 +819,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentReception = new Reception();
             Patients = new ListCollectionView(new List<Patient>());
             CurrentPatient=new Patient();
+            PatientSearchText = "";
+            MakePanelVisible("");
         }
 
         private void ConfirmReception(object obj)
@@ -792,6 +838,10 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             CurrentReception = obj;
             MakePanelVisible("Reception");
+            
+            //if (CurrentReception.DiscountId>0)  
+                CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
+            //CurrentReception.ActuateProperties();
         }
 
         #endregion

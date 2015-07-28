@@ -23,6 +23,18 @@ namespace Medcenter.Service.Model.Types
         public int RefererId { get; set; }
         [DataMember]
         public int PatientId { get; set; }
+
+        [DataMember]
+        public Patient Patient
+        {
+            get { return _patient; }
+            set
+            {
+                _patient = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Patient"));
+            }
+        }
+
         [DataMember]
         public int ScheduleId { get; set; }
 
@@ -56,16 +68,17 @@ namespace Medcenter.Service.Model.Types
         }
 
         public int ToPay { get { return Cost-Paid; } }
-        
+        [DataMember]
         public int DiscountId { get; set; }
 
-        [DataMember]
+        
         public Discount Discount
         {
             get { return _discount; }
             set
             {
-                _discount = value; 
+                _discount = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
                 Calc();
             }
         }
@@ -77,6 +90,7 @@ namespace Medcenter.Service.Model.Types
 
         private int _cost;
         private Discount _discount;
+        private Patient _patient;
 
         [DataMember]
         public ObservableCollection<Package> Packages  { get; set; }
@@ -153,6 +167,10 @@ namespace Medcenter.Service.Model.Types
             return em;
         }
 
+        public void ActuateProperties()
+        {
+            Calc();
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
 

@@ -159,7 +159,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _endHour = int.Parse(Utils.ReadSetting("EndHour"));
             _cabinets = Utils.ReadSetting("Cabinets").Split(',');
             _gap = int.Parse(Utils.ReadSetting("RestGap"));
-            _currentDate=DateTime.Now;
+            _currentDate=DateTime.Today;
             MakeCabinetHours();
 
             SchedulesReload();
