@@ -16,5 +16,13 @@ namespace Medcenter.Service.Model.Misc
         Saturday = 32,
         Sunday = 64
     }
-
+    public enum ReceptopnStatuses : byte
+    {
+        Empty = 0,
+        Enlisted = 1,
+        Confirmed = 2,
+        Paid = 3,
+        InProcess = 4,
+        Done = 5
+    }
 }

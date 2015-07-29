@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Telerik.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ using System.Windows.Media;
 using Medcenter.Desktop.Infrastructure;
 using Medcenter.Desktop.Modules.RegistratureModule.Model;
 using Medcenter.Service.Model.Messaging;
+using Medcenter.Service.Model.Misc;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
 using Microsoft.Practices.Prism.Commands;
@@ -52,7 +54,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly DelegateCommand<object> _payReceptionCommand;
         private readonly DelegateCommand<object> _saveReceptionCommand;
         private readonly DelegateCommand<object> _receptionPaymentCommand;
-        private readonly DelegateCommand<object> _printReceptionCommand;
+        private readonly DelegateCommand<Visual> _printReceptionCommand;
         private readonly DelegateCommand<object> _confirmPaymentCommand;
         private readonly DelegateCommand<object> _cancelPaymentCommand;
         private readonly DelegateCommand<object> _saveCityCommand;
@@ -364,7 +366,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _removePackageFromReceptionCommand = new DelegateCommand<object>(RemovePackageFromReception);
             _confirmReceptionCommand = new DelegateCommand<object>(ConfirmReception);
             _receptionPaymentCommand = new DelegateCommand<object>(ReceptionPayment);
-            _printReceptionCommand = new DelegateCommand<object>(PrintReception);
+            _printReceptionCommand = new DelegateCommand<Visual>(PrintReception);
             _chooseWeekDayCommand = new DelegateCommand<WeekDay>(ChooseWeekDay);
             
             _removeReceptionCommand = new DelegateCommand<object>(RemoveReception);
@@ -803,8 +805,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             
             if (Errors.Count == 0)
             {
-                
-                if (CurrentReception.Status == 0) CurrentReception.Status = 1;
+                if (CurrentReception.Status == (byte)ReceptopnStatuses.Empty) CurrentReception.Status = (byte)ReceptopnStatuses.Enlisted;
                 CurrentReception.PatientId = CurrentReception.Patient.Id;
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 _jsonClient.PostAsync(new ReceptionSave { Reception = CurrentReception })
@@ -845,11 +846,23 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void ConfirmReception(object obj)
         {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new ReceptionsStatusSet { ReceptionId = CurrentReception.Id, Status = (int) ReceptopnStatuses.Confirmed })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                CurrentReception.Status = (byte)ReceptopnStatuses.Confirmed;
+                MakeCurrentDayReceptions();
+                CurrentReception = new Reception();
+                ClearReceptionForms();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
 
-        private void PayReception(object obj)
-        {
-        }
+       
 
         private void RemoveReception(object obj)
         {
@@ -875,6 +888,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                                     r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
                                     MakeCurrentDayReceptions();
                                     CurrentReception = new Reception();
+                                    ClearReceptionForms();
                                 })
                                 .Error(ex =>
                                 {
@@ -1014,10 +1028,13 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         #endregion
 
         #region Payment
-
+        private void PayReception(object obj)
+        {
+            MakePanelVisible("Payment");
+        }
         private void CancelPayment(object obj)
         {
-            throw new NotImplementedException();
+            MakePanelVisible("Reception"); 
         }
 
         private void ConfirmPayment(object obj)
@@ -1025,9 +1042,11 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             throw new NotImplementedException();
         }
 
-        private void PrintReception(object obj)
+        private void PrintReception(Visual obj)
         {
-            throw new NotImplementedException();
+            PrintDialog printDlg = new PrintDialog();
+            printDlg.PrintVisual(obj, "");
+
         }
 
         private void ReceptionPayment(object obj)

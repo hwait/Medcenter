@@ -52,11 +52,11 @@ namespace Medcenter.Service.Interface.Services
         {
             ResultMessage _message;
             try
-                {
+            {
                 var rows = Db.SqlList<Reception>("EXEC sp_ReceptionStatus_Update @Id, @Status",
-                new { ReceptionId = req.ReceptionId, Status = req.Status });
+                new { Id = req.ReceptionId, Status = req.Status });
                 _message = new ResultMessage(0, "Статус", OperationResults.ReceptionStatus);
-                }
+            }
             catch (Exception e)
             {
                 _message = new ResultMessage(2, e.Source, OperationErrors.ReceptionStatus);
