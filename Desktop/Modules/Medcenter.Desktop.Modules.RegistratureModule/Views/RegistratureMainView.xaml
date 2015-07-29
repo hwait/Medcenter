@@ -236,7 +236,7 @@
 			<ColumnDefinition Width="400"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-			<DatePicker VerticalAlignment="Center" FontSize="13.333" FirstDayOfWeek="Monday" SelectedDate="{Binding CurrentDate, Mode=TwoWay}" HorizontalAlignment="Left" Width="220"/>
+			<DatePicker VerticalAlignment="Center" FontSize="13.333" FirstDayOfWeek="Monday" SelectedDate="{Binding CurrentDate, Mode=TwoWay}" HorizontalAlignment="Left" Width="160"/>
 			<ItemsControl ItemsSource="{Binding CurrentWeek.Days}" Margin="0,0,5,0" ItemTemplate="{DynamicResource WeekDayButtonsTemplate}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -270,7 +270,7 @@
 				</StackPanel>
 				
 			</StackPanel>
-			<Button Content="{Binding CurrentReception.Patient.Name}" Margin="0,5,0,9" Style="{DynamicResource TextButtonStyle}" Command="{Binding ConfirmPatientCommand}"/>
+			<Button Content="{Binding CurrentReception.Patient.Name}" Margin="0,5,0,9" Style="{DynamicResource TextButtonStyle}" Command="{Binding ConfirmPatientCommand}" Height="25"/>
 			<StackPanel Margin="0,0,0,0" Orientation="Vertical" Visibility="{Binding IsSearchPatientPanelVisible, Converter={StaticResource BoolToVis}, Mode=OneWay}">
 				<ListBox ItemTemplate="{DynamicResource PatientTemplate}" ItemsSource="{Binding Patients}" SelectedItem="{Binding CurrentReception.Patient}"/>
 			</StackPanel>

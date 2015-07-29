@@ -114,6 +114,7 @@ namespace Medcenter.Service.Interface.Services
                             });
                     }
                     _message = new ResultMessage(0, "Запись", OperationResults.ReceptionSave);
+                    id = req.Reception.Id;
                 }
                 catch (Exception e)
                 {

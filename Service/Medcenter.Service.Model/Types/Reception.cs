@@ -53,7 +53,40 @@ namespace Medcenter.Service.Model.Types
                 }
             }
         }
+        [DataMember]
+        public int DiscountId { get; set; }
 
+        [DataMember]
+        public DateTime Start { get; set; }
+
+        [DataMember]
+        public int Duration
+        {
+            get { return _duration; }
+            set
+            {
+                _duration = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Duration"));
+            }
+        }
+
+        [DataMember]
+        public ObservableCollection<Package> Packages
+        {
+            get { return _packages; }
+            set
+            {
+                _packages = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+            }
+        }
+
+        [DataMember]
+        public byte Status { get; set; }
+
+        [DataMember]
+        public ObservableCollection<Payment> Payments { get; set; }
+        public int MaxDuration { get; set; }
         public int Paid
         {
             get
@@ -68,9 +101,6 @@ namespace Medcenter.Service.Model.Types
         }
 
         public int ToPay { get { return Cost-Paid; } }
-        [DataMember]
-        public int DiscountId { get; set; }
-
         
         public Discount Discount
         {
@@ -83,27 +113,21 @@ namespace Medcenter.Service.Model.Types
             }
         }
 
-        [DataMember]
-        public DateTime Start { get; set; }
-        [DataMember]
-        public int Duration { get; set; }
+        
 
         private int _cost;
         private Discount _discount;
         private Patient _patient;
+        private int _duration;
+        private ObservableCollection<Package> _packages;
 
-        [DataMember]
-        public ObservableCollection<Package> Packages  { get; set; }
-        
-        [DataMember]
-        public byte Status { get; set; }
+
         public string StatusText
         {
             get { return Statuses.GetStatus(Status); }
         }
 
-        [DataMember]
-        public ObservableCollection<Payment> Payments { get; set; }
+        
         public string Text 
         {
             get { return String.Join(", ", Packages.Select(i => i.ShortName).ToArray()); }
@@ -134,17 +158,28 @@ namespace Medcenter.Service.Model.Types
         }
         public void Calc()
         {
-            int cost = 0;
+            int cost = 0, dur=0;
             foreach (var package in Packages)
             {
                 cost += package.Cost;
+                //dur += package.Duration;
             }
             if (Discount != null)
             {
                 cost = cost - cost / 100 * Discount.Value;
             }
             Cost = cost;
-        }     
+            //Duration = MaxDuration < dur ? MaxDuration : dur;
+        }
+        public void CalcDuration()
+        {
+            int dur = 0;
+            foreach (var package in Packages)
+            {
+                dur += package.Duration;
+            }
+            Duration = MaxDuration < dur ? MaxDuration : dur;
+        }  
         public Reception()
         {
             Packages = new ObservableCollection<Package>();

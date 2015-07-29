@@ -561,6 +561,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             ScheduleReception scheduleReception;
             ObservableCollection<Schedule> schedules;
             DateTime currentStartTime, startTime, endTime, startDate;
+            Receptions = Receptions.OrderBy(o => o.Start).ToList();
             startTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _startHour, 0, 0);
             //Make a minimal start time for the current date
             endTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _endHour, 59, 0);
@@ -785,12 +786,26 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             bool isNew = CurrentReception.Id <= 0;
             Errors = CurrentReception.Validate();
-            if (CurrentPatient == null || CurrentPatient.Id==0)
+            if (CurrentReception.Patient == null || CurrentReception.Patient.Id == 0)
                 Errors.Add(new ResultMessage(2, "Пациент:", OperationErrors.VariantNotChosen));
+            //Reception nextReception = GetNextReception(CurrentReception);
+            CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
+            CurrentReception.CalcDuration();
+            var end = GetTimeEnd(CurrentReception.Start, CurrentReception.Duration);
+            if (Receptions.Any(s =>
+                (s.Start >= CurrentReception.Start && s.Start < end) && s.ScheduleId == CurrentReception.ScheduleId && s.Id != CurrentReception.Id))
+                Errors.Add(new ResultMessage(2, "Время:", OperationErrors.ReceptionTimeWromg));
+            if (Receptions.Any(s =>
+                (GetTimeEnd(s.Start, s.Duration) > CurrentReception.Start && GetTimeEnd(s.Start, s.Duration) < end) && s.ScheduleId == CurrentReception.ScheduleId && s.Id != CurrentReception.Id))
+                Errors.Add(new ResultMessage(2, "Время:", OperationErrors.ReceptionTimeWromg));
+            if (Receptions.Any(s => (s.Start <= CurrentReception.Start && GetTimeEnd(s.Start, s.Duration) >= end) && s.ScheduleId == CurrentReception.ScheduleId && s.Id != CurrentReception.Id))
+                Errors.Add(new ResultMessage(2, "Время:", OperationErrors.ReceptionTimeWromg));
+            
             if (Errors.Count == 0)
             {
+                
                 if (CurrentReception.Status == 0) CurrentReception.Status = 1;
-                CurrentReception.PatientId = CurrentPatient.Id;
+                CurrentReception.PatientId = CurrentReception.Patient.Id;
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 _jsonClient.PostAsync(new ReceptionSave { Reception = CurrentReception })
                 .Success(r =>
@@ -800,18 +815,23 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     if (isNew)
                     {
                         Receptions.Add(CurrentReception);
-                        MakeCurrentDayReceptions();
+                        
                     }
                     r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     ClearReceptionForms();
-
+                    MakeCurrentDayReceptions();
                 })
                 .Error(ex =>
                 {
                     throw ex;
                 });
             }
+        }
+
+        private DateTime GetTimeEnd(DateTime start, int duration)
+        {
+            return start.AddMinutes(duration);
         }
 
         private void ClearReceptionForms()
@@ -833,15 +853,59 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void RemoveReception(object obj)
         {
+            bool isNew = CurrentReception.Id == 0;
+            if (!isNew)
+            {
+                ConfirmationRequest.Raise(
+                    new Confirmation
+                    {
+                        Content = "Приём будет удалён! Вы уверены?",
+                        Title = "Удаление приёма."
+                    },
+                    c =>
+                    {
+                        if (c.Confirmed)
+                        {
+                            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                            _jsonClient.GetAsync(new ReceptionDelete { ReceptionId = CurrentReception.Id })
+                                .Success(r =>
+                                {
+                                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                                    Receptions.Remove(CurrentReception);
+                                    r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
+                                    MakeCurrentDayReceptions();
+                                    CurrentReception = new Reception();
+                                })
+                                .Error(ex =>
+                                {
+                                    throw ex;
+                                });
+
+
+                        }
+                    });
+            }
+            else
+            {
+                MakeCurrentDayReceptions();
+                CurrentReception = new Reception();
+            }
         }
         private void ReceptionChoose(Reception obj)
         {
             CurrentReception = obj;
+            CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
             MakePanelVisible("Reception");
             
-            //if (CurrentReception.DiscountId>0)  
-                CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
-            //CurrentReception.ActuateProperties();
+            CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
+        }
+
+        private int GetMaxDuration(Reception currentReception)
+        {
+            var next=Receptions.FirstOrDefault(s => s.Start > currentReception.Start && s.ScheduleId == currentReception.ScheduleId);
+            int max = next == null ? (int) Schedules.FirstOrDefault(s => s.Id == CurrentReception.ScheduleId).End.Subtract(CurrentReception.Start).TotalMinutes : (int) next.Start.Subtract(CurrentReception.Start).TotalMinutes;
+            return max;
+            //return Receptions.SkipWhile(i => i.Id != CurrentReception.Id).Skip(1).FirstOrDefault();
         }
 
         #endregion
@@ -852,12 +916,14 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             if (CurrentPackage == null) return;
             if (!CurrentReception.Packages.Contains(CurrentPackage)) CurrentReception.Packages.Add(CurrentPackage);
             CurrentReception.Calc();
+            CurrentReception.CalcDuration();
         }
 
         private void RemovePackageFromReception(object obj)
         {
             CurrentReception.Packages.Remove(CurrentPackageInReception);
             CurrentReception.Calc();
+            CurrentReception.CalcDuration();
         }
          
         private void ClearPatients()
