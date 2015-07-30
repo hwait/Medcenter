@@ -253,6 +253,22 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             get { return _discounts; }
             set { SetProperty(ref _discounts, value); }
         }
+        private Discount _currentDiscount;
+
+        public Discount CurrentDiscount
+        {
+            get
+            {
+                //var id = (CurrentReception == null) ? 0 : CurrentReception.Discount.Id;
+                //return (Discounts==null)?new Discount() : Discounts.Single(p => p.Id == id);
+                return _currentDiscount;
+            }
+            set
+            {
+                CurrentReception.Discount = value;
+                SetProperty(ref _currentDiscount, value);
+            }
+        }
         private List<Schedule> _schedules;
 
         public List<Schedule> Schedules
@@ -894,8 +910,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                                 {
                                     throw ex;
                                 });
-
-
                         }
                     });
             }
@@ -910,8 +924,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentReception = obj;
             CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
             MakePanelVisible("Reception");
-            
-            CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
+            CurrentDiscount=Discounts.Single(i => i.Id == CurrentReception.DiscountId);
+            //CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
         }
 
         private int GetMaxDuration(Reception currentReception)
@@ -940,57 +954,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentReception.CalcDuration();
         }
          
-        private void ClearPatients()
-        {
-            Patients.MoveCurrentTo(null);
-            //PatientsInDoctor.MoveCurrentTo(null);
-            //CurrentPatient = new Patient();
-            //CurrentPatientInDoctor = new Patient();
-        }
-        private void PatientsReload(List<Patient> Patients)
-        {
-            //Patients = new ListCollectionView(Patients);
-            //Patients.CurrentChanged += Patients_CurrentChanged;
-            //Patients.MoveCurrentTo(null);
-            //CurrentPatient = new Patient();
-        }
-        private void PatientsInDoctorReload(List<Patient> Patients)
-        {
-            //PatientsInDoctor = new ListCollectionView(Patients);
-            //PatientsInDoctor.CurrentChanged += PatientsInDoctor_CurrentChanged;
-            //PatientsInDoctor.MoveCurrentTo(null);
-            //CurrentPatientInDoctor = new Patient();
-        }
-        private void PatientsInDoctorRefresh()
-        {
-            //var list1 = new List<Patient>();
-            //var list2 = new List<Patient>();
-            //foreach (Patient Patient in PatientsBase)
-            //{
-            //    if (Patient.DoctorIds != null && Patient.DoctorIds.Contains(CurrentDoctor.Id)) list1.Add(Patient);
-            //    else list2.Add(Patient);
-            //}
-            //PatientsInDoctorReload(list1);
-            //PatientsReload(list2);
-        }
-        private void AddPatientToDoctor(object obj)
-        {
-            //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //_jsonClient.GetAsync(new PatientsDoctorsBind { PatientId = CurrentPatient.Id, DoctorId = CurrentDoctor.Id })
-            //.Success(r =>
-            //{
-            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-            //    _currentBasePatient.DoctorIds.Add(CurrentDoctor.Id);
-            //    //CurrentPatient.DoctorIds.Add(CurrentDoctor.Id);
-            //    PatientsInDoctorRefresh();
-            //})
-            //.Error(ex =>
-            //{
-            //    throw ex;
-            //});
-        }
-
         private void CopyPatient(object obj)
         {
             //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
@@ -1009,28 +972,13 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             //});
         }
 
-        private void CopyPatientByIID(int id)
-        {
-            //foreach (Doctor ig in Doctors)
-            //{
-            //    if (ig.PatientIds.Contains(id)) ig.PatientIds.Remove(id);
-            //}
-            //PatientsInDoctorRefresh();
-        }
-        private void CopyPatientByIGID(int id)
-        {
-            //foreach (Patient i in Patients)
-            //{
-            //    if (i.DoctorIds.Contains(id)) Patients.Remove(i);
-            //}
-            //PatientsInDoctorRefresh();
-        }
         #endregion
 
         #region Payment
         private void PayReception(object obj)
         {
             MakePanelVisible("Payment");
+            CurrentReception.ActuateProperties();
         }
         private void CancelPayment(object obj)
         {

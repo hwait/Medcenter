@@ -175,7 +175,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 return new Discount
                 {
                     Id = 1,
-                    Name = "Пенсионерам 5"
+                    Name = "Пенсионерам 5",
+                    Value=5
                 };
             }
         }
@@ -425,6 +426,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         }
         #endregion
 
+
+
         #region Receptions 1
 
         private Reception _reception11
@@ -589,14 +592,14 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 7,
                     Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
+                    Discount = _discount2,
                     PatientId = 2,
                     Patient=_patient2,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 25,
                     Packages = _packages1,
-                    Status = 2,
-                    Cost=7500
+                    Status = 2
                 };
             }
         }
@@ -818,16 +821,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
             }
         }
         #endregion
-        private List<Reception> _receptions1
-        {
-            get
-            {
-                return new List<Reception>
-                {
-                    _reception31,_reception32,_reception33,_reception35
-                };
-            }
-        }
+   
         private List<Reception> _receptions2
         {
             get
@@ -1172,7 +1166,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     MobileCode = "7705",
                     MobileNumber = "5048521",
                     Email = "patient1@mail.ru",
-                    Receptions = _receptions1,
+                    Receptions = new List<Reception>()
                 };
             }
         }

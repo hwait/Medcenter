@@ -41,12 +41,21 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Cost
         {
-            get { return _cost; }
+            get
+            {
+                _cost = CostNoDiscount;
+                if (Discount != null)
+                {
+                    _cost = _cost - _cost / 100 * Discount.Value;
+                }
+                return _cost;
+            }
             set
             {
                 _cost = value;
                 if (PropertyChanged != null)
                 {
+                    PropertyChanged(this, new PropertyChangedEventArgs("CostNoDiscount"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Cost"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Paid"));
                     PropertyChanged(this, new PropertyChangedEventArgs("ToPay"));
@@ -99,16 +108,27 @@ namespace Medcenter.Service.Model.Types
                 return c;
             }
         }
-
+        public int CostNoDiscount
+        {
+            get
+            {
+                var c = 0;
+                foreach (var package in Packages)
+                {
+                    c += package.Cost;
+                }
+                return c;
+            }
+        }
         public int ToPay { get { return Cost-Paid; } }
-        
+        [DataMember]
         public Discount Discount
         {
             get { return _discount; }
             set
             {
                 _discount = value;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
+                DiscountId=_discount.Id;
                 Calc();
             }
         }
@@ -205,6 +225,7 @@ namespace Medcenter.Service.Model.Types
         public void ActuateProperties()
         {
             Calc();
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -72,6 +72,17 @@ namespace Medcenter.Service.Model.Types
         }
         [DataMember]
         public List<int> PackageIds { get; set; }
+        public string Text
+        {
+            get
+            {
+                if (Value > 100)
+                {
+                    return Value+" тенге";
+                }
+                return Value + "%"; ;
+            }
+        }
         public string ValueText { get; set; }
         public string Requirements { get; set; }
         public bool Sunday
