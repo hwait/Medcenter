@@ -43,10 +43,10 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                _cost = CostNoDiscount;
-                if (Discount != null)
+                _cost = 0;
+                foreach (var package in Packages)
                 {
-                    _cost = _cost - _cost / 100 * Discount.Value;
+                    _cost += package.Cost;
                 }
                 return _cost;
             }
@@ -55,15 +55,13 @@ namespace Medcenter.Service.Model.Types
                 _cost = value;
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs("CostNoDiscount"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Cost"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Paid"));
                     PropertyChanged(this, new PropertyChangedEventArgs("ToPay"));
                 }
             }
         }
-        [DataMember]
-        public int DiscountId { get; set; }
+        
 
         [DataMember]
         public DateTime Start { get; set; }
@@ -86,7 +84,13 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _packages = value;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Cost"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Paid"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("ToPay"));
+                }
             }
         }
 
@@ -108,45 +112,24 @@ namespace Medcenter.Service.Model.Types
                 return c;
             }
         }
-        public int CostNoDiscount
-        {
-            get
-            {
-                var c = 0;
-                foreach (var package in Packages)
-                {
-                    c += package.Cost;
-                }
-                return c;
-            }
-        }
         public int ToPay { get { return Cost-Paid; } }
-        [DataMember]
-        public Discount Discount
+        private int _cost;
+
+        public Payment CurrentPayment
         {
-            get { return _discount; }
-            set
-            {
-                _discount = value;
-                DiscountId=_discount.Id;
-                Calc();
-            }
+            get { return _currentPayment; }
+            set { _currentPayment = value; }
         }
 
-        
-
-        private int _cost;
-        private Discount _discount;
         private Patient _patient;
         private int _duration;
         private ObservableCollection<Package> _packages;
-
+        private Payment _currentPayment;
 
         public string StatusText
         {
             get { return Statuses.GetStatus(Status); }
         }
-
         
         public string Text 
         {
@@ -176,21 +159,7 @@ namespace Medcenter.Service.Model.Types
                 Start = new DateTime(Start.Year, Start.Month, Start.Day, Start.Hour, val, 0);
             }
         }
-        public void Calc()
-        {
-            int cost = 0, dur=0;
-            foreach (var package in Packages)
-            {
-                cost += package.Cost;
-                //dur += package.Duration;
-            }
-            if (Discount != null)
-            {
-                cost = cost - cost / 100 * Discount.Value;
-            }
-            Cost = cost;
-            //Duration = MaxDuration < dur ? MaxDuration : dur;
-        }
+        
         public void CalcDuration()
         {
             int dur = 0;
@@ -224,7 +193,6 @@ namespace Medcenter.Service.Model.Types
 
         public void ActuateProperties()
         {
-            Calc();
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
         }
         public event PropertyChangedEventHandler PropertyChanged;

@@ -69,11 +69,7 @@ namespace Medcenter.Service.Interface.Services
         {
             int id = 0;
             ResultMessage _message;
-            int? did;
-            if (req.Reception.Discount == null || req.Reception.Discount.Id==0) 
-                did=null;
-            else
-                did=req.Reception.Discount.Id;
+           
             int? rid;
             if (req.Reception.RefererId == 0)
                 rid = null;
@@ -85,13 +81,12 @@ namespace Medcenter.Service.Interface.Services
                 {
                     id =
                         Db.Single<int>(
-                            "EXEC sp_Receptions_Update @Id, @PatientId, @ScheduleId,@DiscountId,@Duration,@Status,@Start,@RefererId",
+                            "EXEC sp_Receptions_Update @Id, @PatientId, @ScheduleId,@Duration,@Status,@Start,@RefererId",
                             new
                             {
                                 Id          = req.Reception.Id,
                                 PatientId	= req.Reception.Patient.Id,
                                 ScheduleId  = req.Reception.ScheduleId,
-                                DiscountId = did, 
                                 Duration	= req.Reception.Duration,	
                                 Status		= req.Reception.Status,		
                                 Start		= req.Reception.Start,
@@ -129,12 +124,11 @@ namespace Medcenter.Service.Interface.Services
                 {
                     id =
                         Db.Single<int>(
-                            "EXEC sp_Receptions_Insert  @PatientId, @ScheduleId,@DiscountId,@Duration,@Status,@Start,@RefererId",
+                            "EXEC sp_Receptions_Insert  @PatientId, @ScheduleId,@Duration,@Status,@Start,@RefererId",
                             new
                             {
                                 PatientId = req.Reception.Patient.Id,
                                 ScheduleId = req.Reception.ScheduleId,
-                                DiscountId = did,
                                 Duration = req.Reception.Duration,
                                 Status = req.Reception.Status,
                                 Start = req.Reception.Start,
@@ -194,5 +188,94 @@ namespace Medcenter.Service.Interface.Services
         }
 
         #endregion
+
+        #region Payment
+
+        public PaymentSaveResponse Post(PaymentSave req)
+        {
+            int id = 0;
+            int? did;
+            if (req.Payment.Discount == null || req.Payment.Discount.Id == 0)
+                did = null;
+            else
+                did = req.Payment.Discount.Id;
+            ResultMessage _message;
+            if (req.Payment.Id > 0) // Payment exists so we're saving 
+            {
+                try
+                {
+                    id =
+                        Db.Single<int>(
+                            "EXEC sp_Payments_Update @Id, @ReceptionId, @DiscountId, @Cost, @FinalCost",
+                            new
+                            {
+                                Id=req.Payment.Id,
+                                ReceptionId = req.Payment.ReceptionId,
+                                DiscountId=did,
+                                Cost = req.Payment.Cost,
+                                FinalCost = req.Payment.FinalCost
+                            });
+                    _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
+                }
+                catch (Exception e)
+                {
+                    _message = new ResultMessage(2, e.Source, OperationErrors.PaymentCreate);
+                    Logger.Log("PaymentSaveResponse", e);
+                    throw;
+                }
+            }
+            else //New Payment
+            {
+                try
+                {
+                    id =
+                        Db.Single<int>(
+                            "EXEC sp_Payments_Insert @ReceptionId, @DiscountId, @Cost, @FinalCost",
+                            new
+                            {
+                                ReceptionId = req.Payment.ReceptionId,
+                                DiscountId = did,
+                                Cost = req.Payment.Cost,
+                                FinalCost = req.Payment.FinalCost
+                            });
+                    _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
+                }
+                catch (Exception e)
+                {
+                    _message = new ResultMessage(2, e.Source, OperationErrors.PaymentCreate);
+                    Logger.Log("PaymentNewResponse", e);
+                    throw;
+                }
+            }
+            return new PaymentSaveResponse
+            {
+                PaymentId = id,
+                Message = _message
+            };
+        }
+
+        public PaymentDeleteResponse Get(PaymentDelete req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var res = Db.SqlList<int>("EXEC sp_Payments_Delete @Id, @ReceptionId", new
+                {
+                    Id = req.PaymentId,
+                    ReceptionId = req.ReceptionId
+                });
+                _message = new ResultMessage(0, "Платёж", OperationResults.PaymentDelete);
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.PaymentDelete);
+                Logger.Log("PaymentDeleteResponse", e);
+                throw;
+            }
+            return new PaymentDeleteResponse {Message = _message};
+        }
+
+        #endregion
+
     }
 }

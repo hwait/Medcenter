@@ -568,6 +568,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     Cost = 5600,
                     ReceptionId = 7,
                     Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
+                    Discount = _discount1
                 };
             }
         }
@@ -581,6 +582,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     Cost = 1400,
                     ReceptionId = 7,
                     Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
+                    Discount = _discount2
                 };
             }
         }
@@ -592,7 +594,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 7,
                     Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
-                    Discount = _discount2,
+                    CurrentPayment = _payment2,
                     PatientId = 2,
                     Patient=_patient2,
                     ScheduleId = 1,

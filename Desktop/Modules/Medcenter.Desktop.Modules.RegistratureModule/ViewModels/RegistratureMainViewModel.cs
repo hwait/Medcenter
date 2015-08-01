@@ -246,29 +246,9 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             get { return _currentReception; }
             set { SetProperty(ref _currentReception, value); }
         }
-        private List<Discount> _discounts;
 
-        public List<Discount> Discounts
-        {
-            get { return _discounts; }
-            set { SetProperty(ref _discounts, value); }
-        }
-        private Discount _currentDiscount;
+        public List<Discount> Discounts { get; set; }
 
-        public Discount CurrentDiscount
-        {
-            get
-            {
-                //var id = (CurrentReception == null) ? 0 : CurrentReception.Discount.Id;
-                //return (Discounts==null)?new Discount() : Discounts.Single(p => p.Id == id);
-                return _currentDiscount;
-            }
-            set
-            {
-                CurrentReception.Discount = value;
-                SetProperty(ref _currentDiscount, value);
-            }
-        }
         private List<Schedule> _schedules;
 
         public List<Schedule> Schedules
@@ -924,8 +904,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentReception = obj;
             CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
             MakePanelVisible("Reception");
-            CurrentDiscount=Discounts.Single(i => i.Id == CurrentReception.DiscountId);
-            //CurrentReception.Discount = Discounts.Single(i => i.Id == CurrentReception.DiscountId);
         }
 
         private int GetMaxDuration(Reception currentReception)
@@ -943,14 +921,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             if (CurrentPackage == null) return;
             if (!CurrentReception.Packages.Contains(CurrentPackage)) CurrentReception.Packages.Add(CurrentPackage);
-            CurrentReception.Calc();
             CurrentReception.CalcDuration();
         }
 
         private void RemovePackageFromReception(object obj)
         {
             CurrentReception.Packages.Remove(CurrentPackageInReception);
-            CurrentReception.Calc();
             CurrentReception.CalcDuration();
         }
          

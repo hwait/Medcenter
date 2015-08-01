@@ -91,4 +91,46 @@ namespace Medcenter.Service.Model.Operations
 
     #endregion
 
+    #region Payment
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/payment/save", "POST")]
+    public class PaymentSave : IReturn<PaymentSaveResponse>
+    {
+        public Payment Payment { get; set; }
+    }
+
+    public class PaymentSaveResponse : IHasResponseStatus
+    {
+        public PaymentSaveResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public int PaymentId { get; set; }
+    }
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/payment/delete/{PaymentId}/{ReceptionId}", "GET")]
+    public class PaymentDelete : IReturn<PaymentDeleteResponse>
+    {
+        public int PaymentId { get; set; }
+        public int ReceptionId { get; set; }
+    }
+
+    public class PaymentDeleteResponse : IHasResponseStatus
+    {
+        public PaymentDeleteResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    #endregion
+
 }

@@ -87,8 +87,6 @@
     <Compile Include="Operations\FinancesOperations.cs" />
     <Compile Include="Operations\PackageOperations.cs" />
     <Compile Include="Operations\PatientOperations.cs" />
-    <Compile Include="Operations\PaymentOperations.cs" />
-    <Compile Include="Operations\PaymentService.cs" />
     <Compile Include="Operations\ReceptionOperations.cs" />
     <Compile Include="Operations\ScheduleOperations.cs" />
     <Compile Include="Operations\UserOperations.cs" />

@@ -215,6 +215,27 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<DataTemplate x:Key="PaymentTemplate">
+			<StackPanel Orientation="Vertical" Margin="15,10,0,0">
+				<StackPanel Height="15.96" Orientation="Horizontal">
+					<TextBlock Text="Платёж от "/>
+					<TextBlock Text="{Binding Date, StringFormat=\{0:dd.MM.yyyy в HH:mm\}}"/>
+					<TextBlock Text=" на "/>
+					<TextBlock Text="{Binding Cost}"/>
+					<TextBlock Text=" тенге, без учёта скидки "/>
+				</StackPanel>
+				<StackPanel Height="15.96" Orientation="Horizontal">
+					<TextBlock Text="Итого после скидки &quot;"/>
+					<TextBlock Text="{Binding Discount.Name}"/>
+					<TextBlock Text="&quot; в "/>
+					<TextBlock Text="{Binding Discount.Text}"/>
+					<TextBlock Text=" оплачено "/>
+					<TextBlock Text="{Binding FinalCost}" FontWeight="Bold"/>
+					<TextBlock Text=" тенге."/>
+
+				</StackPanel>
+			</StackPanel>
+		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.DataContext>
 		<Binding Path="DayReceptions" Source="{StaticResource DesignData}"/>
@@ -282,7 +303,6 @@
 							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5" Width="Auto">
-							<ComboBox ItemsSource="{Binding Discounts}" Width="250"  SelectedItem="{Binding CurrentDiscount, Mode=TwoWay}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3" Margin="0,0,30,0"/>
 							<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Print}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PrintReceptionCommand}"  CommandParameter="{Binding ElementName=PaymentPanel, Mode=OneWay}" Style="{DynamicResource ButtonMenuStyle}" Tag="Call" Height="32" Width="32"/>
 							<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding CancelPaymentCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0" Tag="Delete" Height="32" Width="32"/>
 							<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding ConfirmPaymentCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
@@ -293,6 +313,7 @@
 							<ColumnDefinition/>
 						</Grid.ColumnDefinitions>
 						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
@@ -312,24 +333,20 @@
 						</StackPanel>
 						<ItemsControl Height="Auto" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding CurrentReception.Packages}" Padding="0,0,0,5" Margin="15,0,0,0" ItemTemplate="{DynamicResource PrintPackagesTemplate}"/>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="3" Margin="15,5,0,0" >
-							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.CostNoDiscount}" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=" тенге, с учётом скидки " VerticalAlignment="Center"/>
+							<TextBlock FontSize="13.333" Text="Итого, без учёта скидки " VerticalAlignment="Center"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center" FontWeight="Bold"/>
 							<TextBlock FontSize="13.333" Text=" тенге." VerticalAlignment="Center"/>
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="4" Margin="15,5,0,0" >
-							<TextBlock FontSize="13.333" Text="(Скидка &quot;" VerticalAlignment="Center"/>
-							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Discount.Name}" VerticalAlignment="Center"/>
-							<TextBlock FontSize="13.333" Text="&quot;, размером " VerticalAlignment="Center"/>
-							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Discount.Text}" VerticalAlignment="Center" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=") " VerticalAlignment="Center"/>
-						</StackPanel>
+						<ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" ItemTemplate="{DynamicResource PaymentTemplate}" ItemsSource="{Binding CurrentReception.Payments}" Grid.Row="4"/>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="5" Margin="15,5,0,0" >
 							<TextBlock FontSize="13.333" Text="Оплачено ранее " VerticalAlignment="Center"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Paid}" VerticalAlignment="Center" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=" тенге, к оплате " VerticalAlignment="Center"/>
+							<TextBlock FontSize="13.333" Text=" тенге, не оплачено " VerticalAlignment="Center"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.ToPay}" VerticalAlignment="Center" FontWeight="Bold"/>
 							<TextBlock FontSize="13.333" Text=" тенге" VerticalAlignment="Center"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="6" Margin="15,5,0,0" >
+							<ComboBox ItemsSource="{Binding CurrentReception.CurrentPayment.Discounts}" Width="250"  SelectedItem="{Binding CurrentReception.CurrentPayment.Discount, Mode=TwoWay}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3" Margin="0,0,30,0"/>
 						</StackPanel>
 					</Grid>
 				</Grid>
