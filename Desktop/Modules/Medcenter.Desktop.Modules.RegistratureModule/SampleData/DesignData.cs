@@ -174,7 +174,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
             {
                 return new Discount
                 {
-                    Id = 1,
+                    Id = 2,
                     Name = "Пенсионерам 5",
                     Value=5
                 };
@@ -187,7 +187,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
             {
                 return new Discount
                 {
-                    Id = 1,
+                    Id = 3,
                     Name = "ВОВ 50"
                 };
             }
@@ -566,6 +566,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                 {
                     Id = 0,
                     Cost = 5600,
+                    OldCost = 5600,
                     ReceptionId = 7,
                     Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Discount = _discount1
@@ -578,11 +579,14 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
             {
                 return new Payment
                 {
-                    Id = 0,
+                    Id = 2,
                     Cost = 1400,
+                    OldCost=1330,
                     ReceptionId = 7,
                     Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
-                    Discount = _discount2
+                    Discount = _discount2,
+                    Discounts = new List<Discount> { _discount1, _discount2, _discount3}
+
                 };
             }
         }
@@ -595,6 +599,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
                     Id = 7,
                     Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
                     CurrentPayment = _payment2,
+                    //RealPaid=7200,
                     PatientId = 2,
                     Patient=_patient2,
                     ScheduleId = 1,

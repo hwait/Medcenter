@@ -44,6 +44,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private readonly DelegateCommand<object> _newPatientCommand;
         private readonly DelegateCommand<object> _removePatientCommand;
         private readonly DelegateCommand<object> _savePatientCommand;
+        private readonly DelegateCommand<Payment> _savePaymentCommand;
         private readonly DelegateCommand<object> _copyPatientCommand;
         private readonly DelegateCommand<object> _searchPatientCommand;
         private readonly DelegateCommand<Reception> _receptionChooseCommand;
@@ -64,6 +65,10 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         
 
         #region Commands Declaration
+        public ICommand SavePaymentCommand
+        {
+            get { return this._savePaymentCommand; }
+        }
         public ICommand ChooseWeekDayCommand
         {
             get { return this._chooseWeekDayCommand; }
@@ -309,7 +314,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         private bool _isSearchPatientPanelVisible;
         private bool _isReceptionPanelVisible;
         private bool _isPaymentsPanelVisible;
-
         public bool IsNewPatientPanelVisible
         {
             get { return _isNewPatientPanelVisible; }
@@ -368,7 +372,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             _removeReceptionCommand = new DelegateCommand<object>(RemoveReception);
             _payReceptionCommand = new DelegateCommand<object>(PayReception);
             _saveReceptionCommand = new DelegateCommand<object>(SaveReception);
-
+            _savePaymentCommand = new DelegateCommand<Payment>(SavePayment);
             _confirmPaymentCommand = new DelegateCommand<object>(ConfirmPayment);
             _cancelPaymentCommand = new DelegateCommand<object>(CancelPayment);
             _confirmPatientCommand = new DelegateCommand<object>(ConfirmPatient);
@@ -417,6 +421,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             });
         }
 
+
+
         private void ChooseWeekDay(WeekDay day)
         {
             _currentDate = day.Date;
@@ -426,13 +432,12 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void MakeDiscounts()
         {
-            Discounts = new List<Discount>();
-            Discounts.Add(new Discount());
             _jsonClient.GetAsync(new DiscountsManualSelect())
             .Success(d =>
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                Discounts.AddRange(d.Discounts);
+                Discounts=d.Discounts;
+                
             })
             .Error(ex =>
             {
@@ -458,8 +463,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         }
 
         #endregion
-
-
+        
         #region Visualization
         private void PackagesGroupChoose(PackageGroup pg)
         {
@@ -503,6 +507,15 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                         {
                             _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                             Receptions = rr.Receptions;
+                            foreach (var reception in Receptions)
+                            {
+                                foreach (var payment in reception.Payments)
+                                {
+                                    payment.Discounts = Discounts;
+                                    payment.ActuateProperties();
+                                    payment.OldCost = payment.FinalCost;
+                                }
+                            }
                             MakeCurrentDayReceptions();
                         })
                         .Error(ex =>
@@ -560,6 +573,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             ObservableCollection<Schedule> schedules;
             DateTime currentStartTime, startTime, endTime, startDate;
             Receptions = Receptions.OrderBy(o => o.Start).ToList();
+            
             startTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _startHour, 0, 0);
             //Make a minimal start time for the current date
             endTime = new DateTime(CurrentDate.Year, CurrentDate.Month, CurrentDate.Day, _endHour, 59, 0);
@@ -812,7 +826,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     if (isNew)
                     {
                         Receptions.Add(CurrentReception);
-                        
                     }
                     r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
@@ -903,6 +916,8 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         {
             CurrentReception = obj;
             CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
+            CurrentReception.ActuateProperties();
+            if (_isPaymentsPanelVisible) ConfirmPayment(null);
             MakePanelVisible("Reception");
         }
 
@@ -951,10 +966,42 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         #endregion
 
         #region Payment
+        private void SavePayment(Payment obj)
+        {
+            bool isNew = CurrentReception.CurrentPayment.Id <= 0;
+            Errors = CurrentReception.CurrentPayment.Validate();
+            if (Errors.Count == 0)
+            {
+                CurrentReception.CurrentPayment.DiscountId = CurrentReception.CurrentPayment.Discount.Id;
+                CurrentReception.CurrentPayment.ReceptionId = CurrentReception.Id;
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.PostAsync(new PaymentSave { Payment = CurrentReception.CurrentPayment })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    CurrentReception.CurrentPayment.Id = r.PaymentId;
+                    if (isNew)
+                    {
+                        CurrentReception.Payments.Add(CurrentReception.CurrentPayment);
+
+                    }
+                    r.Message.Message = string.Format(r.Message.Message);
+                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                    CurrentReception.CurrentPayment.Date=DateTime.Now;
+                    //CurrentReception.Payments.Add(CurrentReception.CurrentPayment);
+                    CurrentReception.CurrentPaymentSaved();
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+        }
         private void PayReception(object obj)
         {
             MakePanelVisible("Payment");
-            CurrentReception.ActuateProperties();
+            
+            CurrentReception.CreatePayment(Discounts);
         }
         private void CancelPayment(object obj)
         {
@@ -963,7 +1010,13 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void ConfirmPayment(object obj)
         {
-            throw new NotImplementedException();
+            foreach (var payment in CurrentReception.Payments)
+            {
+                payment.Discounts = Discounts;
+                payment.ActuateProperties();
+                payment.OldCost = payment.FinalCost;
+            }
+            MakePanelVisible("Reception");
         }
 
         private void PrintReception(Visual obj)

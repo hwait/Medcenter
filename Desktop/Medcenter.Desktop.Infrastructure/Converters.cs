@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Medcenter.Service.Model.Interfaces;
 
 namespace Medcenter.Desktop.Infrastructure
 {
@@ -123,6 +124,18 @@ namespace Medcenter.Desktop.Infrastructure
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value == null ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+    public class IdToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value==null||((IItem)value).Cost == 0 ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

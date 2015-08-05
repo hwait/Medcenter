@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Medcenter.Desktop.Infrastructure
+namespace Medcenter.Desktop.Infrastructure.Interfaces
 {
-    class IItemsGroup
+    public interface IHasId
     {
+        int Id { get; set; }
     }
 }

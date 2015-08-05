@@ -10,9 +10,7 @@ namespace Medcenter.Service.Model.Interfaces
     public interface IItem
     {
         int Id { get; set; }
-        string Name { get; set; }
-        string ShortName { get; set; }
-        List<int> PackageGroupIds { get; set; }
+        int Cost { get; set; }
         List<ResultMessage> Validate();
     }
 }

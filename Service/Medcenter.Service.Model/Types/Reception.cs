@@ -84,13 +84,7 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _packages = value;
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("Cost"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("Paid"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("ToPay"));
-                }
+                ActuateProperties();
             }
         }
 
@@ -112,13 +106,67 @@ namespace Medcenter.Service.Model.Types
                 return c;
             }
         }
+
+        public int SFinalCost
+        {
+            get
+            {
+                var c = 0;
+                foreach (var payment in Payments)
+                {
+                    c += payment.FinalCost;
+                }
+                return c;
+            }
+        }
+        public int SRealCost
+        {
+            get
+            {
+                var c = 0;
+                foreach (var payment in Payments)
+                {
+                    c += payment.OldCost;
+                }
+                return c;
+            }
+        }
+        public string UnderOverPaid
+        {
+            get
+            {
+                var diff = SRealCost - SFinalCost;
+                return  diff > 0 ? " переплата " + diff + " тенге" :
+                        diff < 0 ? " недостача " + diff * -1 + " тенге" : "";
+            }
+        }
+        public string FinalPayment
+        {
+            get
+            {
+                if (CurrentPayment == null) return "";
+                var s = ToPay - (SRealCost - SFinalCost);
+                //var s = CurrentPayment.Id > 0 ? 0 : CurrentPayment.FinalCost;
+                //s += diff;
+                return s < 0 ? "К выдаче " + s * -1 + " тенге" :
+                        s > 0 ? "К оплате " + s + " тенге" : "";
+            }
+        }
+        
         public int ToPay { get { return Cost-Paid; } }
         private int _cost;
 
         public Payment CurrentPayment
         {
             get { return _currentPayment; }
-            set { _currentPayment = value; }
+            set
+            {
+                _currentPayment = value;
+                //_currentPayment.OldCost = _currentPayment.FinalCost;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("CurrentPayment"));
+
+                _currentPayment.ActuateProperties();
+            }
         }
 
         private Patient _patient;
@@ -193,10 +241,42 @@ namespace Medcenter.Service.Model.Types
 
         public void ActuateProperties()
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Cost"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Paid"));
+                PropertyChanged(this, new PropertyChangedEventArgs("ToPay"));
+                PropertyChanged(this, new PropertyChangedEventArgs("SFinalCost"));
+                PropertyChanged(this, new PropertyChangedEventArgs("SRealCost"));
+                PropertyChanged(this, new PropertyChangedEventArgs("UnderOverPaid"));
+                PropertyChanged(this, new PropertyChangedEventArgs("FinalPayment"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
 
+        public void CurrentPaymentSaved()
+        {
+            CurrentPayment=new Payment();
+            ActuateProperties();
+        }
+
+        public void CreatePayment(List<Discount> discounts)
+        {
+            //RealPaid = 0;
+            //foreach (var payment in Payments)
+            //{
+            //    RealPaid += payment.FinalCost;
+            //}
+            CurrentPayment = new Payment(discounts, ToPay);
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs("CurrentPayment"));
+            }
+            
+            ActuateProperties();
+        }
     }
 }

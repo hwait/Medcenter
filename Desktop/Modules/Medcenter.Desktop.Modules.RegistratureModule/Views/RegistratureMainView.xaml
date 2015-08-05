@@ -17,6 +17,7 @@
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
 		<infrastructure:DurationToHeightConverter x:Key="DurationToHeight" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+		<infrastructure:IdToVisibilityConverter x:Key="IdToVisibility"/>
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVis"/>
 		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<infrastructure:WeekDayConverter x:Key="WeekDateToAbb"/>
@@ -236,6 +237,31 @@
 				</StackPanel>
 			</StackPanel>
 		</DataTemplate>
+		<DataTemplate x:Key="CurrentPaymentTemplate">
+			<StackPanel Grid.ColumnSpan="2" Margin="10,0,0,0" Orientation="Vertical" Background="#FFAAD49E">
+				<StackPanel Orientation="Horizontal" Margin="5,5,5,0">
+					<ComboBox ItemsSource="{Binding Discounts}" Width="340"  SelectedItem="{Binding Discount}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3" Margin="0" HorizontalAlignment="Left"/>
+					<Button HorizontalAlignment="Right" Margin="5,0,0,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SavePaymentCommand}" Tag="Save" Height="25" Width="25" BorderBrush="{x:Null}">
+						<Button.Background>
+							<ImageBrush ImageSource="/Medcenter.Desktop.Modules.RegistratureModule;component/Assets/IconSave.png" Stretch="Uniform"/>
+						</Button.Background>
+					</Button>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Height="23.733" Margin="5,0,0,0" >
+					<TextBlock FontSize="13.333" Text="Платёж на " VerticalAlignment="Center"/>
+					<TextBlock FontSize="13.333" Text="{Binding Cost}" VerticalAlignment="Center" FontWeight="Bold"/>
+					<TextBlock FontSize="13.333" Text=" тенге, фактически принято " VerticalAlignment="Center"/>
+					<TextBlock FontSize="13.333" Text="{Binding OldCost}" VerticalAlignment="Center" FontWeight="Bold"/>
+					<TextBlock FontSize="13.333" Text=" тенге" VerticalAlignment="Center"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Height="23.733" Margin="5,0,0,0" >
+					<TextBlock FontSize="13.333" Text="Новая цена " VerticalAlignment="Center"/>
+					<TextBlock FontSize="13.333" Text="{Binding FinalCost}" VerticalAlignment="Center" FontWeight="Bold"/>
+					<TextBlock FontSize="13.333" Text=" тенге, " VerticalAlignment="Center"/>
+					<TextBlock FontSize="13.333" Text="{Binding UnderOverPaid}" VerticalAlignment="Center" FontWeight="Bold"/>
+				</StackPanel>
+			</StackPanel>
+		</DataTemplate>
 	</UserControl.Resources>
 	<UserControl.DataContext>
 		<Binding Path="DayReceptions" Source="{StaticResource DesignData}"/>
@@ -320,16 +346,16 @@
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
 							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="0" Margin="10,5,0,5" >
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Patient.Name}" VerticalAlignment="Center" FontWeight="Bold" Margin="5,0,0,0"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="1" Margin="15,5,0,5" >
 							<TextBlock FontSize="13.333" Text="Начало исследования в " VerticalAlignment="Center"/>
-							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.StartMinute}" VerticalAlignment="Center" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=":" VerticalAlignment="Center" FontWeight="Bold"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.StartHour}" VerticalAlignment="Center" FontWeight="Bold"/>
-							
+							<TextBlock FontSize="13.333" Text=":" VerticalAlignment="Center" FontWeight="Bold"/>
+							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.StartMinute}" VerticalAlignment="Center" FontWeight="Bold"/>
 						</StackPanel>
 						<ItemsControl Height="Auto" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding CurrentReception.Packages}" Padding="0,0,0,5" Margin="15,0,0,0" ItemTemplate="{DynamicResource PrintPackagesTemplate}"/>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="3" Margin="15,5,0,0" >
@@ -337,17 +363,18 @@
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Cost}" VerticalAlignment="Center" FontWeight="Bold"/>
 							<TextBlock FontSize="13.333" Text=" тенге." VerticalAlignment="Center"/>
 						</StackPanel>
-						<ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" ItemTemplate="{DynamicResource PaymentTemplate}" ItemsSource="{Binding CurrentReception.Payments}" Grid.Row="4"/>
+						<ListBox Grid.ColumnSpan="2" HorizontalAlignment="Left" ItemTemplate="{DynamicResource PaymentTemplate}" ItemsSource="{Binding CurrentReception.Payments}" Grid.Row="4" SelectedItem="{Binding CurrentReception.CurrentPayment, Mode=TwoWay}"/>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="5" Margin="15,5,0,0" >
 							<TextBlock FontSize="13.333" Text="Оплачено ранее " VerticalAlignment="Center"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.Paid}" VerticalAlignment="Center" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=" тенге, не оплачено " VerticalAlignment="Center"/>
-							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.ToPay}" VerticalAlignment="Center" FontWeight="Bold"/>
-							<TextBlock FontSize="13.333" Text=" тенге" VerticalAlignment="Center"/>
+							<TextBlock FontSize="13.333" Text=" тенге, " VerticalAlignment="Center"/>
+							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.UnderOverPaid}" VerticalAlignment="Center" FontWeight="Bold"/>
 						</StackPanel>
-						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="6" Margin="15,5,0,0" >
-							<ComboBox ItemsSource="{Binding CurrentReception.CurrentPayment.Discounts}" Width="250"  SelectedItem="{Binding CurrentReception.CurrentPayment.Discount, Mode=TwoWay}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3" Margin="0,0,30,0"/>
+						<ContentControl Content="{Binding CurrentReception.CurrentPayment}" HorizontalAlignment="Left" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Top" ContentTemplate="{DynamicResource CurrentPaymentTemplate}" Visibility="{Binding CurrentReception.CurrentPayment, Converter={StaticResource IdToVisibility}, Mode=OneWay}"/>
+						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="7" Margin="15,5,0,0" >
+							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.FinalPayment}" VerticalAlignment="Center" FontWeight="Bold"/>
 						</StackPanel>
+						
 					</Grid>
 				</Grid>
 			</StackPanel>

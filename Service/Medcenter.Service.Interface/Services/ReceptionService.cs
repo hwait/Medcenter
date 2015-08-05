@@ -194,11 +194,6 @@ namespace Medcenter.Service.Interface.Services
         public PaymentSaveResponse Post(PaymentSave req)
         {
             int id = 0;
-            int? did;
-            if (req.Payment.Discount == null || req.Payment.Discount.Id == 0)
-                did = null;
-            else
-                did = req.Payment.Discount.Id;
             ResultMessage _message;
             if (req.Payment.Id > 0) // Payment exists so we're saving 
             {
@@ -211,8 +206,8 @@ namespace Medcenter.Service.Interface.Services
                             {
                                 Id=req.Payment.Id,
                                 ReceptionId = req.Payment.ReceptionId,
-                                DiscountId=did,
-                                Cost = req.Payment.Cost,
+                                DiscountId = req.Payment.DiscountId,
+                                Cost = req.Payment.Cost*100,
                                 FinalCost = req.Payment.FinalCost
                             });
                     _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
@@ -234,8 +229,8 @@ namespace Medcenter.Service.Interface.Services
                             new
                             {
                                 ReceptionId = req.Payment.ReceptionId,
-                                DiscountId = did,
-                                Cost = req.Payment.Cost,
+                                DiscountId = req.Payment.DiscountId,
+                                Cost = req.Payment.Cost*100,
                                 FinalCost = req.Payment.FinalCost
                             });
                     _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
