@@ -20,6 +20,7 @@ namespace Medcenter.Service.Model.Types
         public Doctor()
         {
             PackageIds = new List<int>();
+            NurseIds = new List<int>();
             Color = "#FFEEEEEE";
             Id = 0;
             ShortName = "";
@@ -28,6 +29,7 @@ namespace Medcenter.Service.Model.Types
         public Doctor(string shortName)
         {
             PackageIds = new List<int>();
+            NurseIds = new List<int>();
             Color = "#FFFFFFFF";
             Id = 0;
             ShortName = shortName;
@@ -43,7 +45,8 @@ namespace Medcenter.Service.Model.Types
         public string Color { get; set; }
         [DataMember]
         public List<int> PackageIds { get; set; }
-
+        [DataMember]
+        public List<int> NurseIds { get; set; }
         public List<ResultMessage> Validate()
         {
             List<ResultMessage> em = new List<ResultMessage>();

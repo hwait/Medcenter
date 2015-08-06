@@ -38,6 +38,8 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         private readonly DelegateCommand<object> _copyPackageCommand;
         private readonly DelegateCommand<object> _addPackageToDoctorCommand;
         private readonly DelegateCommand<object> _removePackageFromDoctorCommand;
+        private readonly DelegateCommand<object> _addNurseToDoctorCommand;
+        private readonly DelegateCommand<object> _removeNurseFromDoctorCommand;
         private readonly DelegateCommand<object> _newPackageCommand;
         private readonly DelegateCommand<object> _removePackageCommand;
         private readonly DelegateCommand<object> _savePackageCommand;
@@ -46,42 +48,65 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         private readonly DelegateCommand<object> _saveDoctorCommand;
         #region Properties
 
+        #region Commands
+
         public ICommand CopyPackageCommand
         {
             get { return this._copyPackageCommand; }
         }
+
+        public ICommand AddNurseToDoctorCommand
+        {
+            get { return this._addNurseToDoctorCommand; }
+        }
+
+        public ICommand RemoveNurseFromDoctorCommand
+        {
+            get { return this._removeNurseFromDoctorCommand; }
+        }
+
         public ICommand AddPackageToDoctorCommand
         {
             get { return this._addPackageToDoctorCommand; }
         }
+
         public ICommand RemovePackageFromDoctorCommand
         {
             get { return this._removePackageFromDoctorCommand; }
         }
+
         public ICommand NewPackageCommand
         {
             get { return this._newPackageCommand; }
         }
+
         public ICommand RemovePackageCommand
         {
             get { return this._removePackageCommand; }
         }
+
         public ICommand SavePackageCommand
         {
             get { return this._savePackageCommand; }
         }
+
         public ICommand NewDoctorCommand
         {
             get { return this._newDoctorCommand; }
         }
+
         public ICommand RemoveDoctorCommand
         {
             get { return this._removeDoctorCommand; }
         }
+
         public ICommand SaveDoctorCommand
         {
             get { return this._saveDoctorCommand; }
         }
+
+        #endregion
+
         private List<ResultMessage> _errors;
 
         public List<ResultMessage> Errors
@@ -95,27 +120,33 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             get { return _doctors; }
             set { SetProperty(ref _doctors, value); }
         }
+
+        #region Packages In Doctor
+
         private ListCollectionView _packagesInDoctor;
+
         public ListCollectionView PackagesInDoctor
         {
             get { return _packagesInDoctor; }
-            set
-            {
-                SetProperty(ref _packagesInDoctor, value);
-            }
+            set { SetProperty(ref _packagesInDoctor, value); }
         }
+
         private ListCollectionView _packagesBase;
+
         public ListCollectionView PackagesBase
         {
             get { return _packagesBase; }
             set { SetProperty(ref _packagesBase, value); }
         }
+
         private ListCollectionView _packages;
+
         public ListCollectionView Packages
         {
             get { return _packages; }
             set { SetProperty(ref _packages, value); }
         }
+
         private Package _currentPackageInDoctor;
 
         public Package CurrentPackageInDoctor
@@ -128,13 +159,14 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                 {
                     for (int i = 0; i < PackagesBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Package) PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package) PackagesBase.GetItemAt(i);
                     }
                 }
                 SetProperty(ref _currentPackageInDoctor, value);
             }
         }
+
         private Package _currentPackage;
 
         public Package CurrentPackage
@@ -147,15 +179,90 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                 {
                     for (int i = 0; i < PackagesBase.Count; i++)
                     {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
+                        if (((Package) PackagesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBasePackage = (Package) PackagesBase.GetItemAt(i);
                     }
                 }
                 SetProperty(ref _currentPackage, value);
 
             }
         }
+
         private Package _currentBasePackage;
+
+        #endregion
+
+        #region Nurses In Doctor
+
+        private ListCollectionView _nursesInDoctor;
+
+        public ListCollectionView NursesInDoctor
+        {
+            get { return _nursesInDoctor; }
+            set { SetProperty(ref _nursesInDoctor, value); }
+        }
+
+        private ListCollectionView _nursesBase;
+
+        public ListCollectionView NursesBase
+        {
+            get { return _nursesBase; }
+            set { SetProperty(ref _nursesBase, value); }
+        }
+
+        private ListCollectionView _nurses;
+
+        public ListCollectionView Nurses
+        {
+            get { return _nurses; }
+            set { SetProperty(ref _nurses, value); }
+        }
+
+        private Nurse _currentNurseInDoctor;
+
+        public Nurse CurrentNurseInDoctor
+        {
+            get { return _currentNurseInDoctor; }
+            set
+            {
+                if (value.Id == 0) _currentBaseNurse = new Nurse();
+                else
+                {
+                    for (int i = 0; i < NursesBase.Count; i++)
+                    {
+                        if (((Nurse)NursesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseNurse = (Nurse)NursesBase.GetItemAt(i);
+                    }
+                }
+                SetProperty(ref _currentNurseInDoctor, value);
+            }
+        }
+
+        private Nurse _currentNurse;
+
+        public Nurse CurrentNurse
+        {
+            get { return _currentNurse; }
+            set
+            {
+                if (value.Id == 0) _currentBaseNurse = new Nurse();
+                else
+                {
+                    for (int i = 0; i < NursesBase.Count; i++)
+                    {
+                        if (((Nurse)NursesBase.GetItemAt(i)).Id == value.Id)
+                            _currentBaseNurse = (Nurse)NursesBase.GetItemAt(i);
+                    }
+                }
+                SetProperty(ref _currentNurse, value);
+
+            }
+        }
+
+        private Nurse _currentBaseNurse;
+
+        #endregion
+
 
         private Doctor _currentDoctor;
 
@@ -166,6 +273,7 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             {
                 SetProperty(ref _currentDoctor, value);
                 PackagesInDoctorRefresh();
+                NursesInDoctorRefresh();
             }
         }
 
@@ -180,6 +288,8 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             _copyPackageCommand = new DelegateCommand<object>(CopyPackage);
             _removePackageFromDoctorCommand = new DelegateCommand<object>(RemovePackageFromDoctor);
             _addPackageToDoctorCommand = new DelegateCommand<object>(AddPackageToDoctor);
+            _removeNurseFromDoctorCommand = new DelegateCommand<object>(RemoveNurseFromDoctor);
+            _addNurseToDoctorCommand = new DelegateCommand<object>(AddNurseToDoctor);
             _newPackageCommand = new DelegateCommand<object>(NewPackage, CanAddPackage);
             _removePackageCommand = new DelegateCommand<object>(RemovePackage, CanRemovePackage);
             _savePackageCommand = new DelegateCommand<object>(SavePackage);
@@ -194,17 +304,28 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             {
                 //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 PackagesBase = new ListCollectionView(ri.Packages);
-                _jsonClient.GetAsync(new DoctorsSelect())
-                .Success(rig =>
+                _jsonClient.GetAsync(new NursesSelect())
+                .Success(n =>
                 {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Doctors = new ListCollectionView(rig.Doctors);
-                    Doctors.CurrentChanged += Doctors_CurrentChanged;
+                    NursesBase = new ListCollectionView(n.Nurses);
+                    _jsonClient.GetAsync(new DoctorsSelect())
+                     .Success(rig =>
+                     {
+                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                         Doctors = new ListCollectionView(rig.Doctors);
+                         Doctors.CurrentChanged += Doctors_CurrentChanged;
 
-                    CurrentDoctor = new Doctor();
-                    PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
-                    PackagesReload(ri.Packages);
-                    Doctors.MoveCurrentTo(null);
+                         CurrentDoctor = new Doctor();
+                         PackagesInDoctor.CurrentChanged += PackagesInDoctor_CurrentChanged;
+                         NursesInDoctor.CurrentChanged += NursesInDoctor_CurrentChanged;
+                         PackagesReload(ri.Packages);
+                         NursesReload(n.Nurses);
+                         Doctors.MoveCurrentTo(null);
+                     })
+                     .Error(ex =>
+                     {
+                         throw ex;
+                     });
                 })
                 .Error(ex =>
                 {
@@ -216,7 +337,6 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
                 throw ex;
             });
         }
-
         private void CopyPackage(object obj)
         {
             CurrentPackage = CurrentPackage.CopyInstance();
@@ -239,6 +359,14 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
         private void PackagesInDoctor_CurrentChanged(object sender, EventArgs e)
         {
             CurrentPackageInDoctor = PackagesInDoctor.CurrentItem != null ? (Package)PackagesInDoctor.CurrentItem : new Package();
+        }
+        private void Nurses_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentNurse = Nurses.CurrentItem != null ? (Nurse)Nurses.CurrentItem : new Nurse();
+        }
+        private void NursesInDoctor_CurrentChanged(object sender, EventArgs e)
+        {
+            CurrentNurseInDoctor = NursesInDoctor.CurrentItem != null ? (Nurse)NursesInDoctor.CurrentItem : new Nurse();
         }
 
         #region Doctor
@@ -495,8 +623,95 @@ namespace Medcenter.Desktop.Modules.DoctorsManagerModule.ViewModels
             PackagesInDoctorRefresh();
         }
         #endregion
+        
+        #region Nurses in Doctor
+        
+        private void ClearNurses()
+        {
+            Nurses.MoveCurrentTo(null);
+            NursesInDoctor.MoveCurrentTo(null);
+            CurrentNurse = new Nurse();
+            CurrentNurseInDoctor = new Nurse();
+        }
+        private void NursesReload(List<Nurse> nurses)
+        {
+            Nurses = new ListCollectionView(nurses);
+            Nurses.CurrentChanged += Nurses_CurrentChanged;
+            Nurses.MoveCurrentTo(null);
+            CurrentNurse = new Nurse();
+        }
+        private void NursesInDoctorReload(List<Nurse> nurses)
+        {
+            NursesInDoctor = new ListCollectionView(nurses);
+            NursesInDoctor.CurrentChanged += NursesInDoctor_CurrentChanged;
+            NursesInDoctor.MoveCurrentTo(null);
+            CurrentNurseInDoctor = new Nurse();
+        }
+        private void NursesInDoctorRefresh()
+        {
+            var list1 = new List<Nurse>();
+            var list2 = new List<Nurse>();
+            foreach (Nurse Nurse in NursesBase)
+            {
+                if (Nurse.DoctorIds != null && Nurse.DoctorIds.Contains(CurrentDoctor.Id)) list1.Add(Nurse);
+                else list2.Add(Nurse);
+            }
+            NursesInDoctorReload(list1);
+            NursesReload(list2);
+        }
+        private void AddNurseToDoctor(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new NursesDoctorsBind { NurseId = CurrentNurse.Id, DoctorId = CurrentDoctor.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseNurse.DoctorIds.Add(CurrentDoctor.Id);
+                //CurrentNurse.DoctorIds.Add(CurrentDoctor.Id);
+                NursesInDoctorRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
 
+        private void RemoveNurseFromDoctor(object obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new NursesDoctorsUnbind { NurseId = CurrentNurseInDoctor.Id, DoctorId = CurrentDoctor.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                _currentBaseNurse.DoctorIds.Remove(CurrentDoctor.Id);
+                //CurrentNurseInDoctor.DoctorIds.Remove(CurrentDoctor.Id);
+                NursesInDoctorRefresh();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
 
-
+        private void RemoveNurseFromDoctorByIID(int id)
+        {
+            foreach (Doctor ig in Doctors)
+            {
+                if (ig.NurseIds.Contains(id)) ig.NurseIds.Remove(id);
+            }
+            //NursesInDoctorRefresh();
+        }
+        private void RemoveNurseFromDoctorByIGID(int id)
+        {
+            foreach (Nurse i in Nurses)
+            {
+                if (i.DoctorIds.Contains(id)) Nurses.Remove(i);
+            }
+            NursesInDoctorRefresh();
+        }
+        #endregion
+        
     }
 }

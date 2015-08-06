@@ -40,7 +40,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         
         #region Properties
 
-        private int _startHour,_endHour, _oldDoctorId, _gap;
+        private int _startHour, _endHour, _oldDoctorId, _gap, _oldNurseId;
         private string[] _cabinets;
         private readonly DelegateCommand<Schedule> _scheduleChooseCommand;
         private readonly DelegateCommand<object> _copyScheduleToNextWeekCommand;
@@ -48,8 +48,14 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private readonly DelegateCommand<object> _makeEndGapedJointCommand;
         private readonly DelegateCommand<object> _removeScheduleCommand;
         private readonly DelegateCommand<Schedule> _saveScheduleCommand;
-
+        private readonly DelegateCommand<object> _showNurseCommand;
+        private bool _isDoctorsShow;
         #region Commands Implementation
+        
+        public ICommand ShowNurseCommand
+        {
+            get { return this._showNurseCommand; }
+        }
         public ICommand ScheduleChooseCommand
         {
             get { return this._scheduleChooseCommand; }
@@ -102,6 +108,18 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             }
         }
 
+        private string _nurseOrDoctor;
+        public string NurseOrDoctor
+        {
+            get { return _nurseOrDoctor; }
+            set { SetProperty(ref _nurseOrDoctor, value); }
+        }
+        private List<Nurse> _nurses;
+        public List<Nurse> Nurses
+        {
+            get { return _nurses; }
+            set { SetProperty(ref _nurses, value); }
+        }
         public ObservableCollection<Doctor> Doctors
         {
             get { return _doctors; }
@@ -147,12 +165,15 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _scheduleChooseCommand = new DelegateCommand<Schedule>(ScheduleChoose);
-            _copyScheduleToNextWeekCommand = new DelegateCommand<object>(CopyScheduleToNextWeek);
+            _scheduleChooseCommand = new DelegateCommand<Schedule>(ScheduleChoose, CanScheduleChoose);
+            _copyScheduleToNextWeekCommand = new DelegateCommand<object>(CopyScheduleToNextWeek, CanCopyScheduleToNextWeek);
             _makeStartGapedJointCommand = new DelegateCommand<object>(MakeStartGapedJoint, CanMakeStartGapedJoint);
             _makeEndGapedJointCommand = new DelegateCommand<object>(MakeEndGapedJoint, CanMakeEndGapedJoint);
             _removeScheduleCommand = new DelegateCommand<object>(RemoveSchedule);
             _saveScheduleCommand = new DelegateCommand<Schedule>(SaveSchedule);
+            _showNurseCommand = new DelegateCommand<object>(ShowNurse);
+            _isDoctorsShow = false;
+            ShowNurse(null);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
             _startHour = int.Parse(Utils.ReadSetting("StartHour"));
@@ -166,6 +187,45 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         }
 
+        private bool CanCopyScheduleToNextWeek(object arg)
+        {
+            return _isDoctorsShow;
+        }
+
+        private bool CanScheduleChoose(Schedule arg)
+        {
+            
+            return _isDoctorsShow;
+        }
+
+        private void ShowNurse(object obj)
+        {
+            _isDoctorsShow = !_isDoctorsShow;
+            if (_isDoctorsShow)
+            {
+                NurseOrDoctor = "График медсестёр";
+                if (Schedules != null)
+                    foreach (var schedule in Schedules)
+                    {
+                        schedule.ShowName = schedule.CurrentDoctor.ShortName;
+                    }
+            }
+            else
+            {
+                NurseOrDoctor = "График докторов";
+                if (Schedules != null)
+                    foreach (var schedule in Schedules)
+                    {
+
+                        schedule.ShowName = (schedule.CurrentNurse == null)
+                            ? ""
+                            : schedule.CurrentNurse.ShortName;
+                    }
+            }
+            OnPropertyChanged("Schedules");
+            _scheduleChooseCommand.RaiseCanExecuteChanged();
+            _copyScheduleToNextWeekCommand.RaiseCanExecuteChanged();   
+        }
         private void SchedulesReload()
         {
             _startDate = Utils.GetFirstDayOfWeek(_currentDate);
@@ -176,20 +236,33 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             .Success(rig =>
             {
                 Doctors = new ObservableCollection<Doctor>(rig.Doctors);
-                _jsonClient.PostAsync(new SchedulesSelect { TimeStart = _startDate, TimeEnd = _endDate })
-                .Success(rs =>
+                _jsonClient.GetAsync(new NursesSelect())
+                .Success(n =>
                 {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Schedules = new ObservableCollection<Schedule>(rs.Schedules);
-                    foreach (var schedule in Schedules)
+                    Nurses = new List<Nurse>(n.Nurses);
+                    _jsonClient.PostAsync(new SchedulesSelect { TimeStart = _startDate, TimeEnd = _endDate })
+                    .Success(rs =>
                     {
-                        schedule.CurrentDoctor = Doctors.FirstOrDefault(s => s.Id == schedule.DoctorId);
-                    }
-                    MakeCurrentWeek();
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        Schedules = new ObservableCollection<Schedule>(rs.Schedules);
+                        foreach (var schedule in Schedules)
+                        {
+                            schedule.NurseBase = Nurses;
+                            schedule.CurrentDoctor = Doctors.FirstOrDefault(d => d.Id == schedule.DoctorId);
+                            schedule.ShowName = schedule.CurrentDoctor.ShortName;
+                            schedule.NurseId = schedule.NurseId;
+                        }
+                        MakeCurrentWeek();
+                    })
+                    .Error(ex =>
+                    {
+                        Schedules = new ObservableCollection<Schedule>();
+                        throw ex;
+                    });
                 })
                 .Error(ex =>
                 {
-                    Schedules = new ObservableCollection<Schedule>();
+                    Nurses = new List<Nurse>();
                     throw ex;
                 });
             })
@@ -215,7 +288,9 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private void ScheduleChoose(Schedule obj)
         {
             CurrentSchedule = obj;
-            _oldDoctorId = obj.CurrentDoctor.Id;
+            _oldDoctorId = CurrentSchedule.CurrentDoctor.Id;
+            
+            _oldNurseId = CurrentSchedule.CurrentNurse == null ? 0 : CurrentSchedule.CurrentNurse.Id;
         }
         private void MakeCurrentWeek()
         {
@@ -326,7 +401,9 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         }
         private Schedule MakeWhiteBar(DateTime startTime, DateTime endTime, int cabinet)
         {
-            return new Schedule(startTime, endTime,cabinet);
+            var sch = new Schedule(startTime, endTime, cabinet);
+            sch.NurseBase = Nurses;
+            return sch;
         }
 
         #endregion
@@ -349,6 +426,8 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         {
             //CurrentSchedule = schedule;
             bool isNew = (_recursiveId >= 0) || schedule.Id <= 0;
+            schedule.NurseId = schedule.CurrentNurse == null ? 0 : schedule.CurrentNurse.Id;
+            schedule.DoctorId = schedule.CurrentDoctor == null ? 0 : schedule.CurrentDoctor.Id;
             Errors = schedule.Validate();
             if (Errors.Count == 0)
             {

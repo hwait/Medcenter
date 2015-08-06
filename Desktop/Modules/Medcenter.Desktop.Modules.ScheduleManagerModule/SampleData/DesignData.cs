@@ -54,13 +54,18 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 return new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 8, 0, 0),
                     End = new DateTime(2015, 7, 11, 12, 45, 0)
                 };
             }
+        }
+
+        public string NurseOrDoctorget
+        {
+            get { return "График Докторов"; }
         }
 
         private DateTime _currentDate;
@@ -169,7 +174,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 return new Doctor
                 {
-                    Id = 0,
+                    Id =1,
                     Name = "",
                     ShortName = "",
                     Color = Colors.White.ToString()
@@ -182,7 +187,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 return new Doctor
                 {
-                    Id = 0,
+                    Id =1,
                     Name = "",
                     ShortName = "",
                     Color = Colors.Black.ToString()
@@ -247,7 +252,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 7, 0, 0),
@@ -255,7 +260,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 12, 45, 0),
@@ -263,7 +268,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 13, 0, 0),
@@ -271,7 +276,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 18, 30, 0),
@@ -279,7 +284,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 45, 0),
@@ -295,7 +300,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 7, 30, 0),
@@ -303,7 +308,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 11, 55, 0),
@@ -311,7 +316,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
@@ -319,7 +324,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 18, 0, 0),
@@ -327,7 +332,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 5, 0),
@@ -343,7 +348,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     
                     
@@ -353,7 +358,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
@@ -361,7 +366,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 16, 30, 0),
@@ -377,7 +382,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 7, 0, 0),
@@ -385,7 +390,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 12, 45, 0),
@@ -393,7 +398,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 13, 0, 0),
@@ -401,7 +406,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 18, 30, 0),
@@ -409,7 +414,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 45, 0),
@@ -425,7 +430,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 7, 0, 0),
@@ -433,7 +438,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = Bacula,
                     Start = new DateTime(2015, 7, 11, 8, 30, 0),
@@ -441,7 +446,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     
                     
@@ -451,7 +456,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = VVA,
                     Start = new DateTime(2015, 7, 11, 15, 0, 0),
@@ -459,7 +464,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 16, 30, 0),
@@ -467,7 +472,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 },
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 1,
                     CurrentDoctor = LGV,
                     Start = new DateTime(2015, 7, 11, 18, 5, 0),
@@ -483,7 +488,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
             {
                 new Schedule
                 {
-                    Id = 0,
+                    Id =1,
                     CabinetId = 2,
                     CurrentDoctor=WhiteDoctor,
                     Start = new DateTime(2015, 7, 11, 7, 0, 0),
@@ -502,15 +507,16 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                 {
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 1,
                         CurrentDoctor = Bacula,
+                        ShowName=Bacula.ShortName,
                         Start = new DateTime(2015,7,11,8,0,0),
                         End = new DateTime(2015,7,11,12,45,0)
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 1,
                         CurrentDoctor=WhiteDoctor,
                         Start = new DateTime(2015,7,11,12,45,0),
@@ -518,15 +524,16 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 1,
                         CurrentDoctor = VVA,
+                        ShowName=VVA.ShortName,
                         Start = new DateTime(2015,7,11,13,0,0),
                         End = new DateTime(2015,7,11,18,30,0)
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 1,
                         
                         
@@ -536,23 +543,25 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 1,
                         CurrentDoctor = LGV,
+                        ShowName=LGV.ShortName,
                         Start = new DateTime(2015,7,11,18,45,0),
                         End = new DateTime(2015,7,11,20,0,0)
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 2,
                         CurrentDoctor = VVA,
+                        ShowName=VVA.ShortName,
                         Start = new DateTime(2015,7,11,7,30,0),
                         End = new DateTime(2015,7,11,10,0,0)
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 2,
                         CurrentDoctor=WhiteDoctor,
                         Start = new DateTime(2015,7,11,10,0,0),
@@ -560,15 +569,16 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 2,
                         CurrentDoctor = LGV,
+                        ShowName=LGV.ShortName,
                         Start = new DateTime(2015,7,11,10,15,0),
                         End = new DateTime(2015,7,11,14,0,0)
                     },
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 2,
                         CurrentDoctor=WhiteDoctor,
                         Start = new DateTime(2015,7,11,14,0,0),
@@ -577,9 +587,10 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.SampleData
                     
                     new Schedule
                     {
-                        Id = 0,
+                        Id =1,
                         CabinetId = 2,
                         CurrentDoctor = Bacula,
+                        ShowName=Bacula.ShortName,
                         Start = new DateTime(2015,7,11,18,0,0),
                         End = new DateTime(2015,7,11,19,45,0)
                     },

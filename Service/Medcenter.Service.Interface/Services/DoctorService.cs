@@ -9,7 +9,13 @@ namespace Medcenter.Service.Interface.Services
 {
     public class DoctorService : ServiceStack.Service
     {
-
+        public NursesSelectResponse Get(NursesSelect req)
+        {
+            var rows = Db.SqlList<Nurse>("EXEC sp_Nurses_Select");
+            foreach (var r in rows)
+                r.DoctorIds = Db.SqlList<int>("EXEC sp_Nurse_SelectDoctors @NurseId", new { NurseId = r.Id });
+            return new NursesSelectResponse { Nurses = new List<Nurse>(rows) };
+        }
         #region Doctor
 
         public DoctorsSelectResponse Get(DoctorsSelect req)
@@ -178,6 +184,95 @@ namespace Medcenter.Service.Interface.Services
                 throw;
             }
             return new PackagesDoctorsUnbindResponse
+            {
+                Message = _message
+            };
+        }
+
+        #endregion
+
+        #region Nurses and Doctors
+
+        public NursesInDoctorSelectResponse Get(NursesInDoctorSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Doctor_SelectNurses @Id", new
+            {
+                Id = req.DoctorId
+            });
+
+            return new NursesInDoctorSelectResponse { NurseIds = new List<int>(rows) };
+        }
+        public DoctorsInNurseSelectResponse Get(DoctorsInNurseSelect req)
+        {
+            var rows = Db.SqlList<int>("EXEC sp_Nurse_SelectDoctors @Id", new
+            {
+                Id = req.DoctorId
+            });
+
+            return new DoctorsInNurseSelectResponse { DoctorIds = new List<int>(rows) };
+        }
+        public NursesDoctorsBindResponse Get(NursesDoctorsBind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_NursesInDoctors_Insert @NurseId, @DoctorId", new
+                {
+                    NurseId = req.NurseId,
+                    DoctorId = req.DoctorId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Связывание", OperationErrors.NursesDoctorsBindZero);
+                    Logger.Log("NursesDoctors.Bind 0");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Связывание", OperationResults.NursesDoctorsBind);
+                    Logger.Log("NursesDoctors.Bind 1");
+                }
+
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.NursesDoctorsBind);
+                Logger.Log("NursesDoctors.Bind", e);
+                throw;
+            }
+            return new NursesDoctorsBindResponse
+            {
+                Message = _message
+            };
+        }
+
+        public NursesDoctorsUnbindResponse Get(NursesDoctorsUnbind req)
+        {
+            ResultMessage _message;
+            try
+            {
+                var rows = Db.SqlList<int>("EXEC sp_NursesInDoctors_Delete @NurseId, @DoctorId", new
+                {
+                    NurseId = req.NurseId,
+                    DoctorId = req.DoctorId
+                });
+                if (rows[0] == 0)
+                {
+                    _message = new ResultMessage(2, "Отвязывание", OperationErrors.NursesDoctorsUnbindZero);
+                    Logger.Log("NursesDoctors.UnBind");
+                }
+                else
+                {
+                    _message = new ResultMessage(0, "Отвязывание", OperationResults.NursesDoctorsUnbind);
+                    Logger.Log("NursesDoctors.UnBind");
+                }
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.NursesDoctorsUnbind);
+                Logger.Log("NursesDoctors.UnBind", e);
+                throw;
+            }
+            return new NursesDoctorsUnbindResponse
             {
                 Message = _message
             };

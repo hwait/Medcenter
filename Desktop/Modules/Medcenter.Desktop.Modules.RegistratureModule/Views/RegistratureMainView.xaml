@@ -17,7 +17,7 @@
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
 		<infrastructure:DurationToHeightConverter x:Key="DurationToHeight" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
-		<infrastructure:IdToVisibilityConverter x:Key="IdToVisibility"/>
+		<infrastructure:CostToVisibilityConverter x:Key="CostToVisibility"/>
 		<infrastructure:BoolToVisibilityConverter x:Key="BoolToVis"/>
 		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<infrastructure:WeekDayConverter x:Key="WeekDateToAbb"/>
@@ -161,26 +161,7 @@
 				<TextBlock Text="{Binding Name}" FontSize="13.333"/>
 			</StackPanel>
 		</DataTemplate>
-		<Style x:Key="TextButtonStyle" TargetType="{x:Type Button}">
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid>
-							<ContentPresenter RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsFocused" Value="True"/>
-							<Trigger Property="IsDefaulted" Value="True"/>
-							<Trigger Property="IsMouseOver" Value="True"/>
-							<Trigger Property="IsPressed" Value="True"/>
-							<Trigger Property="IsEnabled" Value="False"/>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-			<Setter Property="FontFamily" Value="Vrinda"/>
-			<Setter Property="FontSize" Value="14.667"/>
-		</Style>
+		
 		<DataTemplate x:Key="WeekDayButtonsTemplate">
 			<Grid Margin="3,0,0,0">
 				<Button Content="{Binding Date, Converter={StaticResource WeekDateToAbb}}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseWeekDayCommand}"  CommandParameter="{Binding }" HorizontalAlignment="Left" Height="26" Style="{DynamicResource WeekButtonStyle}" VerticalAlignment="Top" Width="45"/>
@@ -370,7 +351,7 @@
 							<TextBlock FontSize="13.333" Text=" тенге, " VerticalAlignment="Center"/>
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.UnderOverPaid}" VerticalAlignment="Center" FontWeight="Bold"/>
 						</StackPanel>
-						<ContentControl Content="{Binding CurrentReception.CurrentPayment}" HorizontalAlignment="Left" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Top" ContentTemplate="{DynamicResource CurrentPaymentTemplate}" Visibility="{Binding CurrentReception.CurrentPayment, Converter={StaticResource IdToVisibility}, Mode=OneWay}"/>
+						<ContentControl Content="{Binding CurrentReception.CurrentPayment}" HorizontalAlignment="Left" Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Top" ContentTemplate="{DynamicResource CurrentPaymentTemplate}" Visibility="{Binding CurrentReception.CurrentPayment, Converter={StaticResource CostToVisibility}, Mode=OneWay}"/>
 						<StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Grid.Row="7" Margin="15,5,0,0" >
 							<TextBlock FontSize="13.333" Text="{Binding CurrentReception.FinalPayment}" VerticalAlignment="Center" FontWeight="Bold"/>
 						</StackPanel>

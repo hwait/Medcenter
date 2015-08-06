@@ -1,41 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Interfaces;
 using Medcenter.Service.Model.Messaging;
+using ServiceStack.Model;
 
 namespace Medcenter.Service.Model.Types
 {
     [DataContract]
-    public class Schedule
+    public class Schedule : INotifyPropertyChanged, IHasId
     {
+        private List<Nurse> _nurses;
+        private Doctor _currentDoctor;
+        private int _nurseId;
+        private string _showName;
+        public event PropertyChangedEventHandler PropertyChanged=delegate{};
         [DataMember]
         public int Id { get; set; }
         [DataMember]
         public int CabinetId { get; set; }
         [DataMember]
         public int DoctorId { get; set; }
+
+        [DataMember]
+        public int NurseId
+        {
+            get { return _nurseId; }
+            set
+            {
+                _nurseId = value;
+                CurrentNurse = NurseBase == null ? new Nurse() : NurseBase.FirstOrDefault(nrs => nrs.Id == _nurseId);
+            }
+        }
+
         [DataMember]
         public DateTime Start { get; set; }
         [DataMember]
         public DateTime End { get; set; }
 
-        private Doctor _currentDoctor;
-        [DataMember]
         public Doctor CurrentDoctor
         {
-            get
-            {
-                return _currentDoctor;
-            }
+            get { return _currentDoctor; }
             set
             {
-                _currentDoctor=value;
-                DoctorId = _currentDoctor.Id;
+                _currentDoctor = value;
+                Nurses = NurseBase == null
+                    ? new List<Nurse>()
+                    : NurseBase.Select(n => n).Where(n => n.DoctorIds.Contains(_currentDoctor.Id)).ToList();
             }
         }
+
+        public List<Nurse> Nurses
+        {
+            get { return _nurses; }
+            set
+            {
+                _nurses = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Nurses"));
+            }
+        }
+
+        public string ShowName
+        {
+            get { return _showName; }
+            set
+            {
+                _showName = value;
+                PropertyChanged(this, new PropertyChangedEventArgs("ShowName"));
+            }
+        }
+
+        public List<Nurse> NurseBase { get; set; }
+        public Nurse CurrentNurse { get; set; }
         public bool ReplaceEverywhere { get; set; }
         public bool Monday { get; set; }
         public bool Tuesday { get; set; }
@@ -97,6 +137,7 @@ namespace Medcenter.Service.Model.Types
         public Schedule(DateTime start, DateTime end, int cabinet)
         {
             CabinetId = cabinet;
+            CurrentNurse=new Nurse();
             Start = start;
             End = end;
             Id = 0;
@@ -105,7 +146,7 @@ namespace Medcenter.Service.Model.Types
 
         public Schedule()
         {
-            
+            CurrentNurse = new Nurse();
         }
 
         public void ResetFlags()

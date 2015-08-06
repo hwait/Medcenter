@@ -49,13 +49,14 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Schedules_Update @Id, @TimeStart, @TimeEnd, @CabinetId,@DoctorId", new
+                    id = Db.Single<int>("EXEC sp_Schedules_Update @Id, @TimeStart, @TimeEnd, @CabinetId,@DoctorId,@NurseId", new
                     {
                         Id = req.Schedule.Id,
                         TimeStart = req.Schedule.Start,
                         TimeEnd = req.Schedule.End,
                         CabinetId = req.Schedule.CabinetId,
-                        DoctorId = req.Schedule.CurrentDoctor.Id,
+                        DoctorId = req.Schedule.DoctorId,
+                        NurseId = req.Schedule.NurseId
                     });
                     _message = new ResultMessage(0, "Расписание", OperationResults.ScheduleSave);
                     //Logger.Log("ScheduleSaveResponse.Saving");
@@ -71,12 +72,13 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Schedules_Insert @TimeStart, @TimeEnd, @CabinetId,@DoctorId", new
+                    id = Db.Single<int>("EXEC sp_Schedules_Insert @TimeStart, @TimeEnd, @CabinetId,@DoctorId,@NurseId", new
                     {
                         TimeStart = req.Schedule.Start,
                         TimeEnd = req.Schedule.End,
                         CabinetId = req.Schedule.CabinetId,
-                        DoctorId = req.Schedule.CurrentDoctor.Id
+                        DoctorId = req.Schedule.DoctorId,
+                        NurseId = req.Schedule.NurseId
                     });
                     _message = new ResultMessage(0, "Расписание", OperationResults.ScheduleCreate);
                     //Logger.Log("PackageSaveResponse.NewPackage");

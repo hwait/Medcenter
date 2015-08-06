@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IHasId.cs" />
     <Compile Include="Interfaces\IItem.cs" />
     <Compile Include="Interfaces\IItemsGroop.cs" />
     <Compile Include="Messaging\Logger.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Types\Discount.cs" />
     <Compile Include="Types\Doctor.cs" />
     <Compile Include="Types\Inspection.cs" />
+    <Compile Include="Types\Nurse.cs" />
     <Compile Include="Types\Package.cs" />
     <Compile Include="Types\PackageGroup.cs" />
     <Compile Include="Types\Patient.cs" />
