@@ -189,13 +189,15 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         private bool CanCopyScheduleToNextWeek(object arg)
         {
-            return _isDoctorsShow;
+            //return _isDoctorsShow;
+            return true;
         }
 
         private bool CanScheduleChoose(Schedule arg)
         {
             
-            return _isDoctorsShow;
+            //return _isDoctorsShow;
+            return true;
         }
 
         private void ShowNurse(object obj)
@@ -203,7 +205,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _isDoctorsShow = !_isDoctorsShow;
             if (_isDoctorsShow)
             {
-                NurseOrDoctor = "График медсестёр";
+                NurseOrDoctor = "График докторов";
                 if (Schedules != null)
                     foreach (var schedule in Schedules)
                     {
@@ -212,7 +214,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             }
             else
             {
-                NurseOrDoctor = "График докторов";
+                NurseOrDoctor = "График медсестёр";
                 if (Schedules != null)
                     foreach (var schedule in Schedules)
                     {
@@ -223,8 +225,8 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                     }
             }
             OnPropertyChanged("Schedules");
-            _scheduleChooseCommand.RaiseCanExecuteChanged();
-            _copyScheduleToNextWeekCommand.RaiseCanExecuteChanged();   
+            //_scheduleChooseCommand.RaiseCanExecuteChanged();
+            //_copyScheduleToNextWeekCommand.RaiseCanExecuteChanged();   
         }
         private void SchedulesReload()
         {
@@ -249,7 +251,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         {
                             schedule.NurseBase = Nurses;
                             schedule.CurrentDoctor = Doctors.FirstOrDefault(d => d.Id == schedule.DoctorId);
-                            schedule.ShowName = schedule.CurrentDoctor.ShortName;
+                            schedule.ShowName = _isDoctorsShow ? schedule.CurrentDoctor.ShortName : schedule.CurrentNurse.ShortName;
                             schedule.NurseId = schedule.NurseId;
                         }
                         MakeCurrentWeek();
@@ -381,7 +383,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             }
             return schedules;
         }
-        private ObservableCollection<Schedule> FilterSchedules(int doctorId)
+        private ObservableCollection<Schedule> FilterSchedulesByDoctorId(int doctorId)
         {
             var schedules = new ObservableCollection<Schedule>();
             var list = from s in Schedules
@@ -394,6 +396,19 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             }
             return schedules;
         }
+        //private ObservableCollection<Schedule> FilterSchedulesByNurseId(int nurseId)
+        //{
+        //    var schedules = new ObservableCollection<Schedule>();
+        //    var list = from s in Schedules
+        //               where
+        //                   s.NurseId == nurseId
+        //               select s;
+        //    foreach (var s in list)
+        //    {
+        //        schedules.Add(s);
+        //    }
+        //    return schedules;
+        //}
         private Schedule GetSchedule(int id)
         {
             var list = Schedules.FirstOrDefault(s => s.Id == id);
@@ -454,14 +469,28 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         {
                             if (CurrentSchedule.ReplaceEverywhere)
                             {
-                                ObservableCollection<Schedule> schedules = FilterSchedules(_oldDoctorId);
-                                foreach (var s in schedules)
+                                if (_oldDoctorId != schedule.CurrentDoctor.Id)
                                 {
-                                    s.CurrentDoctor = schedule.CurrentDoctor;
-                                    SaveSchedule(s);
+                                    ObservableCollection<Schedule> schedules = FilterSchedulesByDoctorId(_oldDoctorId);
+                                    foreach (var s in schedules)
+                                    {
+                                        s.CurrentDoctor = schedule.CurrentDoctor;
+                                        SaveSchedule(s);
+                                    }
+                                    _oldDoctorId = schedule.CurrentDoctor.Id;
                                 }
-                                _oldDoctorId = schedule.CurrentDoctor.Id;
+                                //if (_oldNurseId != schedule.CurrentNurse.Id)
+                                //{
+                                //    ObservableCollection<Schedule> schedules = FilterSchedulesByNurseId(_oldNurseId);
+                                //    foreach (var s in schedules)
+                                //    {
+                                //        s.CurrentNurse = schedule.CurrentNurse;
+                                //        SaveSchedule(s);
+                                //    }
+                                //    _oldNurseId = schedule.CurrentNurse.Id;
+                                //}
                             }
+
                         }
                         r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
                             schedule.Start.ToString("D"), schedule.Start.ToString("t"), schedule.End.ToString("t"), schedule.CurrentDoctor.ShortName);
@@ -473,6 +502,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
                         }
                         else if (_recursiveId < 0)
                         {
+                            CurrentSchedule.ShowName = _isDoctorsShow ? CurrentSchedule.CurrentDoctor.ShortName : CurrentSchedule.CurrentNurse.ShortName;
                             MakeCurrentWeek();
                             CurrentSchedule = new Schedule();
                         }

@@ -136,6 +136,7 @@ namespace Medcenter.Service.Model.Types
 
         public Schedule(DateTime start, DateTime end, int cabinet)
         {
+            Id = 0;
             CabinetId = cabinet;
             CurrentNurse=new Nurse();
             Start = start;
@@ -146,6 +147,7 @@ namespace Medcenter.Service.Model.Types
 
         public Schedule()
         {
+            Id = -1;
             CurrentNurse = new Nurse();
         }
 
