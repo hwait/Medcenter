@@ -398,7 +398,6 @@
 					<TextBlock Text="Стоимость:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2" Margin="0,4.974"/>
 					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="2">
 						<TextBlock Text="{Binding CurrentReception.Cost, Mode=TwoWay}" VerticalAlignment="Center" Width="60" FontSize="13.333" Margin="0,0,5,0" FontWeight="Bold"/>
-						<ComboBox ItemsSource="{Binding Discounts}" Width="220"  SelectedItem="{Binding CurrentDiscount, Mode=TwoWay}" DisplayMemberPath="Name" VerticalAlignment="Center" FontSize="13.333" Padding="4,3,0,3"/>
 					</StackPanel>
 					<TextBlock Text="Оплачено:" FontSize="13.333" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="3" Margin="0,4.974"/>
 					<StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" Grid.Row="3">

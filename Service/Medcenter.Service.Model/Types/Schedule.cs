@@ -41,7 +41,7 @@ namespace Medcenter.Service.Model.Types
         public DateTime Start { get; set; }
         [DataMember]
         public DateTime End { get; set; }
-
+        [DataMember]
         public Doctor CurrentDoctor
         {
             get { return _currentDoctor; }
@@ -63,7 +63,7 @@ namespace Medcenter.Service.Model.Types
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Nurses"));
             }
         }
-
+        
         public string ShowName
         {
             get { return _showName; }

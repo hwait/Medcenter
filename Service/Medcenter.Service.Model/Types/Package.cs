@@ -41,6 +41,7 @@ namespace Medcenter.Service.Model.Types
         public Package()
         {
             PackageGroupIds=new List<int>();
+            DoctorIds=new List<int>();
         }
         public Package CopyInstance()
         {
