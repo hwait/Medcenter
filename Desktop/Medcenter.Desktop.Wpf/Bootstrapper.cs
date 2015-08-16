@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition.Hosting;
 using System.Windows;
 using Medcenter.Desktop.Infrastructure;
+using Medcenter.Desktop.Modules.CabinetModule;
 using Medcenter.Desktop.Modules.DoctorsManagerModule;
 using Medcenter.Desktop.Modules.FinancesManagerModule;
 using Medcenter.Desktop.Modules.PackagesManagerModule;
@@ -42,6 +43,7 @@ namespace Medcenter.Desktop.Wpf
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(DoctorsManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(RegistratureModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IUserRepository).Assembly));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(CabinetModule).Assembly));
         }
         //protected override IModuleCatalog CreateModuleCatalog()
         //{
@@ -67,6 +69,8 @@ namespace Medcenter.Desktop.Wpf
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = scheduleManagerModuleType.Name, ModuleType = scheduleManagerModuleType.AssemblyQualifiedName });
             var registratureModuleType = typeof(RegistratureModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = registratureModuleType.Name, ModuleType = registratureModuleType.AssemblyQualifiedName });
+            var cabinetModuleType = typeof(CabinetModule);
+            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = cabinetModuleType.Name, ModuleType = cabinetModuleType.AssemblyQualifiedName });
         }
     }
 }

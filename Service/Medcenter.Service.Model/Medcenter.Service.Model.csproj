@@ -95,15 +95,20 @@
     <Compile Include="Types\Discount.cs" />
     <Compile Include="Types\Doctor.cs" />
     <Compile Include="Types\Inspection.cs" />
+    <Compile Include="Types\Limit.cs" />
+    <Compile Include="Types\LimitsTable.cs" />
     <Compile Include="Types\Nurse.cs" />
     <Compile Include="Types\Package.cs" />
     <Compile Include="Types\PackageGroup.cs" />
+    <Compile Include="Types\Paraphrases.cs" />
     <Compile Include="Types\Patient.cs" />
     <Compile Include="Types\Payment.cs" />
     <Compile Include="Types\Permissions.cs" />
+    <Compile Include="Types\Phrase.cs" />
     <Compile Include="Types\Reception.cs" />
     <Compile Include="Types\Roles.cs" />
     <Compile Include="Types\Schedule.cs" />
+    <Compile Include="Types\Survey.cs" />
     <Compile Include="Types\User.cs" />
     <Compile Include="Types\City.cs" />
   </ItemGroup>

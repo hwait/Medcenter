@@ -16,6 +16,24 @@ namespace Medcenter.Service.Model.Misc
         Saturday = 32,
         Sunday = 64
     }
+    public enum DecorationTypes : int
+    {
+        HeaderOnly=0,
+        InText = 1,
+        StartsWithNewParagraph = 2,
+        StartsAndEndsWithNewParagraph = 3,
+        InTextWithPosition = 4,
+        StartsWithNewParagraphWithPosition = 5,
+        StartsAndEndsWithNewParagraphWithPosition = 6
+    }
+    public enum PhraseTypes : int
+    {
+        Header=0,
+        String = 1,
+        Number = 2,
+        Formula = 3
+    }
+    
     public enum ReceptopnStatuses : byte
     {
         Empty = 0,
