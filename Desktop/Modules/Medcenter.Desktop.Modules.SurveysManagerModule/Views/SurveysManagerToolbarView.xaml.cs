@@ -16,16 +16,16 @@ using System.Windows.Shapes;
 using Medcenter.Desktop.Infrastructure;
 using Microsoft.Practices.Prism.Regions;
 
-namespace Medcenter.Desktop.Modules.RegistratureModule.Views
+namespace Medcenter.Desktop.Modules.SurveysManagerModule.Views
 {
     [Export]
-    [ViewSortHint("08")]
-    public partial class RegistratureToolbarView : UserControl, IPartImportsSatisfiedNotification
+    [ViewSortHint("07")]
+    public partial class SurveysManagerToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
-        private static readonly Uri RegistratureMainViewUri = new Uri("RegistratureMainView", UriKind.Relative);
+        private static readonly Uri SurveysManagerMainViewUri = new Uri("SurveysManagerMainView", UriKind.Relative);
         private IRegionManager _regionManager;
         [ImportingConstructor]
-        public RegistratureToolbarView(IRegionManager regionManager)
+        public SurveysManagerToolbarView(IRegionManager regionManager)
         {
             _regionManager = regionManager;
             InitializeComponent();
@@ -46,14 +46,14 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.Views
 
         private void UpdateNavigationButtonState(Uri uri)
         {
-            this.NavigateToRegistratureRadioButton.IsChecked = (uri == RegistratureMainViewUri);
+            this.NavigateToSurveysManagerRadioButton.IsChecked = (uri == SurveysManagerMainViewUri);
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
 
 
-            _regionManager.RequestNavigate(RegionNames.MainRegion, RegistratureMainViewUri);
+            _regionManager.RequestNavigate(RegionNames.MainRegion, SurveysManagerMainViewUri);
         }
     }
 }

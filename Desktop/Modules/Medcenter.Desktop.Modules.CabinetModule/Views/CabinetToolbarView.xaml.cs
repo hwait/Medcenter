@@ -19,7 +19,7 @@ using Microsoft.Practices.Prism.Regions;
 namespace Medcenter.Desktop.Modules.CabinetModule.Views
 {
     [Export]
-    [ViewSortHint("08")]
+    [ViewSortHint("09")]
     public partial class CabinetToolbarView : UserControl, IPartImportsSatisfiedNotification
     {
         private static readonly Uri CabinetMainViewUri = new Uri("CabinetMainView", UriKind.Relative);

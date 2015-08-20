@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -8,7 +7,7 @@ using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Misc;
 using Medcenter.Service.Model.Types;
 
-namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
+namespace Medcenter.Desktop.Modules.SurveysManagerModule.SampleData
 {
     public class DesignData
     {
@@ -24,7 +23,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Roles = new ObservableCollection<string>
                     {
                         "Admin",
-                        "Doctor"
+                        "Survey"
                     },
                     Permissions = new ObservableCollection<string>
                     {
@@ -48,43 +47,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
             }
         }
 
-        private Patient _currentPatient
-        {
-            get
-            {
-                return new Patient
-                {
-                    Id = 0,
-                    Surname = "Петров",
-                    FirstName = "Вениамин",
-                    SecondName = "Адольфович",
-                    BirthDate = new DateTime(1987, 11, 3),
-                    Gender = 1,
-                    Address = "Брауншвейгская, 23, кв 2",
-                    PhoneNumber = "525356",
-                    MobileCode = "7705",
-                    MobileNumber = "5048521",
-                    Email = "patient1@mail.ru",
-                    Receptions = new List<Reception>()
-                };
-            }
-        }
-        public Reception CurrentReception
-        {
-            get
-            {
-                return new Reception
-                {
-                    Id = 7,
-                    PatientId = 2,
-                    Patient = _currentPatient,
-                    ScheduleId = 1,
-                    Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
-                    Duration = 25,
-                    Status = 2
-                };
-            }
-        }
+    
 
         #region Doctors
 
@@ -135,6 +98,62 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
 
         #endregion
 
+        #region Inspections
+
+        public ObservableCollection<Inspection> Inspections
+        {
+            get
+            {
+                return new ObservableCollection<Inspection>
+                {
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Ультразвуковое исследование сердца",
+                        ShortName = "УЗИ сердца",
+                        Cost = 1000
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Консультация кардиолога",
+                        ShortName = "К.Кардиолога",
+                        Cost = 1200
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "Допплерография почек",
+                        ShortName = "Д почек",
+                        Cost = 3500
+                    },
+                    new Inspection
+                    {
+                        Id = 0,
+                        Name = "УЗИ почек",
+                        ShortName = "УЗИ почек",
+                        Cost = 2100
+                    },
+                };
+            }
+        }
+
+        public Inspection CurrentInspection
+        {
+            get
+            {
+                return new Inspection
+                {
+                    Id = 0,
+                    Name = "Ультразвуковое исследование сердца",
+                    ShortName = "УЗИ сердца",
+                    Cost = 1000
+                };
+            }
+        }
+
+        #endregion
+
         #region Phrases
 
         private Phrase _phrase1
@@ -162,7 +181,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 2,
                     PositionName = "Эхоструктура",
-                    Text = " однородная. ",
                     ParaphraseId = 2,
                     PositionId = 2,
                     Type = (int)PhraseTypes.String,
@@ -180,12 +198,12 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 3,
                     PositionName = "Расположение",
-                    Text = "Прилегает к кости. ",
-                    ParaphraseId =3,
+                    ParaphraseId = 3,
                     PositionId = 3,
+                    Status = 1,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 3,
-                    DecorationType = (int) DecorationTypes.InText,
+                    DecorationType = (int)DecorationTypes.InText,
                     FormulesAffected = new List<int>(),
                 };
             }
@@ -198,9 +216,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 4,
                     PositionName = "Борозды",
-                    Text = " Рисунок  извилин и борозд четкий. Поясная борозда глубокая. ",
                     ParaphraseId = 4,
                     PositionId = 4,
+                    Status = 2,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 4,
                     DecorationType = (int)DecorationTypes.InText,
@@ -216,9 +234,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 5,
                     PositionName = "Субкортикальные зоны:",
-                    Text = " Справа эхогенность не изменена. Слева эхогенность не изменена. ",
                     ParaphraseId = 5,
                     PositionId = 5,
+                    Status = 3,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 5,
                     DecorationType = (int)DecorationTypes.InTextWithPosition,
@@ -234,11 +252,11 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 6,
                     PositionName = "Перивентрикулярная область:",
-                    Text = " не изменена. ",
                     ParaphraseId = 6,
                     PositionId = 6,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 6,
+                    Status = 4,
                     DecorationType = (int)DecorationTypes.InTextWithPosition,
                     FormulesAffected = new List<int>(),
                 };
@@ -269,7 +287,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 8,
                     PositionName = "Боковые желудочки:",
-                    Text = " полости свободны, анэхогенны. ",
                     ParaphraseId = 8,
                     PositionId = 8,
                     Type = (int)PhraseTypes.String,
@@ -287,7 +304,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 9,
                     PositionName = "III желудочек",
-                    Text = " не расширен. ",
                     ParaphraseId = 9,
                     PositionId = 9,
                     Type = (int)PhraseTypes.String,
@@ -305,7 +321,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 10,
                     PositionName = "IV желудочек",
-                    Text = " в S0  не  расширен, треугольной формы. ",
                     ParaphraseId = 10,
                     PositionId = 10,
                     Type = (int)PhraseTypes.Header,
@@ -339,7 +354,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 12,
                     PositionName = "Форма",
-                    Text = " Симметричные. ",
                     ParaphraseId = 12,
                     PositionId = 12,
                     Type = (int)PhraseTypes.String,
@@ -357,7 +371,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 13,
                     PositionName = "Контуры справа",
-                    Text = " четкие, не ровные. ",
                     ParaphraseId = 13,
                     PositionId = 13,
                     Type = (int)PhraseTypes.String,
@@ -375,7 +388,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 14,
                     PositionName = "Контуры слева",
-                    Text = " четкие, не ровные. ",
                     ParaphraseId = 14,
                     PositionId = 14,
                     Type = (int)PhraseTypes.String,
@@ -393,7 +405,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 15,
                     PositionName = "Размеры:",
-                    Text = " Ширина F6 справа {0} мм, слева {1} мм. ",
                     V1 = 3,
                     V2 = 4,
                     ParaphraseId = 15,
@@ -429,7 +440,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 17,
                     PositionName = "Смещение",
-                    Text = " отсутствует. ",
                     ParaphraseId = 17,
                     PositionId = 17,
                     Type = (int)PhraseTypes.String,
@@ -447,7 +457,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 18,
                     PositionName = "Ножки мозга",
-                    Text = " Ножки мозга четкие, ровные симметричные, гипоэхогенные. ",
                     ParaphraseId = 18,
                     PositionId = 18,
                     Type = (int)PhraseTypes.String,
@@ -465,7 +474,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 19,
                     PositionName = "Водопровод мозга",
-                    Text = " в режиме  S0 = {0}-{1} мм. ",
                     V1 = 3,
                     V2 = 4,
                     ParaphraseId = 19,
@@ -485,7 +493,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 20,
                     PositionName = "Шишковидная железа",
-                    Text = " визуализируется. ",
                     ParaphraseId = 20,
                     PositionId = 20,
                     Type = (int)PhraseTypes.String,
@@ -520,7 +527,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 32,
                     PositionName = "Вывороты",
-                    Text = " Визуализация выворотов рисунка базальных цистерн достаточная, деформаций нет. ",
                     ParaphraseId = 32,
                     PositionId = 32,
                     Type = (int)PhraseTypes.String,
@@ -538,7 +544,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 33,
                     PositionName = "Пульсация",
-                    Text = " Пульсация рисунка базальных цистерн достаточная. ",
                     ParaphraseId = 33,
                     PositionId = 33,
                     Type = (int)PhraseTypes.String,
@@ -556,7 +561,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 34,
                     PositionName = "Щель и зоны",
-                    Text = " Зона Сильвиевой щели, хиазмально-селлярная, прехиазмальная зона не изменена. ",
                     ParaphraseId = 34,
                     PositionId = 34,
                     Type = (int)PhraseTypes.String,
@@ -574,7 +578,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 5,
                     PositionName = "Охватывающая цистерна:",
-                    Text = " рисунок не изменен. без изменений. без  особенностей.. ",
                     ParaphraseId = 35,
                     PositionId = 35,
                     Type = (int)PhraseTypes.String,
@@ -592,7 +595,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 36,
                     PositionName = "Межножковая цистерна:",
-                    Text = " рисунок не изменен. без изменений. без  особенностей. ",
                     ParaphraseId = 36,
                     PositionId = 36,
                     Type = (int)PhraseTypes.String,
@@ -627,7 +629,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 38,
                     PositionName = "",
-                    Text = " Лёгкие гипорезорбции в парасаггитальной области (транзитиорные). ",
                     ParaphraseId = 38,
                     PositionId = 37,
                     Type = (int)PhraseTypes.String,
@@ -673,7 +674,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 };
             }
         }
-        
+
         private Phrase _phrase41
         {
             get
@@ -686,42 +687,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 40,
                     DecorationType = (int)DecorationTypes.HeaderOnly,
-                    FormulesAffected = new List<int>(),
-                };
-            }
-        }
-        private Phrase _phrase42
-        {
-            get
-            {
-                return new Phrase
-                {
-                    Id = 39,
-                    PositionName = "",
-                    Text = " Реком 1. ",
-                    ParaphraseId = 39,
-                    PositionId = 39,
-                    Type = (int)PhraseTypes.String,
-                    ShowOrder = 39,
-                    DecorationType = (int)DecorationTypes.InText,
-                    FormulesAffected = new List<int>(),
-                };
-            }
-        }
-        private Phrase _phrase43
-        {
-            get
-            {
-                return new Phrase
-                {
-                    Id = 39,
-                    PositionName = "",
-                    Text = " Реком 2. ",
-                    ParaphraseId = 39,
-                    PositionId = 39,
-                    Type = (int)PhraseTypes.String,
-                    ShowOrder = 39,
-                    DecorationType = (int)DecorationTypes.InText,
                     FormulesAffected = new List<int>(),
                 };
             }
@@ -740,61 +705,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Survey
                 {
                     Id = 1,
-                    ShortName="НСГ откр.род.",
+                    ShortName = "НСГ откр.род.",
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     CurrentDoctor = CurrentDoctor,
-                    CurrentPatient = CurrentReception.Patient,
                     Phrases = new List<Phrase>
                     {
                         _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
                         _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
                         _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
-                    }
-                };
-            }
-        }
-        private Survey _survey2
-        {
-            get
-            {
-                return new Survey
-                {
-                    Id = 1,
-                    ShortName = "НСГ откр.род.2",
-                    Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 2",
-                    Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 2",
-                    CurrentDoctor = CurrentDoctor,
-                    CurrentPatient = CurrentReception.Patient,
-                    Phrases = new List<Phrase>
-                    {
-                        _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
-                        _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
-                        _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
-                    }
-                };
-            }
-        }
-        private Survey _survey3
-        {
-            get
-            {
-                return new Survey
-                {
-                    Id = 1,
-                    ShortName = "НСГ откр.род.3",
-                    Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 3",
-                    Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 3",
-                    CurrentDoctor = CurrentDoctor,
-                    CurrentPatient = CurrentReception.Patient,
-                    Phrases = new List<Phrase>
-                    {
-                        _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
-                        _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
-                        _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
+                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41
                     }
                 };
             }
@@ -802,10 +722,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         public Survey CurrentSurvey
         {
             get { return _survey1; }
-        }
-        public List<Survey> Surveys
-        {
-            get { return new List<Survey> { _survey1, _survey2, _survey3 }; }
         }
     }
 }

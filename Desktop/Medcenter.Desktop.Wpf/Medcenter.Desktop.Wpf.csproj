@@ -221,6 +221,10 @@
       <Project>{b911fad2-8c2d-4b38-b737-116c38e21a08}</Project>
       <Name>Medcenter.Desktop.Modules.StatusbarModule</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.SurveysManagerModule\Medcenter.Desktop.Modules.SurveysManagerModule.csproj">
+      <Project>{37be682a-ccaf-4c3c-9780-ea6b7b11a4db}</Project>
+      <Name>Medcenter.Desktop.Modules.SurveysManagerModule</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Modules\Medcenter.Desktop.Modules.UserInfoModule\Medcenter.Desktop.Modules.UserInfoModule.csproj">
       <Project>{4AD5C4CD-7975-40B7-84A4-6BCA0E3E4AFC}</Project>
       <Name>Medcenter.Desktop.Modules.UserInfoModule</Name>

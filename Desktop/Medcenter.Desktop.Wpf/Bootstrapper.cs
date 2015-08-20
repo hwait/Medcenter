@@ -10,6 +10,7 @@ using Medcenter.Desktop.Modules.LoginModule;
 using Medcenter.Desktop.Modules.RegistratureModule;
 using Medcenter.Desktop.Modules.ScheduleManagerModule;
 using Medcenter.Desktop.Modules.StatusbarModule;
+using Medcenter.Desktop.Modules.SurveysManagerModule;
 using Medcenter.Desktop.Modules.UserInfoModule;
 using Medcenter.Desktop.Modules.UsersManagerModule;
 using Microsoft.Practices.Prism.MefExtensions;
@@ -40,6 +41,7 @@ namespace Medcenter.Desktop.Wpf
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(FinancesManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(ScheduleManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(PackagesManagerModule).Assembly));
+            AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(SurveysManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(DoctorsManagerModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(RegistratureModule).Assembly));
             AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(IUserRepository).Assembly));
@@ -67,6 +69,8 @@ namespace Medcenter.Desktop.Wpf
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = userInfoModuleType.Name, ModuleType = userInfoModuleType.AssemblyQualifiedName });
             var scheduleManagerModuleType = typeof(ScheduleManagerModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = scheduleManagerModuleType.Name, ModuleType = scheduleManagerModuleType.AssemblyQualifiedName });
+            var surveysManagerModuleType = typeof(SurveysManagerModule);
+            ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = surveysManagerModuleType.Name, ModuleType = surveysManagerModuleType.AssemblyQualifiedName });
             var registratureModuleType = typeof(RegistratureModule);
             ModuleCatalog.AddModule(new ModuleInfo() { ModuleName = registratureModuleType.Name, ModuleType = registratureModuleType.AssemblyQualifiedName });
             var cabinetModuleType = typeof(CabinetModule);

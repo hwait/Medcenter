@@ -28,5 +28,11 @@ namespace Medcenter.Service.Model.Types
         public List<Phrase> Phrases { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public Survey()
+        {
+            Phrases=new List<Phrase>();
+            Phrases.Add(new Phrase());
+        }
     }
 }
