@@ -32,8 +32,10 @@ namespace Medcenter.Service.Interface.Services
          * GroupsInPackageSelectResponse
          * 
          * InspectionsSelectResponse
+         * InspectionsInDoctorSelectResponse
          * InspectionSaveResponse
          * InspectionDeleteResponse
+         * 
          * 
          * InspectionsPackagesBindResponse
          * InspectionsPackagesUnbindResponse
@@ -136,6 +138,7 @@ namespace Medcenter.Service.Interface.Services
         }
 
         #endregion
+
         #region PackageGroup
 
         public PackageGroupsSelectResponse Get(PackageGroupsSelect req)
@@ -223,6 +226,7 @@ namespace Medcenter.Service.Interface.Services
         }
 
         #endregion
+
         #region Package
 
         public PackagesSelectResponse Get(PackagesSelect req)
@@ -315,7 +319,12 @@ namespace Medcenter.Service.Interface.Services
         #endregion
 
         #region Inspection
-
+        public InspectionsInDoctorSelectResponse Get(InspectionsInDoctorSelect req)
+        {
+            var rows = Db.SqlList<Inspection>("EXEC sp_InspectionsInDoctor_Select @DoctorId", new { DoctorId = req.DoctorId });
+            
+            return new InspectionsInDoctorSelectResponse { Inspections = new List<Inspection>(rows) };
+        }
         public InspectionsSelectResponse Get(InspectionsSelect req)
         {
             var rows = Db.SqlList<Inspection>("EXEC sp_Inspections_Select");

@@ -164,6 +164,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.SampleData
                 {
                     Id = 1,
                     PositionName = "ПАРЕНХИМА МОЗГА",
+
                     PositionId = 1,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 1,

@@ -40,7 +40,7 @@ namespace Medcenter.Service.Model.Types
         // 0 - in text, 1 - new paragraph, 2 - 1 and paragraph after, +10 - with Position Name
         [DataMember]
         public List<int> FormulesAffected { get; set; }
-        public byte Status { get; set; }
+        public byte Status { get; set; } // 1 - Changed, 2 - New, 3 - To Delete, 4 - Copied from another Pattern
         
         public event PropertyChangedEventHandler PropertyChanged;
 

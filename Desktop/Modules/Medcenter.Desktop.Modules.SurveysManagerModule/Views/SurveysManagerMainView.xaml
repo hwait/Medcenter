@@ -69,30 +69,6 @@
 				<telerik:RadColorPicker Grid.Column="2" Grid.Row="1" HeaderPalette="Metro" StandardPalette="Standard" SelectedColor="{Binding Color, Mode=TwoWay}" />
 			</Grid>
 		</DataTemplate>
-		<DataTemplate x:Key="SurveyDataTemplate">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="4*"/>
-					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="2*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.ColumnSpan="3"/>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Margin="3,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Grid.Column="0" Grid.Row="1"/>
-				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="../Assets/IconClock.png" Height="25" Width="25"/>
-					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Duration}" VerticalAlignment="Center" Margin="5,0.001,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black" Width="25"/>
-				</StackPanel>
-				<StackPanel Margin="3,0.666" Orientation="Horizontal" Grid.Row="1"  Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top">
-					<Image Source="../Assets/IconMoney.png" Height="25" Width="25"/>
-					<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Cost}" VerticalAlignment="Center" Width="70" Margin="5,0,0,0" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				</StackPanel>
-
-			</Grid>
-		</DataTemplate>
 		<DataTemplate x:Key="DoctorTemplate">
 			<StackPanel>
 				<TextBlock Text="{Binding Color}"/>
@@ -115,7 +91,7 @@
 						<ComboBoxItem><Image Source="../Assets/Digital.png" Height="23" Margin="0,2"/></ComboBoxItem>  
 						<ComboBoxItem><Image Source="../Assets/Formula.png" Height="23" Margin="0,2"/></ComboBoxItem>  
 					</ComboBox>
-					<Button HorizontalAlignment="Right" Margin="5,0,5,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="5,0,5,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 						<Image Width="24" Height="24"  Source="../Assets/Position0.png">
 							<Image.Style>
 								<Style TargetType="{x:Type Image}">
@@ -134,7 +110,7 @@
 							</Image.Style>
 						</Image>
 					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleFirstParagraphCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleFirstParagraphCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 					<Image Width="24" Height="24" Source="../Assets/Paragraph0.png">
 						<Image.Style>
 							<Style TargetType="{x:Type Image}">
@@ -158,7 +134,7 @@
 					</Button>
 					
 					<TextBox Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="400"/>
-					<Button HorizontalAlignment="Right" Margin="10,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleLastParagraphCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="10,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleLastParagraphCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 						<Image Width="24" Height="24" Source="../Assets/Paragraph0.png">
 							<Image.Style>
 								<Style TargetType="{x:Type Image}">
@@ -174,13 +150,13 @@
 							</Image.Style>
 						</Image>
 					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 						<Image Width="24" Height="24" Source="../Assets/Cut.png"/>
 					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 						<Image Width="24" Height="24" Source="../Assets/Delete.png"/>
 					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" BorderBrush="{x:Null}">
+					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
 						<Image Width="24" Height="24" Source="../Assets/Add.png"/>
 					</Button>
 				</StackPanel>
@@ -209,9 +185,9 @@
 			<ColumnDefinition/>
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,5" VerticalAlignment="Center" Height="30" Width="100" Grid.ColumnSpan="2">
-			<ComboBox ItemsSource="{Binding Doctors}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333"/>
-			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0"/>
+		<StackPanel Grid.Column="0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,5" VerticalAlignment="Center" Grid.ColumnSpan="2">
+			<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200"/>
+			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0" MinWidth="200"/>
 		</StackPanel>
 		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Preview}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PreviewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>

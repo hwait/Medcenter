@@ -90,6 +90,7 @@
     <Compile Include="Operations\PatientOperations.cs" />
     <Compile Include="Operations\ReceptionOperations.cs" />
     <Compile Include="Operations\ScheduleOperations.cs" />
+    <Compile Include="Operations\SurveyOperations.cs" />
     <Compile Include="Operations\UserOperations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Discount.cs" />

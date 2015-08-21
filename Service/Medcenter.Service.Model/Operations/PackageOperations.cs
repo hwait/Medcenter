@@ -219,6 +219,25 @@ namespace Medcenter.Service.Model.Operations
     #region Inspection
 
     [Authenticate]
+    [Route("/inspections/{DoctorId}", "GET")]
+    public class InspectionsInDoctorSelect : IReturn<InspectionsInDoctorSelectResponse>
+    {
+        public int DoctorId { get; set; }
+    }
+
+    public class InspectionsInDoctorSelectResponse : IHasResponseStatus
+    {
+        public InspectionsInDoctorSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Inspection> Inspections { get; set; }
+    }
+
+    [Authenticate]
     [Route("/inspections", "GET")]
     public class InspectionsSelect : IReturn<InspectionsSelectResponse>
     {

@@ -31,21 +31,24 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
     [Export]
     public class SurveysManagerMainViewModel : BindableBase
     {
+        #region Declarations
         private readonly IRegionManager _regionManager;
         private readonly JsonServiceClient _jsonClient;
         private readonly IEventAggregator _eventAggregator;
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
-        private readonly DelegateCommand<object> _insertPhraseCommand;
-        private readonly DelegateCommand<object> _removePhraseCommand;
-        private readonly DelegateCommand<object> _cutPhraseCommand;
-        private readonly DelegateCommand<object> _toggleLastParagraphCommand;
-        private readonly DelegateCommand<object> _toggleFirstParagraphCommand;
-        private readonly DelegateCommand<object> _toggleShowPositionCommand;
-        private readonly DelegateCommand<object> _previewSurveyCommand;
-        private readonly DelegateCommand<object> _newSurveyCommand;
-        private readonly DelegateCommand<object> _removeSurveyCommand;
-        private readonly DelegateCommand<object> _saveSurveyCommand;
-        #region Properties
+        private readonly DelegateCommand<Phrase> _insertPhraseCommand;
+        private readonly DelegateCommand<Phrase> _removePhraseCommand;
+        private readonly DelegateCommand<Phrase> _cutPhraseCommand;
+        private readonly DelegateCommand<Phrase> _toggleLastParagraphCommand;
+        private readonly DelegateCommand<Phrase> _toggleFirstParagraphCommand;
+        private readonly DelegateCommand<Phrase> _toggleShowPositionCommand;
+        private readonly DelegateCommand<Survey> _previewSurveyCommand;
+        private readonly DelegateCommand<Survey> _newSurveyCommand;
+        private readonly DelegateCommand<Survey> _removeSurveyCommand;
+        private readonly DelegateCommand<Survey> _saveSurveyCommand;
+        #endregion
+
+        #region ICommands 
 
         public ICommand InsertPhraseCommand
         {
@@ -67,7 +70,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         {
             get { return this._toggleFirstParagraphCommand; }
         }
-        public ICommand _ToggleShowPositionCommand
+        public ICommand ToggleShowPositionCommand
         {
             get { return this._toggleShowPositionCommand; }
         }
@@ -87,6 +90,100 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         {
             get { return this._saveSurveyCommand; }
         }
+        #endregion
+
+        #region Properties
+
+        #region Doctors
+
+        private List<Doctor> _doctors;
+
+        public List<Doctor> Doctors
+        {
+            get { return _doctors; }
+            set { SetProperty(ref _doctors, value); }
+        }
+
+        private Doctor _currentDoctor;
+
+        public Doctor CurrentDoctor
+        {
+            get { return _currentDoctor; }
+            set
+            {
+                SetProperty(ref _currentDoctor, value);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.GetAsync(new InspectionsInDoctorSelect { DoctorId = _currentDoctor.Id })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Inspections = r.Inspections;
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+        }
+
+        #endregion
+
+        #region Inspections
+
+        private List<Inspection> _inspections;
+
+        public List<Inspection> Inspections
+        {
+            get { return _inspections; }
+            set { SetProperty(ref _inspections, value); }
+        }
+
+        private Inspection _currentInspection;
+
+        public Inspection CurrentInspection
+        {
+            get { return _currentInspection; }
+            set
+            {
+                SetProperty(ref _currentInspection, value);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.GetAsync(new InspectionsInDoctorSelect { DoctorId = _currentDoctor.Id })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Inspections = r.Inspections;
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+        }
+
+        #endregion
+
+        #region Surveys
+
+        private List<Survey> _surveys;
+
+        public List<Survey> Surveys
+        {
+            get { return _surveys; }
+            set { SetProperty(ref _surveys, value); }
+        }
+
+        private Survey _currentSurvey;
+
+        public Survey CurrentSurvey
+        {
+            get { return _currentSurvey; }
+            set { SetProperty(ref _currentSurvey, value); }
+        }
+
+        #endregion
+        
+        #region Others
+
         private List<ResultMessage> _errors;
 
         public List<ResultMessage> Errors
@@ -94,84 +191,8 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-        private ListCollectionView _Surveys;
-        public ListCollectionView Surveys
-        {
-            get { return _Surveys; }
-            set { SetProperty(ref _Surveys, value); }
-        }
-        private ListCollectionView _packagesInSurvey;
-        public ListCollectionView PackagesInSurvey
-        {
-            get { return _packagesInSurvey; }
-            set
-            {
-                SetProperty(ref _packagesInSurvey, value);
-            }
-        }
-        private ListCollectionView _packagesBase;
-        public ListCollectionView PackagesBase
-        {
-            get { return _packagesBase; }
-            set { SetProperty(ref _packagesBase, value); }
-        }
-        private ListCollectionView _packages;
-        public ListCollectionView Packages
-        {
-            get { return _packages; }
-            set { SetProperty(ref _packages, value); }
-        }
-        private Package _currentPackageInSurvey;
 
-        public Package CurrentPackageInSurvey
-        {
-            get { return _currentPackageInSurvey; }
-            set
-            {
-                if (value.Id == 0) _currentBasePackage = new Package();
-                else
-                {
-                    for (int i = 0; i < PackagesBase.Count; i++)
-                    {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPackageInSurvey, value);
-            }
-        }
-        private Package _currentPackage;
-
-        public Package CurrentPackage
-        {
-            get { return _currentPackage; }
-            set
-            {
-                if (value.Id == 0) _currentBasePackage = new Package();
-                else
-                {
-                    for (int i = 0; i < PackagesBase.Count; i++)
-                    {
-                        if (((Package)PackagesBase.GetItemAt(i)).Id == value.Id)
-                            _currentBasePackage = (Package)PackagesBase.GetItemAt(i);
-                    }
-                }
-                SetProperty(ref _currentPackage, value);
-
-            }
-        }
-        private Package _currentBasePackage;
-
-        private Survey _currentSurvey;
-
-        public Survey CurrentSurvey
-        {
-            get { return _currentSurvey; }
-            set
-            {
-                SetProperty(ref _currentSurvey, value);
-            }
-        }
+        #endregion
 
         #endregion
 
@@ -181,19 +202,30 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
-            _insertPhraseCommand = new DelegateCommand<object>(InsertPhrase);
-            _removePhraseCommand = new DelegateCommand<object>(RemovePhrase);
-            _cutPhraseCommand = new DelegateCommand<object>(CutPhrase);
-            _toggleFirstParagraphCommand = new DelegateCommand<object>(ToggleFirstParagraph);
-            _toggleLastParagraphCommand = new DelegateCommand<object>(ToggleLastParagraph);
-            _toggleShowPositionCommand = new DelegateCommand<object>(ToggleShowPosition);
-            _previewSurveyCommand = new DelegateCommand<object>(PreviewSurvey);
-            _newSurveyCommand = new DelegateCommand<object>(NewSurvey);
-            _removeSurveyCommand = new DelegateCommand<object>(RemoveSurvey);
-            _saveSurveyCommand = new DelegateCommand<object>(SaveSurvey);
+            _insertPhraseCommand = new DelegateCommand<Phrase>(InsertPhrase);
+            _removePhraseCommand = new DelegateCommand<Phrase>(RemovePhrase);
+            _cutPhraseCommand = new DelegateCommand<Phrase>(CutPhrase);
+            _toggleFirstParagraphCommand = new DelegateCommand<Phrase>(ToggleFirstParagraph);
+            _toggleLastParagraphCommand = new DelegateCommand<Phrase>(ToggleLastParagraph);
+            _toggleShowPositionCommand = new DelegateCommand<Phrase>(ToggleShowPosition);
+            _previewSurveyCommand = new DelegateCommand<Survey>(PreviewSurvey);
+            _newSurveyCommand = new DelegateCommand<Survey>(NewSurvey);
+            _removeSurveyCommand = new DelegateCommand<Survey>(RemoveSurvey);
+            _saveSurveyCommand = new DelegateCommand<Survey>(SaveSurvey);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
-
             CurrentSurvey=new Survey();
+
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new DoctorsSelect())
+            .Success(rig =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Doctors = rig.Doctors;
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
 
             //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             //_jsonClient.GetAsync(new PackagesSelect())
@@ -224,49 +256,49 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             //});
         }
 
-        private void PreviewSurvey(object obj)
+        private void PreviewSurvey(Survey obj)
         {
             throw new NotImplementedException();
         }
 
-        private void ToggleShowPosition(object obj)
+        private void ToggleShowPosition(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
-        private void ToggleLastParagraph(object obj)
+        private void ToggleLastParagraph(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
-        private void ToggleFirstParagraph(object obj)
+        private void ToggleFirstParagraph(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
-        private void CutPhrase(object obj)
+        private void CutPhrase(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
-        private void RemovePhrase(object obj)
+        private void RemovePhrase(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
-        private void InsertPhrase(object obj)
+        private void InsertPhrase(Phrase obj)
         {
             throw new NotImplementedException();
         }
 
         #region Survey
 
-        private void NewSurvey(object obj)
+        private void NewSurvey(Survey obj)
         {
             CurrentSurvey = new Survey();
         }
 
-        private void SaveSurvey(object obj)
+        private void SaveSurvey(Survey obj)
         {
             //bool isNew = CurrentSurvey.Id <= 0;
             //Errors = CurrentSurvey.Validate();
@@ -290,7 +322,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             //}
         }
 
-        private void RemoveSurvey(object obj)
+        private void RemoveSurvey(Survey obj)
         {
             //bool isNew = CurrentSurvey.Id == 0;
             //ConfirmationRequest.Raise(
