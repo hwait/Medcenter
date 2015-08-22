@@ -166,18 +166,7 @@
     <Resource Include="Assets\Digital.png" />
     <Resource Include="Assets\Formula.png" />
     <Resource Include="Assets\Header.png" />
-    <Resource Include="Assets\Paragraph0.png" />
-    <Resource Include="Assets\Paragraph1.png" />
     <Resource Include="Assets\Text.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Position0.png" />
-    <Resource Include="Assets\Position1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Assets\Add.png" />
-    <Resource Include="Assets\Cut.png" />
-    <Resource Include="Assets\Delete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

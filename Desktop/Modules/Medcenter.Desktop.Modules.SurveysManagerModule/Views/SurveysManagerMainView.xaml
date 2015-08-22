@@ -14,6 +14,7 @@
 			 mc:Ignorable="d"
 			 >
 	<UserControl.Resources>
+		<infrastructure:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter" />
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
 		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
@@ -85,80 +86,24 @@
 					</Rectangle.Fill>
 				</Rectangle>
 				<StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-					<ComboBox SelectedIndex="{Binding Type}" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30">  
-						<ComboBoxItem ><Image Source="../Assets/Header.png" Height="23" Margin="0,2"/></ComboBoxItem>  
-						<ComboBoxItem><Image Source="../Assets/Text.png" Height="23" Margin="0,2"/></ComboBoxItem>  
-						<ComboBoxItem><Image Source="../Assets/Digital.png" Height="23" Margin="0,2"/></ComboBoxItem>  
-						<ComboBoxItem><Image Source="../Assets/Formula.png" Height="23" Margin="0,2"/></ComboBoxItem>  
-					</ComboBox>
-					<Button HorizontalAlignment="Right" Margin="5,0,5,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-						<Image Width="24" Height="24"  Source="../Assets/Position0.png">
-							<Image.Style>
-								<Style TargetType="{x:Type Image}">
-									<Style.Triggers>
-										<DataTrigger  Binding="{Binding DecorationType}" Value="4">
-											<Setter Property="Source" Value="../Assets/Position1.png"/>
-										</DataTrigger>
-										<DataTrigger  Binding="{Binding DecorationType}" Value="5">
-											<Setter Property="Source" Value="../Assets/Position1.png"/>
-										</DataTrigger>
-										<DataTrigger  Binding="{Binding DecorationType}" Value="6">
-											<Setter Property="Source" Value="../Assets/Position1.png"/>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Image.Style>
-						</Image>
-					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleFirstParagraphCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-					<Image Width="24" Height="24" Source="../Assets/Paragraph0.png">
-						<Image.Style>
-							<Style TargetType="{x:Type Image}">
-								<Style.Triggers>
-									<DataTrigger  Binding="{Binding DecorationType}" Value="2">
-										<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-									</DataTrigger>
-									<DataTrigger  Binding="{Binding DecorationType}" Value="3">
-										<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-									</DataTrigger>
-									<DataTrigger  Binding="{Binding DecorationType}" Value="5">
-										<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-									</DataTrigger>
-									<DataTrigger  Binding="{Binding DecorationType}" Value="6">
-										<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</Image.Style>
-					</Image>
-					</Button>
-					
-					<TextBox Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="400"/>
-					<Button HorizontalAlignment="Right" Margin="10,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleLastParagraphCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-						<Image Width="24" Height="24" Source="../Assets/Paragraph0.png">
-							<Image.Style>
-								<Style TargetType="{x:Type Image}">
-									<Style.Triggers>
-										<DataTrigger  Binding="{Binding DecorationType}" Value="3">
-											<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-										</DataTrigger>
-										<DataTrigger  Binding="{Binding DecorationType}" Value="5">
-											<Setter Property="Source" Value="../Assets/Paragraph1.png"/>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</Image.Style>
-						</Image>
-					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-						<Image Width="24" Height="24" Source="../Assets/Cut.png"/>
-					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-						<Image Width="24" Height="24" Source="../Assets/Delete.png"/>
-					</Button>
-					<Button HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Top" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" BorderBrush="{x:Null}" CommandParameter="{Binding }">
-						<Image Width="24" Height="24" Source="../Assets/Add.png"/>
-					</Button>
+					<TextBlock Text="{Binding ShowOrder}" Margin="0,0,10,0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Position}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleShowPositionTag}" Height="30" Width="30"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Paragraph}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleFirstParagraphCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleFirstParagraphTag}" Height="30" Width="30"/>
+					<TextBox Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="300"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Center" Margin="5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CopyToRightCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
+					<TextBox Text="{Binding Text}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="400" Margin="0"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Paragraph}" HorizontalAlignment="Center" Margin="5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleLastParagraphCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleLastParagraphTag}" Height="30" Width="30"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cut}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cross}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Delete" Height="30" Width="30"/>
+					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Plus}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
+					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=0}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Header.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24" Height="24"/>
+					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Digital.png" Width="24"/>
+					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Text.png" Width="24"/>
+					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=3}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Formula.png" Width="24"/>
 				</StackPanel>
 			</Grid>
 		</DataTemplate>
@@ -177,7 +122,7 @@
 			<RowDefinition Height="30"/>
 			<RowDefinition Height="30"/>
 			<RowDefinition Height="30"/>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -187,11 +132,12 @@
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Column="0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,5" VerticalAlignment="Center" Grid.ColumnSpan="2">
 			<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200"/>
-			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0" MinWidth="200"/>
+			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0" MinWidth="400"/>
 		</StackPanel>
 		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Preview}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PreviewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding NewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
+			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopySurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="Delete" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 		</StackPanel>
@@ -201,7 +147,9 @@
 		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="2" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0"/>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Информация в заголовок:" VerticalAlignment="Center" Grid.Row="3" FontSize="16" FontWeight="Bold" Height="21.28"/>
 		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="3" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Header}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0"/>
-		<ItemsControl Grid.Column="0" ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" Grid.Row="4" Grid.ColumnSpan="3" HorizontalContentAlignment="Stretch" Margin="0,10,0,0"/>
+		<ScrollViewer Grid.Row="4" Grid.ColumnSpan="3"  Margin="0,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+			<ItemsControl ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" HorizontalContentAlignment="Stretch" Margin="0,10,0,0"/>
+		</ScrollViewer>
 		<ListBox ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,5,0"/>
 		
 	</Grid>

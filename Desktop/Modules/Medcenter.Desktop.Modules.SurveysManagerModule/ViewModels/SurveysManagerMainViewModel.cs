@@ -42,14 +42,24 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         private readonly DelegateCommand<Phrase> _toggleLastParagraphCommand;
         private readonly DelegateCommand<Phrase> _toggleFirstParagraphCommand;
         private readonly DelegateCommand<Phrase> _toggleShowPositionCommand;
+        private readonly DelegateCommand<Phrase> _copyToRightCommand;
         private readonly DelegateCommand<Survey> _previewSurveyCommand;
         private readonly DelegateCommand<Survey> _newSurveyCommand;
         private readonly DelegateCommand<Survey> _removeSurveyCommand;
         private readonly DelegateCommand<Survey> _saveSurveyCommand;
+        private readonly DelegateCommand<Survey> _copySurveyCommand;
+        
         #endregion
 
         #region ICommands 
-
+        public ICommand CopyToRightCommand
+        {
+            get { return this._copyToRightCommand; }
+        }
+        public ICommand CopySurveyCommand
+        {
+            get { return this._copySurveyCommand; }
+        }
         public ICommand InsertPhraseCommand
         {
             get { return this._insertPhraseCommand; }
@@ -212,6 +222,8 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             _newSurveyCommand = new DelegateCommand<Survey>(NewSurvey);
             _removeSurveyCommand = new DelegateCommand<Survey>(RemoveSurvey);
             _saveSurveyCommand = new DelegateCommand<Survey>(SaveSurvey);
+            _copyToRightCommand = new DelegateCommand<Phrase>(CopyToRight);
+            _copySurveyCommand = new DelegateCommand<Survey>(CopySurvey);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             CurrentSurvey=new Survey();
 
@@ -226,76 +238,92 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             {
                 throw ex;
             });
-
-            //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //_jsonClient.GetAsync(new PackagesSelect())
-            //.Success(ri =>
-            //{
-            //    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //    PackagesBase = new ListCollectionView(ri.Packages);
-            //    _jsonClient.GetAsync(new SurveysSelect())
-            //    .Success(rig =>
-            //    {
-            //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //        Surveys = new ListCollectionView(rig.Surveys);
-            //        Surveys.CurrentChanged += Surveys_CurrentChanged;
-
-            //        CurrentSurvey = new Survey();
-            //        PackagesInSurvey.CurrentChanged += PackagesInSurvey_CurrentChanged;
-            //        PackagesReload(ri.Packages);
-            //        Surveys.MoveCurrentTo(null);
-            //    })
-            //    .Error(ex =>
-            //    {
-            //        throw ex;
-            //    });
-            //})
-            //.Error(ex =>
-            //{
-            //    throw ex;
-            //});
         }
 
-        private void PreviewSurvey(Survey obj)
+        #region Positions
+
+        private void CopyToRight(Phrase obj)
         {
-            throw new NotImplementedException();
+            obj.Text = obj.PositionName;
         }
 
         private void ToggleShowPosition(Phrase obj)
         {
-            throw new NotImplementedException();
+            obj.ToggleShowPosition();
+        }
+        private void ToggleFirstParagraph(Phrase obj)
+        {
+            obj.ToggleFirstParagraph();
         }
 
         private void ToggleLastParagraph(Phrase obj)
         {
-            throw new NotImplementedException();
-        }
-
-        private void ToggleFirstParagraph(Phrase obj)
-        {
-            throw new NotImplementedException();
+            obj.ToggleLastParagraph();
         }
 
         private void CutPhrase(Phrase obj)
         {
-            throw new NotImplementedException();
+            obj.CutPhrase();
         }
 
         private void RemovePhrase(Phrase obj)
         {
-            throw new NotImplementedException();
+            obj.RemovePhrase();
         }
 
         private void InsertPhrase(Phrase obj)
         {
-            throw new NotImplementedException();
+            var n = 0;
+            List<Phrase> list = CurrentSurvey.Phrases.Where(p => p.Status==4).ToList();
+            if (list.Count == 0)
+            {
+                IncrementToEnd(obj.ShowOrder+1,1);
+                CurrentSurvey.Phrases.Add(new Phrase(obj.ShowOrder+1));
+            }
+            else
+            {
+                CurrentSurvey.Phrases.RemoveAll(p => p.Status == 4);
+                for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
+                {
+                    if (CurrentSurvey.Phrases[i].Status == 0) CurrentSurvey.Phrases[i].Status = 1;
+                    CurrentSurvey.Phrases[i].ShowOrder = i;
+                    if (CurrentSurvey.Phrases[i].PositionName == obj.PositionName &&
+                        CurrentSurvey.Phrases[i].Text == obj.Text) n = i;
+                }
+                IncrementToEnd(n+1, list.Count);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list[i].Status = 1;
+                    list[i].ShowOrder = n + i+1;
+                }
+                CurrentSurvey.Phrases.AddRange(list);
+            }
+            CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
         }
 
-        #region Survey
+        private void IncrementToEnd(int showOrder, int inc)
+        {
+            if (showOrder > CurrentSurvey.Phrases.Count) return;
+            for (int i = showOrder; i < CurrentSurvey.Phrases.Count; i++)
+            {
+                CurrentSurvey.Phrases[i].ShowOrder+=inc;
+            }
+        }
 
+        #endregion
+        
+        #region Survey
+        private void PreviewSurvey(Survey obj)
+        {
+            throw new NotImplementedException();
+        }
         private void NewSurvey(Survey obj)
         {
             CurrentSurvey = new Survey();
+        }
+        private void CopySurvey(Survey obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void SaveSurvey(Survey obj)

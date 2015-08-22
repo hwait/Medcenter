@@ -11,6 +11,8 @@ namespace Medcenter.Service.Model.Types
     [DataContract]
     public class Survey : INotifyPropertyChanged
     {
+        private List<Phrase> _phrases;
+
         [DataMember]
         public int Id { get; set; }
         [DataMember]
@@ -25,7 +27,15 @@ namespace Medcenter.Service.Model.Types
         public Patient CurrentPatient { get; set; }
 
         [DataMember]
-        public List<Phrase> Phrases { get; set; }
+        public List<Phrase> Phrases
+        {
+            get { return _phrases; }
+            set
+            {
+                _phrases = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Phrases"));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
