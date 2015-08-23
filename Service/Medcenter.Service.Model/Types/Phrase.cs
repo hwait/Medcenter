@@ -75,12 +75,16 @@ namespace Medcenter.Service.Model.Types
             get { return _showOrder; }
             set
             {
-                _showOrder = value;
-                if (Status < 2 || Status > 3) Status = 1;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("ShowOrder"));
+                if (_showOrder != value)
+                {
+                    _oldShowOrder = _showOrder;
+                    _showOrder = value;
+                    if (Status < 2 || Status > 3) Status = 1;
+                    if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("ShowOrder"));
+                }
             }
         }
-
+        private int _oldShowOrder;
         [DataMember]
         public string Deviation { get; set; }
         [DataMember]
@@ -193,6 +197,7 @@ namespace Medcenter.Service.Model.Types
             Status = Status == 3 ? _oldStatus < 3 ? _oldStatus : (byte) 1 : (byte)3;
         }
         private byte _oldStatus ;
+        [DataMember]
         public byte Status
         {
             get { return _status; }
@@ -208,12 +213,15 @@ namespace Medcenter.Service.Model.Types
 
         public Phrase()
         {
-            
+            Type = 2;
+            Status = 0;
         }
         public Phrase(int showOrder)
         {
             ShowOrder = showOrder;
             Text = showOrder.ToString();
+            Status = 2;
+            Type = 2;
         }
     }
 }

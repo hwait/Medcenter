@@ -133,6 +133,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 {
                     throw ex;
                 });
+                _newSurveyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -156,17 +157,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             set
             {
                 SetProperty(ref _currentInspection, value);
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.GetAsync(new InspectionsInDoctorSelect { DoctorId = _currentDoctor.Id })
-                .Success(r =>
-                {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Inspections = r.Inspections;
-                })
-                .Error(ex =>
-                {
-                    throw ex;
-                });
+                SurveyReload();
             }
         }
 
@@ -187,7 +178,11 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         public Survey CurrentSurvey
         {
             get { return _currentSurvey; }
-            set { SetProperty(ref _currentSurvey, value); }
+            set
+            {
+                SetProperty(ref _currentSurvey, value);
+                _newSurveyCommand.RaiseCanExecuteChanged();
+            }
         }
 
         #endregion
@@ -219,13 +214,13 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             _toggleLastParagraphCommand = new DelegateCommand<Phrase>(ToggleLastParagraph);
             _toggleShowPositionCommand = new DelegateCommand<Phrase>(ToggleShowPosition);
             _previewSurveyCommand = new DelegateCommand<Survey>(PreviewSurvey);
-            _newSurveyCommand = new DelegateCommand<Survey>(NewSurvey);
+            _newSurveyCommand = new DelegateCommand<Survey>(NewSurvey, CanNewSurvey);
             _removeSurveyCommand = new DelegateCommand<Survey>(RemoveSurvey);
             _saveSurveyCommand = new DelegateCommand<Survey>(SaveSurvey);
             _copyToRightCommand = new DelegateCommand<Phrase>(CopyToRight);
             _copySurveyCommand = new DelegateCommand<Survey>(CopySurvey);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
-            CurrentSurvey=new Survey();
+            //CurrentSurvey=new Survey();
 
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new DoctorsSelect())
@@ -238,6 +233,30 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             {
                 throw ex;
             });
+        }
+
+        private void SurveyReload()
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                CurrentSurvey = r.Survey;
+                foreach (var phrase in CurrentSurvey.Phrases)
+                {
+                    phrase.Status = 0;
+                }
+                _newSurveyCommand.RaiseCanExecuteChanged();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+        private bool CanNewSurvey(Survey arg)
+        {
+            return !(CurrentDoctor == null || CurrentInspection == null || CurrentSurvey != null);
         }
 
         #region Positions
@@ -268,7 +287,13 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         private void RemovePhrase(Phrase obj)
         {
-            obj.RemovePhrase();
+            if (obj.Id == 0)
+            {
+                CurrentSurvey.Phrases.Remove(obj);
+                RefreshPhrases();
+            }
+            else
+                obj.RemovePhrase();
         }
 
         private void InsertPhrase(Phrase obj)
@@ -298,7 +323,16 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 }
                 CurrentSurvey.Phrases.AddRange(list);
             }
+            RefreshPhrases();
+        }
+
+        private void RefreshPhrases()
+        {
             CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
+            for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
+            {
+                CurrentSurvey.Phrases[i].ShowOrder = i;
+            }
         }
 
         private void IncrementToEnd(int showOrder, int inc)
@@ -328,26 +362,26 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         private void SaveSurvey(Survey obj)
         {
-            //bool isNew = CurrentSurvey.Id <= 0;
-            //Errors = CurrentSurvey.Validate();
-            //if (Errors.Count == 0)
-            //{
-            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            //    _jsonClient.PostAsync(new SurveySave { Survey = CurrentSurvey })
-            //        .Success(r =>
-            //        {
-            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-            //            CurrentSurvey.Id = r.SurveyId;
-            //            if (isNew) Surveys.AddNewItem(CurrentSurvey);
-            //            r.Message.Message = string.Format(r.Message.Message, CurrentSurvey.Name);
-            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-            //            _newSurveyCommand.RaiseCanExecuteChanged();
-            //        })
-            //        .Error(ex =>
-            //        {
-            //            throw ex;
-            //        });
-            //}
+            Errors = CurrentSurvey.Validate();
+            if (Errors.Count == 0)
+            {
+                CurrentSurvey.Phrases.RemoveAll(x => x.Status == 0);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                
+                _jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey, DoctorId = CurrentDoctor.Id, InspectionId = CurrentInspection.Id})
+                    .Success(r =>
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        CurrentSurvey.Id = r.SurveyId;
+                        r.Message.Message = string.Format(r.Message.Message, CurrentSurvey.Name);
+                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                        SurveyReload();
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
+            }
         }
 
         private void RemoveSurvey(Survey obj)

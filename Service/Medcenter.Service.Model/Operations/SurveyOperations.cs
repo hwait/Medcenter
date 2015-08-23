@@ -41,8 +41,8 @@ namespace Medcenter.Service.Model.Operations
     [Route("/surveypattern/save", "POST")]
     public class SurveyPatternSave : IReturn<Operations.SurveyPatternSaveResponse>
     {
-        public Survey DoctorId { get; set; }
-        public Survey InspectionId { get; set; }
+        public int DoctorId { get; set; }
+        public int InspectionId { get; set; }
         public Survey Survey { get; set; }
     }
 

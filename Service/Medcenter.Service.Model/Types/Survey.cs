@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Messaging;
 
 namespace Medcenter.Service.Model.Types
 {
@@ -42,7 +43,15 @@ namespace Medcenter.Service.Model.Types
         public Survey()
         {
             Phrases=new List<Phrase>();
-            Phrases.Add(new Phrase());
+            Phrases.Add(new Phrase(0));
+        }
+        public List<ResultMessage> Validate()
+        {
+            List<ResultMessage> em = new List<ResultMessage>();
+            if (string.IsNullOrEmpty(Name)) em.Add(new ResultMessage(2, "Наименование:", OperationErrors.EmptyString));
+            if (string.IsNullOrEmpty(ShortName)) em.Add(new ResultMessage(2, "Краткое наименование:", OperationErrors.EmptyString));
+
+            return em;
         }
     }
 }

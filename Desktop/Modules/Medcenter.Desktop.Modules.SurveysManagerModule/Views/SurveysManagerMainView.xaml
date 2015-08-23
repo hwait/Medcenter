@@ -96,13 +96,13 @@
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cut}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cross}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Delete" Height="30" Width="30"/>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Plus}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
-					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=0}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=0}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Header.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24" Height="24"/>
-					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Digital.png" Width="24"/>
-					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Text.png" Width="24"/>
-					<RadioButton GroupName="GenderGroup" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=3}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=3}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Formula.png" Width="24"/>
 				</StackPanel>
 			</Grid>
@@ -141,12 +141,12 @@
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Delete}" HorizontalAlignment="Left" VerticalAlignment="Top" Command="{Binding RemoveSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="Delete" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 		</StackPanel>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Название бланка:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="1" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Name}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0"/>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Краткое название:" VerticalAlignment="Center" Grid.Row="2" FontSize="16" FontWeight="Bold" Height="21.28"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="2" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0"/>
-		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Информация в заголовок:" VerticalAlignment="Center" Grid.Row="3" FontSize="16" FontWeight="Bold" Height="21.28"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="3" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Header}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Название бланка:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="1" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Name}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Краткое название:" VerticalAlignment="Center" Grid.Row="2" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="2" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Информация в заголовок:" VerticalAlignment="Center" Grid.Row="3" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="3" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Header}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
 		<ScrollViewer Grid.Row="4" Grid.ColumnSpan="3"  Margin="0,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
 			<ItemsControl ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" HorizontalContentAlignment="Stretch" Margin="0,10,0,0"/>
 		</ScrollViewer>

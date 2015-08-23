@@ -22,10 +22,12 @@ namespace Medcenter.Service.Interface.Services
         public SurveyPatternSelectResponse Get(SurveyPatternSelect req)
         {
             var rows = Db.SqlList<Survey>("EXEC sp_PatternAsSurvey_Select @DoctorId, @InspectionId", new { DoctorId = req.DoctorId, InspectionId = req.InspectionId}); //Only single value is expected
-            Survey survey = rows.Count > 0 ? rows[0] : new Survey();
+            Survey survey = rows.Count > 0 ? rows[0] : null;
             if (rows.Count > 0)
             {
-                survey.Phrases = Db.SqlList<Phrase>("EXEC sp_PositionsAsPhrases_Select @PatternId", new { SurveyId = survey.Id });
+                survey.Phrases = Db.SqlList<Phrase>("EXEC sp_PositionsAsPhrases_Select @PatternId", new { PatternId = survey.Id });
+                if (survey.Phrases.Count == 0)
+                    survey.Phrases.Add(new Phrase(0));
             }
             return new SurveyPatternSelectResponse { Survey = survey };
         }
@@ -36,6 +38,7 @@ namespace Medcenter.Service.Interface.Services
             ResultMessage message;
             if (req.Survey.Id > 0) // Survey exists so we're saving 
             {
+                id = req.Survey.Id;
                 try
                 {
                     Db.Single<int>("EXEC sp_PatternAsSurvey_UpdateHeader @PatternId, @Header", new
@@ -45,9 +48,11 @@ namespace Medcenter.Service.Interface.Services
                     });
                     foreach (var phrase in req.Survey.Phrases)
                     {
-                        switch (phrase.Status) // 1 - Changed, 2 - New, 3 - To Delete, 4 - Copied from another Pattern
+                        if (phrase.Id == 0) phrase.Status = 2;
+                        switch (phrase.Status) // 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut, 5 - Copied from another Pattern
                         {
                             case 1:
+                            case 4:
                                 Db.Single<int>("EXEC sp_PositionAsPhrase_Update @PatternId,@PositionId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
                                 {
                                     PatternId = req.Survey.Id,
@@ -57,10 +62,10 @@ namespace Medcenter.Service.Interface.Services
                                     ShowOrder = phrase.ShowOrder,
                                     DecorationType = phrase.DecorationType,
                                     Type = phrase.Type
-                                }); 
+                                });
                                 break;
                             case 2:
-                                Db.Single<int>("EXEC sp_PositionAsPhrase_Insert @PatternId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
+                                phrase.Id = Db.Single<int>("EXEC sp_PositionAsPhrase_Insert @PatternId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
                                 {
                                     PatternId = req.Survey.Id,
                                     Text = phrase.Text,
@@ -77,7 +82,7 @@ namespace Medcenter.Service.Interface.Services
                                     PositionId = phrase.Id
                                 });
                                 break;
-                            case 4:
+                            case 5:
                                 Db.Single<int>("EXEC sp_PositionAsPhrase_AddToPattern @PatternId, @PositionId, @Text,@ShowOrder,@DecorationType", new
                                 {
                                     PatternId = req.Survey.Id,
@@ -111,7 +116,8 @@ namespace Medcenter.Service.Interface.Services
                     });
                     foreach (var phrase in req.Survey.Phrases)
                     {
-                        switch (phrase.Status) // 2 - New, 4 - Copied from another Pattern
+                        if (phrase.Id == 0) phrase.Status = 2;
+                        switch (phrase.Status) // 2 - New, 5 - Copied from another Pattern
                         {
                             case 2:
                                 Db.Single<int>("EXEC sp_PositionAsPhrase_Insert @PatternId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
