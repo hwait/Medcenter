@@ -18,6 +18,7 @@
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
 		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
+		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
 		<ds:DesignData x:Key="DesignData"/>
 		<Style TargetType="ListBox">
 			<Style.Resources>
@@ -25,57 +26,10 @@
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFFFB733"/>
 			</Style.Resources>
 		</Style>
-		<DataTemplate x:Key="PaletteTemplate">
-			<Rectangle Width="10" Height="10">
-				<Rectangle.Fill>
-					<SolidColorBrush Color="{Binding CustomColor}" />
-				</Rectangle.Fill>
-			</Rectangle>
-		</DataTemplate>
 		<DataTemplate x:Key="ErrorMessageTemplate">
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="{Binding Source}" Foreground="Red" FontSize="13.333" FontWeight="Bold"/>
 				<TextBlock Text="{Binding Message}" Margin="5,0,0,0" Foreground="Red" FontSize="13.333"/>
-			</StackPanel>
-		</DataTemplate>
-		<DataTemplate x:Key="PackageSurveyTemplate">
-			<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-				<Rectangle Width="30">
-					<Rectangle.Fill>
-						<SolidColorBrush Color="{Binding Color}" />
-					</Rectangle.Fill>
-				</Rectangle>
-				<TextBlock Text="{Binding Name}" Margin="5,0,0,0" FontSize="16"/>
-			</StackPanel>
-		</DataTemplate>
-		<DataTemplate x:Key="SurveyTemplate">
-			<StackPanel Margin="5,5,0,0">
-				<TextBlock Text="{Binding ShortName}" FontSize="16"/>
-			</StackPanel>
-		</DataTemplate>
-		<DataTemplate x:Key="CurrentPackageSurveyTemplate">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="44*"/>
-					<ColumnDefinition Width="70*"/>
-					<ColumnDefinition Width="50*"/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="*"/>
-					<RowDefinition Height="*"/>
-				</Grid.RowDefinitions>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding Name}" VerticalAlignment="Center" Width="Auto" Grid.ColumnSpan="3" Margin="3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				<TextBox HorizontalAlignment="Stretch" Height="30" Text="{Binding ShortName}" VerticalAlignment="Top" Width="Auto" Grid.ColumnSpan="2" Grid.Row="1" Margin="3,0,3,3" HorizontalContentAlignment="Stretch" FontSize="16" BorderBrush="Black"/>
-				<StackPanel Grid.Column="1" Margin="0" Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Top"/>
-				<telerik:RadColorPicker Grid.Column="2" Grid.Row="1" HeaderPalette="Metro" StandardPalette="Standard" SelectedColor="{Binding Color, Mode=TwoWay}" />
-			</Grid>
-		</DataTemplate>
-		<DataTemplate x:Key="DoctorTemplate">
-			<StackPanel>
-				<TextBlock Text="{Binding Color}"/>
-				<TextBlock Text="{Binding Id}"/>
-				<TextBlock Text="{Binding Name}"/>
-				<TextBlock Text="{Binding ShortName}"/>
 			</StackPanel>
 		</DataTemplate>
 		<DataTemplate x:Key="PhraseTemplate">
@@ -108,9 +62,6 @@
 			</Grid>
 		</DataTemplate>
 	</UserControl.Resources>
-	<!--<d:DataContext>
-		<Binding Source="{StaticResource DesignData}"/>
-	</d:DataContext>-->
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
@@ -133,6 +84,7 @@
 		<StackPanel Grid.Column="0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,5" VerticalAlignment="Center" Grid.ColumnSpan="2">
 			<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200"/>
 			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0" MinWidth="400"/>
+			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Выберите Доктора и Исследование и нажмите Сохранить. " VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Foreground="#FF2CFD0B"  Visibility="{Binding IsCopying, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
 		</StackPanel>
 		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Preview}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PreviewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>

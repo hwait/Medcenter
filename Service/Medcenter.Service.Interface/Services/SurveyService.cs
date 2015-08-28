@@ -130,7 +130,7 @@ namespace Medcenter.Service.Interface.Services
                                     Type = phrase.Type
                                 });
                                 break;
-                            case 4:
+                            case 5:
                                 Db.Single<int>("EXEC sp_PositionAsPhrase_AddToPattern @PatternId, @PositionId, @Text,@ShowOrder,@DecorationType", new
                                 {
                                     PatternId = id,
@@ -165,11 +165,11 @@ namespace Medcenter.Service.Interface.Services
             ResultMessage message;
             try
             {
-                var res = Db.SqlList<int>("EXEC sp_PatternPositions_Delete @PatternId", new
+                var res = Db.SqlList<int>("EXEC sp_Pattern_Delete @PatternId", new
                 {
-                    PatternId = req.Survey.Id,
+                    PatternId = req.PatternId,
                 });
-                message = new ResultMessage(0, "Инспекции:", OperationResults.SurveyPatternDelete);
+                message = new ResultMessage(0, "Бланк:", OperationResults.SurveyPatternDelete);
             }
             catch (Exception e)
             {

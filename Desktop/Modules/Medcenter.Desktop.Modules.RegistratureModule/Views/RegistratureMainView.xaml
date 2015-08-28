@@ -129,7 +129,6 @@
 		<DataTemplate x:Key="PackagesRowTemplate">
 			<StackPanel>
 				<Button Content="{Binding}" Width="Auto" Template="{DynamicResource ButtonControlTemplate1}"  Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.PackagesGroupChooseCommand}" CommandParameter="{Binding }" Margin="5,5,5,0"/>
-				
 			</StackPanel>
 		</DataTemplate>
 		<ControlTemplate x:Key="ButtonControlTemplate1" TargetType="{x:Type Button}">

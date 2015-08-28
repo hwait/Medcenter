@@ -59,10 +59,10 @@ namespace Medcenter.Service.Model.Operations
     }
 
     [RequiresAnyRole("Admin", "Manager")]
-    [Route("/surveypattern/delete", "POST")]
+    [Route("/surveypattern/delete/{PatternId}", "GET")]
     public class SurveyPatternDelete : IReturn<Operations.SurveyPatternDeleteResponse>
     {
-        public Survey Survey { get; set; }
+        public int PatternId { get; set; }
     }
 
     public class SurveyPatternDeleteResponse : IHasResponseStatus

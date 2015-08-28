@@ -375,7 +375,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 14,
                     PositionName = "Контуры слева",
-                    Text = " четкие, не ровные. ",
+                    Text = " в структуре определяется объёмное образование размерами {0}x{1}x{2} мм. ",
+                    V1 = 7,
+                    V2 = 15,
+                    V3 = 8,
                     ParaphraseId = 14,
                     PositionId = 14,
                     Type = (int)PhraseTypes.String,
@@ -729,10 +732,75 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
 
 
         #endregion
+        
         public Phrase CurrentPhrase
         {
             get { return _phrase20; }
         }
+
+        #region Paraphrases
+
+        private Paraphrase _paraphrase1
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " однородная. ",
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        private Paraphrase _paraphrase2
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " неоднородная, с включениями диаметром {0}-{1} мм. ",
+                    V1 = 3,
+                    V2 = 5,
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        private Paraphrase _paraphrase3
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " в структуре определяется объёмное образование размерами {0}x{1}x{2} мм. ",
+                    V1 = 7,
+                    V2 = 15,
+                    V3 = 8,
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        #endregion
+        public List<Paraphrase> Paraphrases
+        {
+            get 
+            {
+                return new List<Paraphrase>{_paraphrase1, _paraphrase2, _paraphrase3 } ;
+            }
+        }
+
+        #region Surveys
+
         private Survey _survey1
         {
             get
@@ -740,21 +808,52 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Survey
                 {
                     Id = 1,
-                    ShortName="НСГ откр.род.",
+                    ShortName = "НСГ откр.род.",
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
+                    Status = 2,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
                     Phrases = new List<Phrase>
                     {
-                        _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
-                        _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
-                        _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
+                        _phrase1,
+                        _phrase2,
+                        _phrase3,
+                        _phrase4,
+                        _phrase5,
+                        _phrase6,
+                        _phrase7,
+                        _phrase8,
+                        _phrase9,
+                        _phrase10,
+                        _phrase11,
+                        _phrase12,
+                        _phrase13,
+                        _phrase14,
+                        _phrase15,
+                        _phrase16,
+                        _phrase17,
+                        _phrase18,
+                        _phrase19,
+                        _phrase20,
+                        _phrase31,
+                        _phrase32,
+                        _phrase33,
+                        _phrase34,
+                        _phrase35,
+                        _phrase36,
+                        _phrase37,
+                        _phrase38,
+                        _phrase39,
+                        _phrase40,
+                        _phrase41,
+                        _phrase42,
+                        _phrase43
                     }
                 };
             }
         }
+
         private Survey _survey2
         {
             get
@@ -762,21 +861,52 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Survey
                 {
                     Id = 1,
-                    ShortName = "НСГ откр.род.2",
+                    ShortName = "УЗИ сердца и сосудов",
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 2",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 2",
+                    Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
                     Phrases = new List<Phrase>
                     {
-                        _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
-                        _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
-                        _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
+                        _phrase1,
+                        _phrase2,
+                        _phrase3,
+                        _phrase4,
+                        _phrase5,
+                        _phrase6,
+                        _phrase7,
+                        _phrase8,
+                        _phrase9,
+                        _phrase10,
+                        _phrase11,
+                        _phrase12,
+                        _phrase13,
+                        _phrase14,
+                        _phrase15,
+                        _phrase16,
+                        _phrase17,
+                        _phrase18,
+                        _phrase19,
+                        _phrase20,
+                        _phrase31,
+                        _phrase32,
+                        _phrase33,
+                        _phrase34,
+                        _phrase35,
+                        _phrase36,
+                        _phrase37,
+                        _phrase38,
+                        _phrase39,
+                        _phrase40,
+                        _phrase41,
+                        _phrase42,
+                        _phrase43
                     }
                 };
             }
         }
+
         private Survey _survey3
         {
             get
@@ -784,21 +914,93 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Survey
                 {
                     Id = 1,
-                    ShortName = "НСГ откр.род.3",
+                    ShortName = "ШОП и УЗДГ сосудов шеи и головы",
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 3",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ 3",
+                    Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
                     Phrases = new List<Phrase>
                     {
-                        _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
-                        _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
-                        _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
-                        _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41,_phrase42,_phrase43
+                        _phrase1,
+                        _phrase2,
+                        _phrase3,
+                        _phrase4,
+                        _phrase5,
+                        _phrase6,
+                        _phrase7,
+                        _phrase8,
+                        _phrase9,
+                        _phrase10,
+                        _phrase11,
+                        _phrase12,
+                        _phrase13,
+                        _phrase14,
+                        _phrase15,
+                        _phrase16,
+                        _phrase17,
+                        _phrase18,
+                        _phrase19,
+                        _phrase20,
+                        _phrase31,
+                        _phrase32,
+                        _phrase33,
+                        _phrase34,
+                        _phrase35,
+                        _phrase36,
+                        _phrase37,
+                        _phrase38,
+                        _phrase39,
+                        _phrase40,
+                        _phrase41,
+                        _phrase42,
+                        _phrase43
                     }
                 };
             }
         }
+
+        private Survey _survey4
+        {
+            get
+            {
+                return new Survey
+                {
+                    Id = 1,
+                    ShortName = "НСГ откр.род.",
+                    Date = new DateTime(2015, 6, 6)
+                };
+            }
+        }
+
+        private Survey _survey5
+        {
+            get
+            {
+                return new Survey
+                {
+                    Id = 1,
+                    ShortName = "НСГ откр.род.2",
+                    Date = new DateTime(2015, 6, 8)
+                };
+            }
+        }
+
+        private Survey _survey6
+        {
+            get
+            {
+                return new Survey
+                {
+                    Id = 1,
+                    ShortName = "НСГ откр.род.3",
+                    Date = new DateTime(2015, 7, 16)
+                };
+            }
+        }
+
+        #endregion
+
         public Survey CurrentSurvey
         {
             get { return _survey1; }
@@ -806,6 +1008,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         public List<Survey> Surveys
         {
             get { return new List<Survey> { _survey1, _survey2, _survey3 }; }
+        }
+        public List<Survey> FormerSurveys
+        {
+            get { return new List<Survey> { _survey4, _survey5, _survey6 }; }
         }
     }
 }

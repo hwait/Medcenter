@@ -32,7 +32,7 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public List<int> FormulesAffected { get; set; }
         public bool IsChanged { get; set; }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -162,12 +162,12 @@
     <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\IconClock.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\IconMoney.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    <Resource Include="Assets\IconSave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Add.png" />
+    <Resource Include="Assets\Delete.png" />
+    <Resource Include="Assets\ThumbsUp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

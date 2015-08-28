@@ -23,6 +23,8 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Header { get; set; }
         [DataMember]
+        public DateTime Date { get; set; }
+        [DataMember]
         public Doctor CurrentDoctor { get; set; }
         [DataMember]
         public Patient CurrentPatient { get; set; }
@@ -37,7 +39,23 @@ namespace Medcenter.Service.Model.Types
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Phrases"));
             }
         }
+        public byte Status { get; set; } // 1 - normal, 4 - selected, 2 - saved, 3 - not saved
+        private byte _oldStatus = 1;
+        private bool _isActive=false;
 
+        public void Choose()
+        {
+            if (_isActive)
+            {
+                Status = _oldStatus;
+            }
+            else
+            {
+                _oldStatus = Status;
+                Status = 4;
+            }
+            _isActive = !_isActive;
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Survey()

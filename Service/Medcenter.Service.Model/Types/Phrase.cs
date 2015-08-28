@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Mime;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Medcenter.Service.Model.Types
@@ -33,6 +35,29 @@ namespace Medcenter.Service.Model.Types
             }
         }
 
+        public int ValuesCount
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Text)) return 0;
+                return Text.Split('{').Length - 1;
+            }
+        }
+
+        public string TextOut
+        {
+            get
+            {
+                if (V3 > 0)
+                    return String.Format(Text,V1,V2,V3);
+                if (V2 > 0)
+                    return String.Format(Text, V1, V2);
+                if (V1 > 0)
+                    return String.Format(Text, V1);
+                return Text;
+            }
+            set { Text = value; }
+        }
         [DataMember]
         public int ParaphraseId { get; set; }
         [DataMember]
