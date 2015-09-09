@@ -11,7 +11,7 @@
 			 xmlns:ds="clr-namespace:Medcenter.Desktop.Modules.CabinetModule.SampleData"
 			 xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
 			 x:Class="Medcenter.Desktop.Modules.CabinetModule.Views.CabinetMainView"
-			 mc:Ignorable="d"
+			 mc:Ignorable="d" Margin="-7,0,0,0"
 			 >
 	<UserControl.Resources>
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
@@ -23,6 +23,47 @@
 				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFB733" />
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFFFB733"/>
 			</Style.Resources>
+		</Style>
+		<DataTemplate x:Key="ParaphrasesButtonsTemplate">
+			<Grid Margin="3,0,0,0">
+				<Button Content="{Binding Text}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseParaphraseCommand}"  CommandParameter="{Binding }" Height="Auto" Style="{DynamicResource ParaphrasesButtonStyle}"/>
+			</Grid>
+		</DataTemplate>
+		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+		<Style x:Key="ParaphrasesButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle" Stroke="White" StrokeThickness="1">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="5">
+								<ContentPresenter.Resources>
+									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource WrappingStyle}"/>
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
 		</Style>
 		<DataTemplate x:Key="SurveysButtonsTemplate">
 			<Grid Margin="3,0,0,0">
@@ -58,6 +99,7 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		
 		<DataTemplate x:Key="ErrorMessageTemplate">
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="{Binding Source}" Foreground="Red" FontSize="13.333" FontWeight="Bold"/>
@@ -68,13 +110,14 @@
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="28"/>
+						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="200"/>
-						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="300"/>
 						<ColumnDefinition Width="40"/>
 						<ColumnDefinition Width="40"/>
 						<ColumnDefinition Width="40"/>
+						<ColumnDefinition Width="22"/>
 						<ColumnDefinition Width="22"/>
 						<ColumnDefinition Width="22"/>
 						<ColumnDefinition Width="22"/>
@@ -85,29 +128,37 @@
 					</Rectangle.Fill>
 				</Rectangle>
 					<TextBlock  Grid.Column="0" Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" x:Name="header" Margin="5,0,0,0"/>
-					<TextBox  Grid.Column="1" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="text">
-						<i:Interaction.Triggers>
-							<i:EventTrigger EventName="GetFocus">
-								<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />
-							</i:EventTrigger>
-						</i:Interaction.Triggers>
+					<StackPanel x:Name="text" Grid.ColumnSpan="8" Margin="5,0,0,0" Orientation="Horizontal" Grid.Row="1">
+						<Image Height="22" Source="/Medcenter.Desktop.Modules.CabinetModule;component/Assets/Turn.png" Stretch="Fill"/>
+						<TextBox Margin="0" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333">
+							<i:Interaction.Triggers>
+								<i:EventTrigger EventName="GetFocus">
+									<i:InvokeCommandAction Command="{Binding DataContext.ChoosePhraseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ''}" />
+								</i:EventTrigger>
+							</i:Interaction.Triggers>
 						</TextBox>
-					<TextBox  Grid.Column="2" Text="{Binding V1}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v1" Margin="2,0,0,0"/>
-					<TextBox  Grid.Column="3" Text="{Binding V2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v2" Margin="2,0,0,0"/>
-					<TextBox  Grid.Column="4" Text="{Binding V3}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v3" Margin="2,0,0,0"/>
-					<Button Grid.Column="5" x:Name="b1" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SetNormCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
+					</StackPanel>
+					<TextBox  Grid.Column="1" Text="{Binding V1}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v1" Margin="2,0,0,0"/>
+					<TextBox  Grid.Column="2" Text="{Binding V2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v2" Margin="2,0,0,0"/>
+					<TextBox  Grid.Column="3" Text="{Binding V3}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v3" Margin="2,0,0,0"/>
+					<Button Grid.Column="4" x:Name="b1" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SetNormCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
 						<Button.Background>
 							<ImageBrush ImageSource="../Assets/ThumbsUp.png"/>
 						</Button.Background>
 					</Button>
-					<Button Grid.Column="6" x:Name="b2" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
+					<Button Grid.Column="5" x:Name="b2" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
 						<Button.Background>
 							<ImageBrush ImageSource="../Assets/Delete.png"/>
 						</Button.Background>
 					</Button>
-					<Button Grid.Column="7" x:Name="b3" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
+					<Button Grid.Column="6" x:Name="b3" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.InsertPhraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
 						<Button.Background>
 							<ImageBrush ImageSource="../Assets/Add.png"/>
+						</Button.Background>
+					</Button>
+					<Button Grid.Column="7" x:Name="b4" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SaveParaphraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
+						<Button.Background>
+							<ImageBrush ImageSource="../Assets/Right.png"/>
 						</Button.Background>
 					</Button>
 				</Grid>
@@ -117,8 +168,11 @@
 					<Setter TargetName="b1" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="b2" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="b3" Property="Visibility" Value="Hidden" />
+					<Setter TargetName="b4" Property="Visibility" Value="Hidden" />
+					<Setter TargetName="text" Property="Visibility" Value="Collapsed" />
 					<Setter TargetName="header" Property="FontWeight" Value="Bold" />
-					<Setter TargetName="header" Property="Grid.ColumnSpan" Value="2" />
+					<Setter TargetName="header" Property="Grid.ColumnSpan" Value="8" />
+					
 				</DataTrigger>
 				<DataTrigger Binding="{Binding ValuesCount}" Value="0">
 					<Setter TargetName="v1" Property="Visibility" Value="Hidden" />
@@ -162,7 +216,20 @@
 		</StackPanel>
 		<StackPanel Margin="0,0,5,0" Orientation="Vertical" Grid.Column="1" Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Surveys}" Margin="0,0,5,0" ItemTemplate="{DynamicResource SurveysButtonsTemplate}"/>
+			<DataGrid ItemsSource="{Binding Paraphrases}" VerticalAlignment="Top" AutoGenerateColumns="False" Margin="5,20" >
+				<DataGrid.Columns>
+					<DataGridTextColumn Binding="{Binding Text}" Width="370">
+						<DataGridTextColumn.ElementStyle>
+							<Style>
+								<Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+							</Style>
+						</DataGridTextColumn.ElementStyle>
+					</DataGridTextColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+			<ItemsControl ItemsSource="{Binding Paraphrases}" Margin="0,0,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>
 		</StackPanel>
+		
 		<StackPanel Margin="0,0,5,0" Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
 			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28"/>
 			<TextBox Height="23" TextWrapping="Wrap" Text="{Binding CurrentReception.Patient.Surname}" VerticalAlignment="Center" FontSize="14.667" Margin="10,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
@@ -176,5 +243,6 @@
 			</Button>
 		</StackPanel>
 		<ListBox ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0"/>
+		
 	</Grid>
 </UserControl>

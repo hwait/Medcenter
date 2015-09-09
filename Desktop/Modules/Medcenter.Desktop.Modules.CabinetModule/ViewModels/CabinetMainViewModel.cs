@@ -44,10 +44,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Survey> _newSurveyCommand;
         private readonly DelegateCommand<Survey> _removeSurveyCommand;
         private readonly DelegateCommand<Survey> _saveSurveyCommand;
+        private readonly DelegateCommand<object> _chooseParaphraseCommand;
+        
         
         #endregion
 
         #region ICommands 
+        public ICommand ChooseParaphraseCommand
+        {
+            get { return this._insertPhraseCommand; }
+        }
         public ICommand InsertPhraseCommand
         {
             get { return this._insertPhraseCommand; }
@@ -195,6 +201,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _removePhraseCommand = new DelegateCommand<Phrase>(RemovePhrase);
             _normPhraseCommand = new DelegateCommand<Phrase>(NormPhrase);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
+            _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
+            
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             IsCopying = false;
             //CurrentSurvey=new Survey();
@@ -212,54 +220,59 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             });
         }
 
+        private void ChooseParaphrase(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
         #region CanExecute
 
         private bool CanNewSurvey(Survey arg)
         {
             if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentInspection == null || CurrentSurvey != null);
+            return !(CurrentDoctor == null ||  CurrentSurvey != null);
         }
 
         private bool CanSaveSurvey(Survey arg)
         {
-            return !(CurrentDoctor == null || CurrentInspection == null || CurrentSurvey == null);
+            return !(CurrentDoctor == null || CurrentSurvey == null);
         }
 
         private bool CanRemoveSurvey(Survey arg)
         {
             //if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentInspection == null || CurrentSurvey == null);
+            return !(CurrentDoctor == null ||  CurrentSurvey == null);
         }
         private bool CanPreviewSurvey(Survey arg)
         {
             if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentInspection == null || CurrentSurvey == null);
+            return !(CurrentDoctor == null || CurrentSurvey == null);
         }
         #endregion
         private void SurveyReload()
         {
             
-            if (_currentInspection==null) return;
+            //if (_currentInspection==null) return;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
-            .Success(r =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                CurrentSurvey = r.Survey;
-                if (CurrentSurvey!=null)
-                {
-                    IsCopying = false;
-                    foreach (var phrase in CurrentSurvey.Phrases)
-                    {
-                        phrase.Status = 0;
-                    }
-                }
-                SetButtonsActive();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+            //_jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
+            //.Success(r =>
+            //{
+            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //    CurrentSurvey = r.Survey;
+            //    if (CurrentSurvey!=null)
+            //    {
+            //        IsCopying = false;
+            //        foreach (var phrase in CurrentSurvey.Phrases)
+            //        {
+            //            phrase.Status = 0;
+            //        }
+            //    }
+            //    SetButtonsActive();
+            //})
+            //.Error(ex =>
+            //{
+            //    throw ex;
+            //});
         }
 
         private void SetButtonsActive()
@@ -376,20 +389,20 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 {
                     CurrentSurvey.Phrases.RemoveAll(x => x.Status == 0);
                 }
-                _jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey, DoctorId = CurrentDoctor.Id, InspectionId = CurrentInspection.Id})
-                    .Success(r =>
-                    {
-                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                        CurrentSurvey.Id = r.SurveyId;
-                        r.Message.Message = string.Format(r.Message.Message, CurrentSurvey.Name);
-                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        IsCopying = false;
-                        SurveyReload();
-                    })
-                    .Error(ex =>
-                    {
-                        throw ex;
-                    });
+                //_jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey, DoctorId = CurrentDoctor.Id, InspectionId = CurrentInspection.Id})
+                //    .Success(r =>
+                //    {
+                //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                //        CurrentSurvey.Id = r.SurveyId;
+                //        r.Message.Message = string.Format(r.Message.Message, CurrentSurvey.Name);
+                //        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                //        IsCopying = false;
+                //        SurveyReload();
+                //    })
+                //    .Error(ex =>
+                //    {
+                //        throw ex;
+                //    });
             }
         }
 

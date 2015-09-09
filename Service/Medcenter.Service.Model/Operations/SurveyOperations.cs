@@ -78,5 +78,78 @@ namespace Medcenter.Service.Model.Operations
 
 
     #endregion
+
+    #region Survey
+    
+    #region SurveysSelect
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/surveys", "POST")]
+    public class SurveySelect : IReturn<SurveySelectResponse>
+    {
+        public Reception Reception { get; set; }
+        public int DoctorId { get; set; }
+    }
+
+    public class SurveySelectResponse : IHasResponseStatus
+    {
+        public SurveySelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Survey> Surveys { get; set; }
+    }
+
+    #endregion
+    
+    #region SurveySave
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/survey/save", "POST")]
+    public class SurveySave : IReturn<SurveySaveResponse>
+    {
+        public Survey Survey { get; set; }
+    }
+
+    public class SurveySaveResponse : IHasResponseStatus
+    {
+        public SurveySaveResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public int SurveyId { get; set; }
+    }
+
+    #endregion
+    
+    #region SurveyDelete
+
+    [RequiresAnyRole("Admin", "Manager")]
+    [Route("/survey/delete/{SurveyId}", "GET")]
+    public class SurveyDelete : IReturn<SurveyDeleteResponse>
+    {
+        public int SurveyId { get; set; }
+    }
+
+    public class SurveyDeleteResponse : IHasResponseStatus
+    {
+        public SurveyDeleteResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    #endregion
+    
+    #endregion
 }
 

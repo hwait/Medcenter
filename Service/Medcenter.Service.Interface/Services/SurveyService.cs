@@ -182,5 +182,94 @@ namespace Medcenter.Service.Interface.Services
 
         #endregion
 
+        #region Survey
+        public SurveySelectResponse Post(SurveySelect req)
+        {
+            List<Survey> surveys=new List<Survey>();
+            foreach (var package in req.Reception.Packages)
+            {
+                foreach (var inspectionId in package.InspectionIds)
+                {
+                    var rows = Db.SqlList<Survey>(
+                        "EXEC sp_Survey_SelectOrInsert @ReceptionId, @DoctorId, @InspectionId", new
+                        {
+                            ReceptionId = req.Reception.Id,
+                            DoctorId = req.DoctorId,
+                            InspectionId = inspectionId
+                        });
+                    //Only single value is expected
+                    if (rows.Count > 0)
+                    {
+                        rows[0].Phrases = Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = rows[0].Id });
+                        if (rows[0].Phrases.Count == 0)
+                            rows[0].Phrases.Add(new Phrase(0));
+                        surveys.Add(rows[0]);
+                    }
+                }
+            }
+            
+            return new SurveySelectResponse { Surveys = surveys };
+        }
+
+        public SurveySaveResponse Post(SurveySave req)
+        {
+            int id = 0;
+            ResultMessage message;
+            // Survey ALWAYS exists so we're saving PHRASES ONLY
+            
+            id = req.Survey.Id;
+            try
+            {
+                foreach (var phrase in req.Survey.Phrases)
+                {
+                    if (phrase.Id == 0) phrase.Status = 2;
+                    switch (phrase.Status) // 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut
+                    {
+                        case 1:
+                            Db.Single<int>("EXEC sp_Phrases_Update @Id, @Text, @PositionId, @V1, @V2, @V3, @ParaphraseId", new
+                            {
+                                Id = phrase.Id,
+                                Text = phrase.Text,
+                                PositionId = phrase.PositionId,
+                                V1 = phrase.V1,
+                                V2 = phrase.V2,
+                                V3 = phrase.V3,
+                                ParaphraseId = phrase.ParaphraseId
+                            });
+                            break;
+                        case 2:
+                            phrase.Id = Db.Single<int>("EXEC sp_Phrases_Insert @SurveyId, @Text, @PositionId, @V1, @V2, @V3, @ParaphraseId", new
+                            {
+                                SurveyId=req.Survey.Id,
+                                Text = phrase.Text,
+                                PositionId = phrase.PositionId,
+                                V1 = phrase.V1,
+                                V2 = phrase.V2,
+                                V3 = phrase.V3,
+                                ParaphraseId = phrase.ParaphraseId
+                            });
+                            break;
+                        case 3:
+                            Db.Single<int>("EXEC sp_Phrases_Delete @Id", new
+                            {
+                                Id = phrase.Id
+                            });
+                            break;
+                    }
+                }
+                //Logger.Log("SurveySaveResponse.Saving");
+            }
+            catch (Exception e)
+            {
+                Logger.Log("SurveySaveResponse.Saving", e);
+                throw;
+            }
+           
+            return new SurveySaveResponse
+            {
+                SurveyId = id,
+            };
+        }
+        #endregion
     }
 }
