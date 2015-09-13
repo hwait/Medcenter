@@ -252,6 +252,7 @@ namespace Medcenter.Service.Model.Types
                 PropertyChanged(this, new PropertyChangedEventArgs("UnderOverPaid"));
                 PropertyChanged(this, new PropertyChangedEventArgs("FinalPayment"));
                 PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Patient"));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

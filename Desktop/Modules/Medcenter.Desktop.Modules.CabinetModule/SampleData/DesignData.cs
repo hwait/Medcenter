@@ -71,22 +71,365 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         }
         public Reception CurrentReception
         {
+            get { return _reception22; }
+        }
+
+        #region Package
+
+        private Package _cardio
+        {
+            get
+            {
+                return new Package
+                {
+                    Id = 0,
+                    Name = "Ультразвуковое исследование сердца",
+                    ShortName = "ЭХО",
+                    Duration = 10,
+                    DoctorId = 0,
+                    Cost = 1000
+                };
+            }
+        }
+
+        private Package _cardiologist
+        {
+            get
+            {
+                return new Package
+                {
+                    Id = 0,
+                    Name = "Консультация кардиолога",
+                    ShortName = "Кардиолог",
+                    Duration = 5,
+                    DoctorId = 0,
+                    Cost = 1200
+                };
+            }
+        }
+
+        private Package _kidneys
+        {
+            get
+            {
+                return new Package
+                {
+                    Id = 0,
+                    Name = "УЗИ почек",
+                    ShortName = "Почки",
+                    Duration = 10,
+                    DoctorId = 1,
+                    Cost = 2100
+                };
+            }
+        }
+        private Package _kidneysDoppler
+        {
+            get
+            {
+                return new Package
+                {
+                    Id = 0,
+                    Name = "УЗИ почек с допплерографией",
+                    ShortName = "УЗДГ почек",
+                    Duration = 5,
+                    DoctorId = 1,
+                    Cost = 3500
+                };
+            }
+        }
+        #endregion
+
+        #region Packages
+
+
+        private ObservableCollection<Package> _packages1
+        {
+            get
+            {
+                return new ObservableCollection<Package>
+                {
+                    _cardio,
+                    _cardiologist,
+                    _kidneys,
+                    _kidneysDoppler
+                };
+            }
+        }
+
+        private ObservableCollection<Package> _packages2
+        {
+            get
+            {
+                return new ObservableCollection<Package>
+                {
+                    _kidneys,
+                    _kidneysDoppler
+                };
+            }
+        }
+
+        private ObservableCollection<Package> _packages3
+        {
+            get
+            {
+                return new ObservableCollection<Package>
+                {
+                    _kidneysDoppler
+                };
+            }
+        }
+
+        private ObservableCollection<Package> _packages4
+        {
+            get
+            {
+                return new ObservableCollection<Package>
+                {
+                    _cardio,
+                    _cardiologist
+                };
+            }
+        }
+
+        #endregion
+
+
+        #region Patients
+
+        private Patient _patient1
+        {
+            get
+            {
+                return new Patient
+                {
+                    Id = 0,
+                    Surname = "Петров",
+                    FirstName = "Вениамин",
+                    SecondName = "Адольфович",
+                    BirthDate = new DateTime(1987, 11, 3),
+                    Gender = 1,
+                    Address = "Брауншвейгская, 23, кв 2",
+                    PhoneNumber = "525356",
+                    MobileCode = "7705",
+                    MobileNumber = "5048521",
+                    Email = "patient1@mail.ru",
+                };
+            }
+        }
+
+        private Patient _patient2
+        {
+            get
+            {
+                return new Patient
+                {
+                    Id = 0,
+                    Surname = "Петров",
+                    FirstName = "Аристарх",
+                    SecondName = "Иосифович",
+                    BirthDate = new DateTime(1947, 1, 23),
+                    Gender = 1,
+                    Address = "",
+                    PhoneNumber = "",
+                    MobileCode = "7777",
+                    MobileNumber = "4568721",
+                    Email = "patient2@mail.ru",
+                };
+            }
+        }
+
+        private Patient _patient3
+        {
+            get
+            {
+                return new Patient
+                {
+                    Id = 0,
+                    Surname = "Петрова",
+                    FirstName = "Агриппина",
+                    SecondName = "Львовна",
+                    BirthDate = new DateTime(1997, 5, 13),
+                    Gender = 2,
+                    Address = "",
+                    PhoneNumber = "",
+                    MobileCode = "",
+                    MobileNumber = "",
+                    Email = "patient3@mail.ru",
+                };
+            }
+        }
+        public List<Patient> Patients
+        {
+            get
+            {
+                return new List<Patient>
+                {
+                    _patient1,_patient2,_patient3
+                };
+            }
+        }
+        #endregion
+
+
+        #region Receptions 2
+        
+        private Payment _payment1
+        {
+            get
+            {
+                return new Payment
+                {
+                    Id = 0,
+                    Cost = 5600,
+                    OldCost = 5600,
+                    ReceptionId = 7,
+                    Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0)
+                };
+            }
+        }
+        private Payment _payment2
+        {
+            get
+            {
+                return new Payment
+                {
+                    Id = 2,
+                    Cost = 1400,
+                    OldCost = 1330,
+                    ReceptionId = 7,
+                    Date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
+                };
+            }
+        }
+        private Reception _reception22
+        {
             get
             {
                 return new Reception
                 {
                     Id = 7,
+                    Payments = new ObservableCollection<Payment> { _payment1, _payment2 },
+                    CurrentPayment = _payment2,
                     PatientId = 2,
                     Patient = _currentPatient,
                     ScheduleId = 1,
                     Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 10, 0),
                     Duration = 25,
+                    Packages = _packages1,
                     Status = 2
                 };
             }
         }
 
+        private Reception _reception23
+        {
+            get
+            {
+                return new Reception
+                {
+                    Id = 0,
+                    PatientId = 3,
+                    Patient = _patient1,
+                    ScheduleId = 2,
+                    Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 35, 0),
+                    Duration = 5,
+                    Packages = _packages3,
+                    Status = 3,
+
+                };
+            }
+        }
+
+        private Reception _reception24
+        {
+            get
+            {
+                return new Reception
+                {
+                    Id = 0,
+                    PatientId = 1,
+                    Patient = _patient2,
+                    ScheduleId = 1,
+                    Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 40, 0),
+                    Duration = 10,
+                    Packages = _packages2,
+                    Status = 1,
+                };
+            }
+        }
+
+        private Reception _reception25
+        {
+            get
+            {
+                return new Reception
+                {
+                    Id = 0,
+                    PatientId = 3,
+                    Patient = _patient3,
+                    ScheduleId = 2,
+                    Start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 13, 50, 0),
+                    Duration = 20,
+                    Packages = _packages4,
+                    Status = 1,
+                };
+            }
+        }
+        
+        #endregion
+        
+        public List<Reception> Receptions
+        {
+            get
+            {
+                return new List<Reception>
+                {
+                    _reception22,_reception23,_reception24,_reception25
+                };
+            }
+        }
+
         #region Doctors
+        private static Doctor Bacula
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 1,
+                    Name = "Бацула Людмила Пантелеевна",
+                    ShortName = "Бацула Л.П.",
+                    Color = Colors.Bisque.ToString()
+                };
+            }
+        }
+        private static Doctor VVA
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 2,
+                    Name = "Вдовиченко Владимир Андреевич",
+                    ShortName = "Вдовиченко В.А.",
+                    Color = Colors.LightSkyBlue.ToString()
+                };
+            }
+        }
+        private static Doctor LGV
+        {
+            get
+            {
+                return new Doctor
+                {
+                    Id = 3,
+                    Name = "Лосева Галина Викторовна",
+                    ShortName = "Лосева Г.В.",
+                    Color = Colors.LightGreen.ToString()
+                };
+            }
+        }
 
         public ObservableCollection<Doctor> Doctors
         {
@@ -94,27 +437,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
             {
                 return new ObservableCollection<Doctor>
                 {
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Бацула Людмила Пантелеевна",
-                        ShortName = "Бацула Л.П.",
-                        Color = Colors.Bisque.ToString()
-                    },
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Вдовиченко Владимир Андреевич",
-                        ShortName = "Вдовиченко В.А.",
-                        Color = Colors.LightSkyBlue.ToString()
-                    },
-                    new Doctor
-                    {
-                        Id = 0,
-                        Name = "Лосева Галина Викторовна",
-                        ShortName = "Лосева Г.В.",
-                        Color = Colors.LightGreen.ToString()
-                    }
+                    Bacula,VVA,LGV
                 };
             }
         }
@@ -123,17 +446,95 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         {
             get
             {
-                return new Doctor
+                return Bacula;
+            }
+        }
+
+        #endregion
+
+        #region Schedules
+
+        public Schedule CurrentSchedule
+        {
+            get
+            {
+                return new Schedule
                 {
-                    Id = 0,
-                    Name = "Бацула Людмила Пантелеевна",
-                    ShortName = "Бацула Л.П.",
-                    Color = Colors.Bisque.ToString()
+                    Id = 1,
+                    CabinetId = 1,
+                    CurrentDoctor = Bacula,
+                    Start = new DateTime(2015, 7, 11, 8, 0, 0),
+                    End = new DateTime(2015, 7, 11, 12, 45, 0)
+                };
+            }
+        }
+
+        public ObservableCollection<Schedule> Schedules
+        {
+            get
+            {
+                return new ObservableCollection<Schedule>
+                {
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 1,
+                        CurrentDoctor = Bacula,
+                        ShowName = Bacula.ShortName,
+                        Start = new DateTime(2015, 7, 11, 8, 0, 0),
+                        End = new DateTime(2015, 7, 11, 12, 45, 0)
+                    },
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 1,
+                        CurrentDoctor = VVA,
+                        ShowName = VVA.ShortName,
+                        Start = new DateTime(2015, 7, 11, 13, 0, 0),
+                        End = new DateTime(2015, 7, 11, 18, 30, 0)
+                    },
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 1,
+                        CurrentDoctor = LGV,
+                        ShowName = LGV.ShortName,
+                        Start = new DateTime(2015, 7, 11, 18, 45, 0),
+                        End = new DateTime(2015, 7, 11, 20, 0, 0)
+                    },
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 2,
+                        CurrentDoctor = VVA,
+                        ShowName = VVA.ShortName,
+                        Start = new DateTime(2015, 7, 11, 7, 30, 0),
+                        End = new DateTime(2015, 7, 11, 10, 0, 0)
+                    },
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 2,
+                        CurrentDoctor = LGV,
+                        ShowName = LGV.ShortName,
+                        Start = new DateTime(2015, 7, 11, 10, 15, 0),
+                        End = new DateTime(2015, 7, 11, 14, 0, 0)
+                    },
+                    new Schedule
+                    {
+                        Id = 1,
+                        CabinetId = 2,
+                        CurrentDoctor = Bacula,
+                        ShowName = Bacula.ShortName,
+                        Start = new DateTime(2015, 7, 11, 18, 0, 0),
+                        End = new DateTime(2015, 7, 11, 19, 45, 0)
+                    },
                 };
             }
         }
 
         #endregion
+
 
         #region Phrases
 

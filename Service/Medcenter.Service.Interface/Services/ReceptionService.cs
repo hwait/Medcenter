@@ -22,8 +22,12 @@ namespace Medcenter.Service.Interface.Services
         {
             var startDate = new DateTime(req.StartDate.Year, req.StartDate.Month, req.StartDate.Day, 0, 0, 0);
             var endDate = new DateTime(req.StartDate.Year, req.StartDate.Month, req.StartDate.Day, 23, 59, 59);
-            var rows = Db.SqlList<Reception>("EXEC sp_Receptions_Select_ByDate @Start, @End",
-                new { Start = startDate, End = endDate });
+            var rows = Db.SqlList<Reception>("EXEC sp_Receptions_Select_ByDate @Start, @End, @ScheduleId",
+                new {
+                    Start = startDate, 
+                    End = endDate,
+                    ScheduleId = req.ScheduleId
+                });
             return new ReceptionsSelectResponse { Receptions = FillReceptions(rows) };
         }
 

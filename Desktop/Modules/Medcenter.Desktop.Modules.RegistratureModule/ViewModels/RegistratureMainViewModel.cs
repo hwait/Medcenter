@@ -494,7 +494,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void SchedulesReload()
         {
-            
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new SchedulesFullSelect {TimeStart = _currentDate})
                 .Success(rs =>
@@ -502,7 +501,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                     //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Schedules = rs.Schedules;
                     //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                    _jsonClient.GetAsync(new ReceptionsByDateSelect {StartDate = _currentDate})
+                    _jsonClient.GetAsync(new ReceptionsByDateSelect { StartDate = _currentDate, ScheduleId = 0 })
                         .Success(rr =>
                         {
                             _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);

@@ -38,9 +38,11 @@ namespace Medcenter.Desktop.Infrastructure
                 case 2:
                     return Colors.GreenYellow.ToString();
                 case 3:
-                    return Colors.Coral.ToString();
+                    return Colors.LightCoral.ToString();
                 case 4:
                     return Colors.Aquamarine.ToString();
+                case 10:
+                    return Colors.Red.ToString();
                 default:
                     return Colors.White.ToString();
             }

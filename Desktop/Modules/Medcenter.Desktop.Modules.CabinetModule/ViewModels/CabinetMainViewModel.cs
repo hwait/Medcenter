@@ -44,15 +44,17 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Survey> _newSurveyCommand;
         private readonly DelegateCommand<Survey> _removeSurveyCommand;
         private readonly DelegateCommand<Survey> _saveSurveyCommand;
+        private readonly DelegateCommand<Survey> _chooseSurveyCommand;
+        private readonly DelegateCommand<Reception> _chooseReceptionCommand;
         private readonly DelegateCommand<object> _chooseParaphraseCommand;
-        
+        private int _cabinetNumber = int.Parse(Utils.ReadSetting("CabinetNumber"));
         
         #endregion
 
         #region ICommands 
         public ICommand ChooseParaphraseCommand
         {
-            get { return this._insertPhraseCommand; }
+            get { return this._chooseParaphraseCommand; }
         }
         public ICommand InsertPhraseCommand
         {
@@ -73,6 +75,14 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         public ICommand PreviewSurveyCommand
         {
             get { return this._previewSurveyCommand; }
+        }
+        public ICommand ChooseSurveyCommand
+        {
+            get { return this._chooseSurveyCommand; }
+        }
+        public ICommand ChooseReceptionCommand
+        {
+            get { return this._chooseReceptionCommand; }
         }
         public ICommand NewSurveyCommand
         {
@@ -108,23 +118,57 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             set
             {
                 SetProperty(ref _currentDoctor, value);
-                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                //_jsonClient.GetAsync(new InspectionsInDoctorSelect { DoctorId = _currentDoctor.Id })
-                //.Success(r =>
-                //{
-                //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                //    Inspections = r.Inspections;
-                //})
-                //.Error(ex =>
-                //{
-                //    throw ex;
-                //});
-                //_newSurveyCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        #endregion
+        #region Patients
+
+        private List<Patient> _Patients;
+
+        public List<Patient> Patients
+        {
+            get { return _Patients; }
+            set { SetProperty(ref _Patients, value); }
+        }
+
+        private Patient _currentPatient;
+
+        public Patient CurrentPatient
+        {
+            get { return _currentPatient; }
+            set
+            {
+                SetProperty(ref _currentPatient, value);
             }
         }
 
         #endregion
 
+        #region Schedules
+
+        private Schedule _currentSchedule;
+
+        public Schedule CurrentSchedule
+        {
+            get { return _currentSchedule; }
+            set
+            {
+                SetProperty(ref _currentSchedule, value);
+                ReceptionsReload();
+            }
+        }
+        private List<Schedule> _schedules;
+
+        public List<Schedule> Schedules
+        {
+            get { return _schedules; }
+            set
+            {
+                SetProperty(ref _schedules, value);
+            }
+        }
+        #endregion
         #region Receptions
 
         private Reception _currentReception;
@@ -135,10 +179,18 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             set
             {
                 SetProperty(ref _currentReception, value);
-                //SurveyReload();
             }
         }
+        private List<Reception> _receptions;
 
+        public List<Reception> Receptions
+        {
+            get { return _receptions; }
+            set
+            {
+                SetProperty(ref _receptions, value);
+            }
+        }
         #endregion
 
         #region Surveys
@@ -202,22 +254,39 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _normPhraseCommand = new DelegateCommand<Phrase>(NormPhrase);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
             _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
+            _chooseSurveyCommand = new DelegateCommand<Survey>(ChooseSurvey, CanChooseSurvey);
+            _chooseReceptionCommand = new DelegateCommand<Reception>(ChooseReception);
             
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             IsCopying = false;
-            //CurrentSurvey=new Survey();
+            _jsonClient.PostAsync(new SchedulesFullSelect {TimeStart = DateTime.Today})
+                .Success(rs =>
+                {
+                    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Schedules = rs.Schedules;
+                    
+                })
+                .Error(ex =>
+                {
+                    Schedules = new List<Schedule>();
+                    throw ex;
+                });
+        }
 
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new DoctorsSelect())
-            .Success(rig =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                Doctors = rig.Doctors;
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
+        private void ChooseReception(Reception obj)
+        {
+            CurrentReception = obj;
+            CurrentPatient = obj.Patient;
+        }
+
+        private bool CanChooseSurvey(Survey arg)
+        {
+            return true;
+        }
+
+        private void ChooseSurvey(Survey obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void ChooseParaphrase(object obj)
@@ -249,6 +318,23 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             return !(CurrentDoctor == null || CurrentSurvey == null);
         }
         #endregion
+
+        private void ReceptionsReload()
+        {
+            Receptions=new List<Reception>();
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new ReceptionsByDateSelect { StartDate = DateTime.Today, ScheduleId = CurrentSchedule.Id })
+            .Success(rr =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                Receptions = rr.Receptions;
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+
         private void SurveyReload()
         {
             

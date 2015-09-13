@@ -12,10 +12,11 @@ namespace Medcenter.Service.Model.Operations
     #region Reception
 
     [Authenticate]
-    [Route("/receptions/{StartDate}", "GET")]
+    [Route("/receptions/{ScheduleId}/{StartDate}", "GET")]
     public class ReceptionsByDateSelect : IReturn<ReceptionsSelectResponse>
     {
         public DateTime StartDate { get; set; }
+        public int ScheduleId { get; set; }
         //public DateTime EndDate { get; set; }
     }
     [Authenticate]

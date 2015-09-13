@@ -829,7 +829,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         }
         #endregion
    
-        private List<Reception> _receptions2
+        public List<Reception> _receptions2
         {
             get
             {

@@ -54,7 +54,20 @@ namespace Medcenter.Service.Model.Types
                 return name;
             }
         }
-
+        public string Age
+        {
+            get
+            {
+                if (BirthDate.Year == DateTime.Now.Year && BirthDate.Month == DateTime.Now.Month && BirthDate.Day == DateTime.Now.Day) return "Пациент не выбран.";
+                DateTime today = DateTime.Today;
+                int age = today.Year - BirthDate.Year;
+                if (BirthDate > today.AddYears(-age)) age--;
+                string ret = (age < 3) ?
+                      string.Format("{0} мес. ", age)
+                    : string.Format("{0} лет ", age);
+                return ret;
+            }
+        }
         public Patient()
         {
             Receptions=new List<Reception>();
