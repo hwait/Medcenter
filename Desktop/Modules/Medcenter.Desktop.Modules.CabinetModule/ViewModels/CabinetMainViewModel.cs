@@ -39,6 +39,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Phrase> _insertPhraseCommand;
         private readonly DelegateCommand<Phrase> _removePhraseCommand;
         private readonly DelegateCommand<Phrase> _normPhraseCommand;
+        private readonly DelegateCommand<Phrase> _choosePhraseCommand;
         private readonly DelegateCommand<object> _savePatientCommand;
         private readonly DelegateCommand<Survey> _previewSurveyCommand;
         private readonly DelegateCommand<Survey> _newSurveyCommand;
@@ -68,6 +69,11 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             get { return this._normPhraseCommand; }
         }
+        public ICommand ChoosePhraseCommand
+        {
+            get { return this._choosePhraseCommand; }
+        }
+        
         public ICommand SavePatientCommand
         {
             get { return this._savePatientCommand; }
@@ -122,6 +128,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         }
 
         #endregion
+
         #region Patients
 
         private List<Patient> _Patients;
@@ -169,6 +176,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             }
         }
         #endregion
+
         #region Receptions
 
         private Reception _currentReception;
@@ -252,6 +260,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _insertPhraseCommand = new DelegateCommand<Phrase>(InsertPhrase);
             _removePhraseCommand = new DelegateCommand<Phrase>(RemovePhrase);
             _normPhraseCommand = new DelegateCommand<Phrase>(NormPhrase);
+            _choosePhraseCommand = new DelegateCommand<Phrase>(ChoosePhrase);
+            
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
             _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
             _chooseSurveyCommand = new DelegateCommand<Survey>(ChooseSurvey, CanChooseSurvey);
@@ -259,10 +269,11 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
             IsCopying = false;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new SchedulesFullSelect {TimeStart = DateTime.Today})
                 .Success(rs =>
                 {
-                    //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Schedules = rs.Schedules;
                     
                 })
@@ -273,10 +284,29 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 });
         }
 
+        private void ChoosePhrase(Phrase obj)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ChooseReception(Reception obj)
         {
             CurrentReception = obj;
             CurrentPatient = obj.Patient;
+            Surveys=new List<Survey>();
+            CurrentSurvey=new Survey();
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.PostAsync(new SurveySelect { Reception = CurrentReception, DoctorId = CurrentSchedule.DoctorId})
+                .Success(rs =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    Surveys=rs.Surveys;
+                })
+                .Error(ex =>
+                {
+                    Schedules = new List<Schedule>();
+                    throw ex;
+                });
         }
 
         private bool CanChooseSurvey(Survey arg)
@@ -286,7 +316,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
 
         private void ChooseSurvey(Survey obj)
         {
-            throw new NotImplementedException();
+            CurrentSurvey = obj;
         }
 
         private void ChooseParaphrase(object obj)

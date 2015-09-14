@@ -191,11 +191,11 @@ namespace Medcenter.Service.Interface.Services
                 foreach (var inspectionId in package.InspectionIds)
                 {
                     var rows = Db.SqlList<Survey>(
-                        "EXEC sp_Survey_SelectOrInsert @ReceptionId, @DoctorId, @InspectionId", new
+                        "EXEC sp_Survey_SelectOrInsert @ReceptionId, @InspectionId, @DoctorId", new
                         {
                             ReceptionId = req.Reception.Id,
-                            DoctorId = req.DoctorId,
-                            InspectionId = inspectionId
+                            InspectionId = inspectionId,
+                            DoctorId = req.DoctorId
                         });
                     //Only single value is expected
                     if (rows.Count > 0)

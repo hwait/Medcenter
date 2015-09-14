@@ -48,6 +48,11 @@ namespace Medcenter.Service.Interface.Services
                     Db.SqlList<Payment>("EXEC sp_Reception_SelectPayments @ReceptionId", new { ReceptionId = reception.Id }));
                 reception.Packages = new ObservableCollection<Package>(
                     Db.SqlList<Package>("EXEC sp_Reception_SelectPackages @ReceptionId",new { ReceptionId = reception.Id }));
+                foreach (var package in reception.Packages)
+                {
+                    package.InspectionIds=Db.SqlList<int>("EXEC sp_Package_SelectInspections @PackageId", new { PackageId = package.Id });
+                }
+
             }
             return rows;
         }

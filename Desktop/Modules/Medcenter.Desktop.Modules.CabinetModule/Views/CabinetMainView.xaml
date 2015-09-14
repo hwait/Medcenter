@@ -149,7 +149,7 @@
 						<RowDefinition Height="Auto"/>
 					</Grid.RowDefinitions>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="300"/>
+						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="40"/>
 						<ColumnDefinition Width="40"/>
 						<ColumnDefinition Width="40"/>
@@ -163,13 +163,13 @@
 						<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
 					</Rectangle.Fill>
 				</Rectangle>
-					<TextBlock  Grid.Column="0" Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" x:Name="header" Margin="5,0,0,0"/>
+					<TextBlock  Grid.Column="0" Text="{Binding PositionName}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="header" Margin="5,0,0,0"/>
 					<StackPanel x:Name="text" Grid.ColumnSpan="8" Margin="5,0,0,0" Orientation="Horizontal" Grid.Row="1">
-						<Image Height="22" Source="/Medcenter.Desktop.Modules.CabinetModule;component/Assets/Turn.png" Stretch="Fill"/>
-						<TextBox Margin="0" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333">
+						<Image Height="22" Source="/Medcenter.Desktop.Modules.CabinetModule;component/Assets/Turn.png" Stretch="Fill" HorizontalAlignment="Left"/>
+						<TextBox Margin="0" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" HorizontalContentAlignment="Stretch" MinWidth="500">
 							<i:Interaction.Triggers>
-								<i:EventTrigger EventName="GetFocus">
-									<i:InvokeCommandAction Command="{Binding DataContext.ChoosePhraseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ''}" />
+								<i:EventTrigger EventName="GotFocus">
+									<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />
 								</i:EventTrigger>
 							</i:Interaction.Triggers>
 						</TextBox>
