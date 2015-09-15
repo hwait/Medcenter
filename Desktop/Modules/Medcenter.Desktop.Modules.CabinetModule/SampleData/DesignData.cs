@@ -1215,6 +1215,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 2,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
+                    Paraphrases = new List<Paraphrase>
+                    {
+                        _paraphrase1, _paraphrase2, _paraphrase3
+                    },
                     Phrases = new List<Phrase>
                     {
                         _phrase1,

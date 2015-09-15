@@ -31,7 +31,12 @@ namespace Medcenter.Service.Model.Types
             {
                 _text = value;
                 if (Status < 2 || Status > 3) Status = 1;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("ValuesCount"));
+                }
+
             }
         }
 
@@ -39,6 +44,7 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
+                if (Type == 2) return 3;
                 if (string.IsNullOrEmpty(Text)) return 0;
                 return Text.Split('{').Length - 1;
             }

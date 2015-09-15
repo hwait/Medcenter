@@ -39,7 +39,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Phrase> _insertPhraseCommand;
         private readonly DelegateCommand<Phrase> _removePhraseCommand;
         private readonly DelegateCommand<Phrase> _normPhraseCommand;
-        private readonly DelegateCommand<Phrase> _choosePhraseCommand;
+        private readonly DelegateCommand<Phrase> _changedPhraseCommand;
+        
+        private readonly DelegateCommand<object> _choosePhraseCommand;
+        private readonly DelegateCommand<Phrase> _saveParaphraseCommand;
         private readonly DelegateCommand<object> _savePatientCommand;
         private readonly DelegateCommand<Survey> _previewSurveyCommand;
         private readonly DelegateCommand<Survey> _newSurveyCommand;
@@ -65,6 +68,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             get { return this._removePhraseCommand; }
         }
+        public ICommand ChangedPhraseCommand
+        {
+            get { return this._changedPhraseCommand; }
+        }
         public ICommand NormPhraseCommand
         {
             get { return this._normPhraseCommand; }
@@ -77,6 +84,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         public ICommand SavePatientCommand
         {
             get { return this._savePatientCommand; }
+        }
+        public ICommand SaveParaphraseCommand
+        {
+            get { return this._saveParaphraseCommand; }
         }
         public ICommand PreviewSurveyCommand
         {
@@ -222,9 +233,41 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 _newSurveyCommand.RaiseCanExecuteChanged();
             }
         }
-
-        #endregion
         
+        #endregion
+
+        #region Paraphrases
+
+        private List<Paraphrase> _paraphrases;
+
+        public List<Paraphrase> Paraphrases
+        {
+            get { return _paraphrases; }
+            set { SetProperty(ref _paraphrases, value); }
+        }
+
+        private Paraphrase _currentParaphrase;
+
+        public Paraphrase CurrentParaphrase
+        {
+            get { return _currentParaphrase; }
+            set
+            {
+                SetProperty(ref _currentParaphrase, value);
+            }
+        }
+
+        private List<Paraphrase> _paraphrasesBase;
+
+        public List<Paraphrase> ParaphrasesBase
+        {
+            get { return _paraphrasesBase; }
+            set { SetProperty(ref _paraphrasesBase, value); }
+        }
+
+       
+        #endregion
+
         #region Others
 
         public bool IsCopying
@@ -259,9 +302,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _saveSurveyCommand = new DelegateCommand<Survey>(SaveSurvey, CanSaveSurvey);
             _insertPhraseCommand = new DelegateCommand<Phrase>(InsertPhrase);
             _removePhraseCommand = new DelegateCommand<Phrase>(RemovePhrase);
+            _changedPhraseCommand = new DelegateCommand<Phrase>(ChangedPhrase);
             _normPhraseCommand = new DelegateCommand<Phrase>(NormPhrase);
-            _choosePhraseCommand = new DelegateCommand<Phrase>(ChoosePhrase);
-            
+            _choosePhraseCommand = new DelegateCommand<object>(ChoosePhrase);
+            _saveParaphraseCommand = new DelegateCommand<Phrase>(SaveParaphrase);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
             _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
             _chooseSurveyCommand = new DelegateCommand<Survey>(ChooseSurvey, CanChooseSurvey);
@@ -284,23 +328,27 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 });
         }
 
-        private void ChoosePhrase(Phrase obj)
+        private void ChangedPhrase(Phrase obj)
         {
-            throw new NotImplementedException();
+            if (obj!=null&&obj.Text.Split('{').Length>0)
+                this.OnPropertyChanged(() => this.CurrentSurvey);
+
         }
+
+        #region Reception
 
         private void ChooseReception(Reception obj)
         {
             CurrentReception = obj;
             CurrentPatient = obj.Patient;
-            Surveys=new List<Survey>();
-            CurrentSurvey=new Survey();
+            Surveys = new List<Survey>();
+            CurrentSurvey = new Survey();
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.PostAsync(new SurveySelect { Reception = CurrentReception, DoctorId = CurrentSchedule.DoctorId})
+            _jsonClient.PostAsync(new SurveySelect {Reception = CurrentReception, DoctorId = CurrentSchedule.DoctorId})
                 .Success(rs =>
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                    Surveys=rs.Surveys;
+                    Surveys = rs.Surveys;
                 })
                 .Error(ex =>
                 {
@@ -308,50 +356,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                     throw ex;
                 });
         }
-
-        private bool CanChooseSurvey(Survey arg)
-        {
-            return true;
-        }
-
-        private void ChooseSurvey(Survey obj)
-        {
-            CurrentSurvey = obj;
-        }
-
-        private void ChooseParaphrase(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        #region CanExecute
-
-        private bool CanNewSurvey(Survey arg)
-        {
-            if (IsCopying) return false;
-            return !(CurrentDoctor == null ||  CurrentSurvey != null);
-        }
-
-        private bool CanSaveSurvey(Survey arg)
-        {
-            return !(CurrentDoctor == null || CurrentSurvey == null);
-        }
-
-        private bool CanRemoveSurvey(Survey arg)
-        {
-            //if (IsCopying) return false;
-            return !(CurrentDoctor == null ||  CurrentSurvey == null);
-        }
-        private bool CanPreviewSurvey(Survey arg)
-        {
-            if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentSurvey == null);
-        }
-        #endregion
-
         private void ReceptionsReload()
         {
-            Receptions=new List<Reception>();
+            Receptions = new List<Reception>();
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.GetAsync(new ReceptionsByDateSelect { StartDate = DateTime.Today, ScheduleId = CurrentSchedule.Id })
             .Success(rr =>
@@ -364,10 +371,22 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 throw ex;
             });
         }
+        #endregion
 
+        #region Survey
+
+        private bool CanChooseSurvey(Survey arg)
+        {
+            return true;
+        }
+
+        private void ChooseSurvey(Survey obj)
+        {
+            CurrentSurvey = obj;
+        }
         private void SurveyReload()
         {
-            
+
             //if (_currentInspection==null) return;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             //_jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
@@ -390,87 +409,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             //    throw ex;
             //});
         }
-
-        private void SetButtonsActive()
-        {
-            _newSurveyCommand.RaiseCanExecuteChanged();
-            _removeSurveyCommand.RaiseCanExecuteChanged();
-            _saveSurveyCommand.RaiseCanExecuteChanged();
-            _previewSurveyCommand.RaiseCanExecuteChanged();
-        }
-
-        #region Positions
-        private void SavePatient(object obj)
-        {
-            
-        }
-        private void NormPhrase(Phrase obj)
-        {
-            //obj.CutPhrase();
-        }
-
-        private void RemovePhrase(Phrase obj)
-        {
-            if (obj.Id == 0)
-            {
-                CurrentSurvey.Phrases.Remove(obj);
-                RefreshPhrases();
-            }
-            else
-                obj.RemovePhrase();
-        }
-
-        private void InsertPhrase(Phrase obj)
-        {
-            var n = 0;
-            List<Phrase> list = CurrentSurvey.Phrases.Where(p => p.Status==4).ToList();
-            if (list.Count == 0)
-            {
-                IncrementToEnd(obj.ShowOrder+1,1);
-                CurrentSurvey.Phrases.Add(new Phrase(obj.ShowOrder+1));
-            }
-            else
-            {
-                CurrentSurvey.Phrases.RemoveAll(p => p.Status == 4);
-                for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
-                {
-                    if (CurrentSurvey.Phrases[i].Status == 0) CurrentSurvey.Phrases[i].Status = 1;
-                    CurrentSurvey.Phrases[i].ShowOrder = i;
-                    if (CurrentSurvey.Phrases[i].PositionName == obj.PositionName &&
-                        CurrentSurvey.Phrases[i].Text == obj.Text) n = i;
-                }
-                IncrementToEnd(n+1, list.Count);
-                for (int i = 0; i < list.Count; i++)
-                {
-                    list[i].Status = 1;
-                    list[i].ShowOrder = n + i+1;
-                }
-                CurrentSurvey.Phrases.AddRange(list);
-            }
-            RefreshPhrases();
-        }
-
-        private void RefreshPhrases()
-        {
-            CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
-            for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
-            {
-                CurrentSurvey.Phrases[i].ShowOrder = i;
-            }
-        }
-
-        private void IncrementToEnd(int showOrder, int inc)
-        {
-            if (showOrder > CurrentSurvey.Phrases.Count) return;
-            for (int i = showOrder; i < CurrentSurvey.Phrases.Count; i++)
-            {
-                CurrentSurvey.Phrases[i].ShowOrder+=inc;
-            }
-        }
-
-        #endregion
-        
-        #region Survey
         private void PreviewSurvey(Survey obj)
         {
             throw new NotImplementedException();
@@ -482,7 +420,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         }
         private void CopySurvey(Survey obj)
         {
-            IsCopying=true;
+            IsCopying = true;
             SetButtonsActive();
         }
 
@@ -491,7 +429,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             Errors = CurrentSurvey.Validate();
             if (Errors.Count == 0)
             {
-                
+
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 if (IsCopying)
                 {
@@ -568,5 +506,141 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             return true;
         }
         #endregion
+        
+        #region Phrases
+        
+        private void ChoosePhrase(object obj)
+        {
+            CurrentSurvey.FilterPhrases(obj == null ? 0 : ((Phrase) obj).PositionId);
+        }
+
+        private void NormPhrase(Phrase obj)
+        {
+            //obj.CutPhrase();
+        }
+
+        private void RemovePhrase(Phrase obj)
+        {
+            if (obj.Id == 0)
+            {
+                CurrentSurvey.Phrases.Remove(obj);
+                RefreshPhrases();
+            }
+            else
+                obj.RemovePhrase();
+        }
+
+        private void InsertPhrase(Phrase obj)
+        {
+            var n = 0;
+            List<Phrase> list = CurrentSurvey.Phrases.Where(p => p.Status==4).ToList();
+            if (list.Count == 0)
+            {
+                IncrementToEnd(obj.ShowOrder+1,1);
+                CurrentSurvey.Phrases.Add(new Phrase(obj.ShowOrder+1));
+            }
+            else
+            {
+                CurrentSurvey.Phrases.RemoveAll(p => p.Status == 4);
+                for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
+                {
+                    if (CurrentSurvey.Phrases[i].Status == 0) CurrentSurvey.Phrases[i].Status = 1;
+                    CurrentSurvey.Phrases[i].ShowOrder = i;
+                    if (CurrentSurvey.Phrases[i].PositionName == obj.PositionName &&
+                        CurrentSurvey.Phrases[i].Text == obj.Text) n = i;
+                }
+                IncrementToEnd(n+1, list.Count);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list[i].Status = 1;
+                    list[i].ShowOrder = n + i+1;
+                }
+                CurrentSurvey.Phrases.AddRange(list);
+            }
+            RefreshPhrases();
+        }
+
+        private void RefreshPhrases()
+        {
+            CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
+            for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
+            {
+                CurrentSurvey.Phrases[i].ShowOrder = i;
+            }
+        }
+
+        private void IncrementToEnd(int showOrder, int inc)
+        {
+            if (showOrder > CurrentSurvey.Phrases.Count) return;
+            for (int i = showOrder; i < CurrentSurvey.Phrases.Count; i++)
+            {
+                CurrentSurvey.Phrases[i].ShowOrder+=inc;
+            }
+        }
+
+        #endregion
+        
+        #region Paraphrase
+        private void ChooseParaphrase(object obj)
+        {
+            throw new NotImplementedException();
+        }
+        private void SaveParaphrase(Phrase obj)
+        {
+            var paraphrase=new Paraphrase(obj);
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.PostAsync(new ParaphraseSave { Paraphrase = paraphrase, DoctorId = CurrentSchedule.DoctorId, SurveyId = CurrentSurvey.Id })
+                .Success(rs =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    paraphrase.Id = rs.ParaphraseId;
+                    CurrentSurvey.AddParaphrase(paraphrase);
+                })
+                .Error(ex =>
+                {
+                    Schedules = new List<Schedule>();
+                    throw ex;
+                });
+        }
+
+        #endregion
+        
+        #region Other
+
+        private void SavePatient(object obj)
+        {
+
+        }
+
+        private void SetButtonsActive()
+        {
+            _newSurveyCommand.RaiseCanExecuteChanged();
+            _removeSurveyCommand.RaiseCanExecuteChanged();
+            _saveSurveyCommand.RaiseCanExecuteChanged();
+            _previewSurveyCommand.RaiseCanExecuteChanged();
+        }
+        private bool CanNewSurvey(Survey arg)
+        {
+            if (IsCopying) return false;
+            return !(CurrentDoctor == null || CurrentSurvey != null);
+        }
+
+        private bool CanSaveSurvey(Survey arg)
+        {
+            return !(CurrentDoctor == null || CurrentSurvey == null);
+        }
+
+        private bool CanRemoveSurvey(Survey arg)
+        {
+            //if (IsCopying) return false;
+            return !(CurrentDoctor == null || CurrentSurvey == null);
+        }
+        private bool CanPreviewSurvey(Survey arg)
+        {
+            if (IsCopying) return false;
+            return !(CurrentDoctor == null || CurrentSurvey == null);
+        }
+        #endregion
+
     }
 }

@@ -171,13 +171,19 @@
 								<i:EventTrigger EventName="GotFocus">
 									<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />
 								</i:EventTrigger>
+								<i:EventTrigger EventName="LostFocus">
+									<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}"  />
+								</i:EventTrigger>
+								<i:EventTrigger EventName="TextChanged">
+									<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChangedPhraseCommand}"  />
+								</i:EventTrigger>
 							</i:Interaction.Triggers>
 						</TextBox>
 					</StackPanel>
 					<TextBox  Grid.Column="1" Text="{Binding V1}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v1" Margin="2,0,0,0"/>
 					<TextBox  Grid.Column="2" Text="{Binding V2}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v2" Margin="2,0,0,0"/>
 					<TextBox  Grid.Column="3" Text="{Binding V3}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13.333" x:Name="v3" Margin="2,0,0,0"/>
-					<Button Grid.Column="4" x:Name="b1" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SetNormCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
+					<Button Grid.Column="4" x:Name="b1" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.NormPhraseCommand}" CommandParameter="{Binding }" HorizontalAlignment="Right" VerticalAlignment="Center" Height="22" Width="22">
 						<Button.Background>
 							<ImageBrush ImageSource="../Assets/ThumbsUp.png"/>
 						</Button.Background>
@@ -208,7 +214,9 @@
 					<Setter TargetName="text" Property="Visibility" Value="Collapsed" />
 					<Setter TargetName="header" Property="FontWeight" Value="Bold" />
 					<Setter TargetName="header" Property="Grid.ColumnSpan" Value="8" />
-					
+				</DataTrigger>
+				<DataTrigger Binding="{Binding Type}" Value="2">
+					<Setter TargetName="text" Property="Visibility" Value="Collapsed" />
 				</DataTrigger>
 				<DataTrigger Binding="{Binding ValuesCount}" Value="0">
 					<Setter TargetName="v1" Property="Visibility" Value="Hidden" />
@@ -266,7 +274,7 @@
 			<ColumnDefinition Width="400"/>
 		</Grid.ColumnDefinitions>
 		<ComboBox ItemsSource="{Binding Schedules}" SelectedItem="{Binding CurrentSchedule}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="240" ItemTemplate="{DynamicResource SchedulesDataTemplate}" Height="30" Margin="3,0,0,0"/>
-		<ScrollViewer Grid.Row="1" Margin="5,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+		<ScrollViewer Grid.Row="1" Margin="5,0,10,0" HorizontalContentAlignment="Stretch">
 			<ItemsControl ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" HorizontalContentAlignment="Stretch" Margin="0,10,0,0"/>
 		</ScrollViewer>
 		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
@@ -296,7 +304,7 @@
 			<ScrollViewer Margin="0,10,5,0" >
 				<ItemsControl ItemsSource="{Binding Receptions}" ItemTemplate="{DynamicResource ReceptionsButtonsTemplate}" />
 			</ScrollViewer>
-			<ItemsControl ItemsSource="{Binding Paraphrases}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>
+			<ItemsControl ItemsSource="{Binding CurrentSurvey.Paraphrases}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>
 		</StackPanel>
 		
 		<StackPanel Margin="0,0,5,0" Orientation="Horizontal" Grid.Column="0" Grid.Row="0">

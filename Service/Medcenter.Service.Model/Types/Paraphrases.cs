@@ -30,9 +30,26 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int IsolationType { get; set; }
         [DataMember]
+        public int PresetId { get; set; }
+        [DataMember]
         public List<int> FormulesAffected { get; set; }
         public bool IsChanged { get; set; }
-        
+
+        public Paraphrase()
+        {
+            FormulesAffected=new List<int>();
+        }
+        public Paraphrase(Phrase phrase)
+        {
+            PositionId = phrase.PositionId;
+            V1 = phrase.V1;
+            V2 = phrase.V2;
+            V3 = phrase.V3;
+            ShowOrder = phrase.ShowOrder;
+            Text = phrase.Text;
+            FormulesAffected = new List<int>();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 }

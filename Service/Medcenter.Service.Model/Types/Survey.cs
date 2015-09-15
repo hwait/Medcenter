@@ -39,6 +39,52 @@ namespace Medcenter.Service.Model.Types
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Phrases"));
             }
         }
+
+        #region Paraphrases
+        private Paraphrase _currentParaphrase;
+
+        public Paraphrase CurrentParaphrase
+        {
+            get { return _currentParaphrase; }
+            set
+            {
+                _currentParaphrase = value;
+                //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Paraphrases"));
+            }
+        }
+        private List<Paraphrase> _paraphrases;
+        private List<Paraphrase> _paraphrasesBase;
+
+        public List<Paraphrase> Paraphrases
+        {
+            get { return _paraphrases; }
+            set
+            {
+                _paraphrases = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Paraphrases"));
+            }
+        }
+        [DataMember]
+        public List<Paraphrase> ParaphrasesBase
+        {
+            get { return _paraphrasesBase; }
+            set
+            {
+                _paraphrasesBase = value;
+                //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("ParaphrasesBase"));
+            }
+        }
+        public void FilterPhrases(int positionId)
+        {
+            Paraphrases = ParaphrasesBase.FindAll(d => d.PositionId == positionId);
+        }
+        public void AddParaphrase(Paraphrase paraphrase)
+        {
+            ParaphrasesBase.Add(paraphrase);
+            FilterPhrases(paraphrase.PositionId);
+        }
+        #endregion
+
         public byte Status { get; set; } // 1 - normal, 4 - selected, 2 - saved, 3 - not saved
         private byte _oldStatus = 1;
         private bool _isActive=false;
@@ -61,6 +107,7 @@ namespace Medcenter.Service.Model.Types
         public Survey()
         {
             Phrases=new List<Phrase>();
+            ParaphrasesBase=new List<Paraphrase>();
             Phrases.Add(new Phrase(0));
         }
         public List<ResultMessage> Validate()

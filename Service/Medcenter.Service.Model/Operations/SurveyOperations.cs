@@ -151,5 +151,81 @@ namespace Medcenter.Service.Model.Operations
     #endregion
     
     #endregion
+
+
+    #region Paraphrase
+
+    #region ParaphrasesSelect
+
+    [RequiresAnyRole("Admin", "Manager", "Nurse")]
+    [Route("/paraphrases/{InspectionId}/{DoctorId}", "GET")]
+    public class ParaphraseSelect : IReturn<ParaphraseSelectResponse>
+    {
+        public int InspectionId { get; set; }
+        public int DoctorId { get; set; }
+    }
+
+    public class ParaphraseSelectResponse : IHasResponseStatus
+    {
+        public ParaphraseSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Paraphrase> Paraphrases { get; set; }
+    }
+
+    #endregion
+
+    #region ParaphraseSave
+
+    [RequiresAnyRole("Admin", "Manager", "Nurse")]
+    [Route("/paraphrase/save", "POST")]
+    public class ParaphraseSave : IReturn<ParaphraseSaveResponse>
+    {
+        public int DoctorId { get; set; }
+        public int SurveyId { get; set; }
+        public Paraphrase Paraphrase { get; set; }
+    }
+
+    public class ParaphraseSaveResponse : IHasResponseStatus
+    {
+        public ParaphraseSaveResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public int ParaphraseId { get; set; }
+    }
+
+    #endregion
+
+    #region ParaphraseDelete
+
+    [RequiresAnyRole("Admin", "Manager", "Nurse")]
+    [Route("/paraphrase/delete/{ParaphraseId}", "GET")]
+    public class ParaphraseDelete : IReturn<ParaphraseDeleteResponse>
+    {
+        public int ParaphraseId { get; set; }
+    }
+
+    public class ParaphraseDeleteResponse : IHasResponseStatus
+    {
+        public ParaphraseDeleteResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
+
+    #endregion
+
+    #endregion
 }
 
