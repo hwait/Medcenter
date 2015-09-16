@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Medcenter.Service.Interface.Services
 			Survey survey = rows.Count > 0 ? rows[0] : null;
 			if (rows.Count > 0)
 			{
-				survey.Phrases = Db.SqlList<Phrase>("EXEC sp_PositionsAsPhrases_Select @PatternId", new { PatternId = survey.Id });
+				survey.Phrases = new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_PositionsAsPhrases_Select @PatternId", new { PatternId = survey.Id }));
 				if (survey.Phrases.Count == 0)
 					survey.Phrases.Add(new Phrase(0));
 			}
@@ -110,8 +111,8 @@ namespace Medcenter.Service.Interface.Services
 				{
 					id=Db.Single<int>("EXEC sp_PatternAsSurvey_Insert @DoctorId,@InspectionId, @Header", new
 					{
-						DoctorId = req.DoctorId,
-						InspectionId = req.InspectionId,
+						DoctorId = req.Survey.DoctorId,
+						InspectionId = req.Survey.InspectionId,
 						Header = req.Survey.Header
 					});
 					foreach (var phrase in req.Survey.Phrases)
@@ -200,11 +201,7 @@ namespace Medcenter.Service.Interface.Services
 					//Only single value is expected
 					if (rows.Count > 0)
 					{
-						rows[0].Phrases = Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = rows[0].Id });
-						//if (rows[0].Phrases.Count == 0)
-						//    rows[0].Phrases.Add(new Phrase(0));
-						rows[0].ParaphrasesBase = Db.SqlList<Paraphrase>("EXEC sp_Paraphrases_Select @DoctorId,@InspectionId", new { DoctorId = req.DoctorId, InspectionId = inspectionId });
-						surveys.Add(rows[0]);
+						surveys.Add(SurveyFillValues(rows[0], req.DoctorId, inspectionId));
 					}
 				}
 			}
@@ -212,16 +209,23 @@ namespace Medcenter.Service.Interface.Services
 			return new SurveySelectResponse { Surveys = surveys };
 		}
 
+		private Survey SurveyFillValues(Survey survey, int did, int iid)
+		{
+			survey.Phrases = new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = survey.Id }));
+			//if (rows[0].Phrases.Count == 0)
+			//    rows[0].Phrases.Add(new Phrase(0));
+			survey.ParaphrasesBase = Db.SqlList<Paraphrase>("EXEC sp_Paraphrases_Select @DoctorId,@InspectionId", new { DoctorId = did, InspectionId = iid });
+			survey.DoctorId = did;
+			survey.InspectionId = iid;
+			return survey;
+		}
 		public SurveySaveResponse Post(SurveySave req)
 		{
-			int id = 0;
 			ResultMessage message;
 			// Survey ALWAYS exists so we're saving PHRASES ONLY
-			
-			id = req.Survey.Id;
 			try
 			{
-				foreach (var phrase in req.Survey.Phrases)
+				foreach (var phrase in req.Phrases)
 				{
 					if (phrase.Id == 0) phrase.Status = 2;
 					switch (phrase.Status) // 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut
@@ -241,7 +245,7 @@ namespace Medcenter.Service.Interface.Services
 						case 2:
 							phrase.Id = Db.Single<int>("EXEC sp_Phrases_Insert @SurveyId, @Text, @PositionId, @V1, @V2, @V3, @ParaphraseId", new
 							{
-								SurveyId=req.Survey.Id,
+								SurveyId=req.SurveyId,
 								Text = phrase.Text,
 								PositionId = phrase.PositionId,
 								V1 = phrase.V1,
@@ -268,7 +272,7 @@ namespace Medcenter.Service.Interface.Services
 		   
 			return new SurveySaveResponse
 			{
-				SurveyId = id,
+				Phrases=new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = req.SurveyId }))
 			};
 		}
 		#endregion

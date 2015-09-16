@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -12,10 +13,14 @@ namespace Medcenter.Service.Model.Types
     [DataContract]
     public class Survey : INotifyPropertyChanged
     {
-        private List<Phrase> _phrases;
+        private ObservableCollection<Phrase> _phrases;
 
         [DataMember]
         public int Id { get; set; }
+        [DataMember]
+        public int DoctorId { get; set; }
+        [DataMember]
+        public int InspectionId { get; set; }
         [DataMember]
         public string ShortName { get; set; }
         [DataMember]
@@ -30,7 +35,7 @@ namespace Medcenter.Service.Model.Types
         public Patient CurrentPatient { get; set; }
 
         [DataMember]
-        public List<Phrase> Phrases
+        public ObservableCollection<Phrase> Phrases
         {
             get { return _phrases; }
             set
@@ -40,6 +45,10 @@ namespace Medcenter.Service.Model.Types
             }
         }
 
+        public void ActuateProperties()
+        {
+            //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Phrases"));
+        }
         #region Paraphrases
         private Paraphrase _currentParaphrase;
 
@@ -104,9 +113,18 @@ namespace Medcenter.Service.Model.Types
         }
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Survey(int doctorId, int inspectionId)
+        {
+            DoctorId = doctorId;
+            InspectionId = inspectionId;
+            Phrases = new ObservableCollection<Phrase>();
+            ParaphrasesBase = new List<Paraphrase>();
+            Phrases.Add(new Phrase(0));
+        }
+
         public Survey()
         {
-            Phrases=new List<Phrase>();
+            Phrases = new ObservableCollection<Phrase>();
             ParaphrasesBase=new List<Paraphrase>();
             Phrases.Add(new Phrase(0));
         }

@@ -218,6 +218,9 @@
 				<DataTrigger Binding="{Binding Type}" Value="2">
 					<Setter TargetName="text" Property="Visibility" Value="Collapsed" />
 				</DataTrigger>
+				<DataTrigger Binding="{Binding Type}" Value="3">
+					<Setter TargetName="text" Property="Visibility" Value="Collapsed" />
+				</DataTrigger>
 				<DataTrigger Binding="{Binding ValuesCount}" Value="0">
 					<Setter TargetName="v1" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="v2" Property="Visibility" Value="Hidden" />

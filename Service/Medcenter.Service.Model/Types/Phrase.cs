@@ -19,6 +19,7 @@ namespace Medcenter.Service.Model.Types
         private int _type;
         private int _showOrder;
         private int _decorationType;
+        public bool IsLoaded { get; set; }
 
         [DataMember]
         public int Id { get; set; }
@@ -29,12 +30,15 @@ namespace Medcenter.Service.Model.Types
             get { return _text; }
             set
             {
+                var isNotLoaded = _text == null;
                 _text = value;
+                if (isNotLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Text"));
                     PropertyChanged(this, new PropertyChangedEventArgs("ValuesCount"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
 
             }
@@ -45,6 +49,7 @@ namespace Medcenter.Service.Model.Types
             get
             {
                 if (Type == 2) return 3;
+                if (Type == 3) return 1;
                 if (string.IsNullOrEmpty(Text)) return 0;
                 return Text.Split('{').Length - 1;
             }
@@ -75,8 +80,10 @@ namespace Medcenter.Service.Model.Types
             get { return _positionName; }
             set
             {
+                var isNotLoaded = _positionName == null;
                 _positionName = value;
-                if (Status < 2 || Status > 3) Status = 1;
+                if (isNotLoaded) return;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("PositionName"));
             }
         }
@@ -95,7 +102,7 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _type = value;
-                if (Status < 2 || Status > 3) Status = 1;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Type"));
             }
         } //0 - header, 1 - number, 2 - string, 3 - formula
@@ -110,7 +117,7 @@ namespace Medcenter.Service.Model.Types
                 {
                     _oldShowOrder = _showOrder;
                     _showOrder = value;
-                    if (Status < 2 || Status > 3) Status = 1;
+                    if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                     if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("ShowOrder"));
                 }
             }
@@ -128,7 +135,8 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _decorationType = value;
-                if (Status < 2 || Status > 3) Status = 1;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("DecorationType"));
                 
             }
@@ -253,6 +261,25 @@ namespace Medcenter.Service.Model.Types
             Text = showOrder.ToString();
             Status = 2;
             Type = 2;
+        }
+
+        public Phrase CloneIt()
+        {
+            return new Phrase
+            {
+                IsLoaded=true,
+                Id=0,
+                Text = "",
+                PositionName = this.PositionName,
+                PositionId=this.PositionId,
+                Type=this.Type,
+                ShowOrder = this.ShowOrder,
+                DecorationType=this.DecorationType,
+                V1=this.V1,
+                V2 = this.V2,
+                V3 = this.V3,
+                Status=2
+            };
         }
     }
 }

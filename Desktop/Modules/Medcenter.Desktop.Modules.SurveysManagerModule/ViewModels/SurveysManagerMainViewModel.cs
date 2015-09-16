@@ -17,6 +17,7 @@ using Medcenter.Desktop.Infrastructure;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
+using Microsoft.Practices.Prism;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Interactivity.InteractionRequest;
 using Microsoft.Practices.Prism.Mvvm;
@@ -293,7 +294,8 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                     IsCopying = false;
                     foreach (var phrase in CurrentSurvey.Phrases)
                     {
-                        phrase.Status = 0;
+                        //phrase.Status = 0;
+                        phrase.IsLoaded = true;
                     }
                 }
                 SetButtonsActive();
@@ -361,7 +363,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             }
             else
             {
-                CurrentSurvey.Phrases.RemoveAll(p => p.Status == 4);
+                CurrentSurvey.Phrases.Remove(p => p.Status == 4);
                 for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
                 {
                     if (CurrentSurvey.Phrases[i].Status == 0) CurrentSurvey.Phrases[i].Status = 1;
@@ -369,11 +371,11 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                     if (CurrentSurvey.Phrases[i].PositionName == obj.PositionName &&
                         CurrentSurvey.Phrases[i].Text == obj.Text) n = i;
                 }
-                IncrementToEnd(n+1, list.Count);
+                IncrementToEnd(n + 1, list.Count);
                 for (int i = 0; i < list.Count; i++)
                 {
                     list[i].Status = 1;
-                    list[i].ShowOrder = n + i+1;
+                    list[i].ShowOrder = n + i + 1;
                 }
                 CurrentSurvey.Phrases.AddRange(list);
             }
@@ -382,7 +384,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         private void RefreshPhrases()
         {
-            CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
+            CurrentSurvey.Phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList());
             for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
             {
                 CurrentSurvey.Phrases[i].ShowOrder = i;
@@ -407,7 +409,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         }
         private void NewSurvey(Survey obj)
         {
-            CurrentSurvey = new Survey();
+            CurrentSurvey = new Survey(CurrentDoctor.Id, CurrentInspection.Id);
             SetButtonsActive();
         }
         private void CopySurvey(Survey obj)
@@ -433,9 +435,9 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 }
                 else
                 {
-                    CurrentSurvey.Phrases.RemoveAll(x => x.Status == 0);
+                    if (CurrentSurvey.Phrases!=null) CurrentSurvey.Phrases.Remove(x => x.Status == 0);
                 }
-                _jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey, DoctorId = CurrentDoctor.Id, InspectionId = CurrentInspection.Id})
+                _jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey })
                     .Success(r =>
                     {
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
@@ -470,7 +472,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                         if (isNew)
                         {
-                            CurrentSurvey = new Survey();
+                            CurrentSurvey = new Survey(CurrentDoctor.Id, CurrentInspection.Id);
                             _newSurveyCommand.RaiseCanExecuteChanged();
                         }
                         else

@@ -330,9 +330,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
 
         private void ChangedPhrase(Phrase obj)
         {
-            if (obj!=null&&obj.Text.Split('{').Length>0)
-                this.OnPropertyChanged(() => this.CurrentSurvey);
-
+            //if (obj!=null&&obj.Text.Split('{').Length>0)
+            //    this.OnPropertyChanged(() => this.CurrentSurvey);
         }
 
         #region Reception
@@ -342,13 +341,21 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             CurrentReception = obj;
             CurrentPatient = obj.Patient;
             Surveys = new List<Survey>();
-            CurrentSurvey = new Survey();
+            //CurrentSurvey = new Survey();
+            CurrentSurvey = null;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new SurveySelect {Reception = CurrentReception, DoctorId = CurrentSchedule.DoctorId})
                 .Success(rs =>
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Surveys = rs.Surveys;
+                    //foreach (var survey in Surveys)
+                    //{
+                    //    foreach (var phrase in survey.Phrases)
+                    //    {
+                    //        phrase.IsLoaded = true;
+                    //    }
+                    //}
                 })
                 .Error(ex =>
                 {
@@ -383,6 +390,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private void ChooseSurvey(Survey obj)
         {
             CurrentSurvey = obj;
+            SetButtonsActive();
         }
         private void SurveyReload()
         {
@@ -429,34 +437,19 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             Errors = CurrentSurvey.Validate();
             if (Errors.Count == 0)
             {
-
+                var phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.Where(phrase => phrase.Status > 0 && phrase.Id==0).ToList());
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                if (IsCopying)
-                {
-                    CurrentSurvey.Id = 0;
-                    foreach (var phrase in CurrentSurvey.Phrases)
+                _jsonClient.PostAsync(new SurveySave { Phrases = phrases, SurveyId = CurrentSurvey.Id})
+                    .Success(r =>
                     {
-                        phrase.Status = 5;
-                    }
-                }
-                else
-                {
-                    CurrentSurvey.Phrases.RemoveAll(x => x.Status == 0);
-                }
-                //_jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey, DoctorId = CurrentDoctor.Id, InspectionId = CurrentInspection.Id})
-                //    .Success(r =>
-                //    {
-                //        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                //        CurrentSurvey.Id = r.SurveyId;
-                //        r.Message.Message = string.Format(r.Message.Message, CurrentSurvey.Name);
-                //        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                //        IsCopying = false;
-                //        SurveyReload();
-                //    })
-                //    .Error(ex =>
-                //    {
-                //        throw ex;
-                //    });
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        CurrentSurvey.Phrases = r.Phrases;
+                        this.OnPropertyChanged(() => this.CurrentSurvey);
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
             }
         }
 
@@ -500,11 +493,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                     }
                 });
         }
-        private bool CanAddSurvey(object arg)
-        {
-            //return CurrentSurvey == null || CurrentSurvey.Id != 0;
-            return true;
-        }
         #endregion
         
         #region Phrases
@@ -530,53 +518,31 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 obj.RemovePhrase();
         }
 
-        private void InsertPhrase(Phrase obj)
+        private void InsertPhrase(Phrase phrase)
         {
-            var n = 0;
-            List<Phrase> list = CurrentSurvey.Phrases.Where(p => p.Status==4).ToList();
-            if (list.Count == 0)
-            {
-                IncrementToEnd(obj.ShowOrder+1,1);
-                CurrentSurvey.Phrases.Add(new Phrase(obj.ShowOrder+1));
-            }
-            else
-            {
-                CurrentSurvey.Phrases.RemoveAll(p => p.Status == 4);
-                for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
-                {
-                    if (CurrentSurvey.Phrases[i].Status == 0) CurrentSurvey.Phrases[i].Status = 1;
-                    CurrentSurvey.Phrases[i].ShowOrder = i;
-                    if (CurrentSurvey.Phrases[i].PositionName == obj.PositionName &&
-                        CurrentSurvey.Phrases[i].Text == obj.Text) n = i;
-                }
-                IncrementToEnd(n+1, list.Count);
-                for (int i = 0; i < list.Count; i++)
-                {
-                    list[i].Status = 1;
-                    list[i].ShowOrder = n + i+1;
-                }
-                CurrentSurvey.Phrases.AddRange(list);
-            }
-            RefreshPhrases();
+            CurrentSurvey.Phrases.Insert(GetPhraseIndex(phrase)+1, phrase.CloneIt());
+            CurrentSurvey.ActuateProperties();
+            //this.OnPropertyChanged(() => this.CurrentSurvey);
         }
 
+        private int GetPhraseIndex(Phrase phrase)
+        {
+            for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
+            {
+                if (CurrentSurvey.Phrases[i] == phrase)
+                    return i;
+            }
+            return CurrentSurvey.Phrases.Count-1;
+        }
         private void RefreshPhrases()
         {
-            CurrentSurvey.Phrases = CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList();
+            CurrentSurvey.Phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList());
             for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
             {
                 CurrentSurvey.Phrases[i].ShowOrder = i;
             }
         }
 
-        private void IncrementToEnd(int showOrder, int inc)
-        {
-            if (showOrder > CurrentSurvey.Phrases.Count) return;
-            for (int i = showOrder; i < CurrentSurvey.Phrases.Count; i++)
-            {
-                CurrentSurvey.Phrases[i].ShowOrder+=inc;
-            }
-        }
 
         #endregion
         
@@ -621,24 +587,21 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         }
         private bool CanNewSurvey(Survey arg)
         {
-            if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentSurvey != null);
+            return CurrentSurvey != null;
         }
 
         private bool CanSaveSurvey(Survey arg)
         {
-            return !(CurrentDoctor == null || CurrentSurvey == null);
+            return CurrentSurvey != null;
         }
 
         private bool CanRemoveSurvey(Survey arg)
         {
-            //if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentSurvey == null);
+            return CurrentSurvey != null;
         }
         private bool CanPreviewSurvey(Survey arg)
         {
-            if (IsCopying) return false;
-            return !(CurrentDoctor == null || CurrentSurvey == null);
+            return CurrentSurvey != null;
         }
         #endregion
 

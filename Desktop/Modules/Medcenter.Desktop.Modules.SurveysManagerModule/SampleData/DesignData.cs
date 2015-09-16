@@ -710,7 +710,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.SampleData
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     CurrentDoctor = CurrentDoctor,
-                    Phrases = new List<Phrase>
+                    Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,_phrase2,_phrase3,_phrase4,_phrase5,_phrase6,_phrase7,_phrase8,
                         _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,

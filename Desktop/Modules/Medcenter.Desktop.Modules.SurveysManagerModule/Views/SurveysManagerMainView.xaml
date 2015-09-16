@@ -53,11 +53,13 @@
 					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=0}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Header.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24" Height="24"/>
 					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=1}" Margin="5,0,0,0" VerticalAlignment="Center"/>
-					<Image Source="../Assets/Digital.png" Width="24"/>
-					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Text.png" Width="24"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=2}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Digital.png" Width="24"/>
 					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=3}" Margin="5,0,0,0" VerticalAlignment="Center"/>
 					<Image Source="../Assets/Formula.png" Width="24"/>
+					<RadioButton GroupName="{Binding ShowOrder}" IsChecked="{Binding Type, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter=4}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+					<Image Source="../Assets/Pill.png" Width="24"/>
 				</StackPanel>
 			</Grid>
 		</DataTemplate>

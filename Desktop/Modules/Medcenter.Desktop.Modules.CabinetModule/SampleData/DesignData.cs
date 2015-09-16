@@ -1102,8 +1102,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 39,
                     PositionName = "",
-                    Text = " Реком 1. ",
-                    ParaphraseId = 39,
+                    Text = "",
+                    ParaphraseId = 0,
                     PositionId = 39,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 39,
@@ -1120,8 +1120,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 39,
                     PositionName = "",
-                    Text = " Реком 2. ",
-                    ParaphraseId = 39,
+                    Text = "",
+                    ParaphraseId = 0,
                     PositionId = 39,
                     Type = (int)PhraseTypes.String,
                     ShowOrder = 39,
@@ -1219,7 +1219,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     {
                         _paraphrase1, _paraphrase2, _paraphrase3
                     },
-                    Phrases = new List<Phrase>
+                    Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,
                         _phrase2,
@@ -1272,7 +1272,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
-                    Phrases = new List<Phrase>
+                    Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,
                         _phrase2,
@@ -1325,7 +1325,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
-                    Phrases = new List<Phrase>
+                    Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,
                         _phrase2,

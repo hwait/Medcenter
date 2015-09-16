@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,8 +42,8 @@ namespace Medcenter.Service.Model.Operations
     [Route("/surveypattern/save", "POST")]
     public class SurveyPatternSave : IReturn<Operations.SurveyPatternSaveResponse>
     {
-        public int DoctorId { get; set; }
-        public int InspectionId { get; set; }
+        //public int DoctorId { get; set; }
+        //public int InspectionId { get; set; }
         public Survey Survey { get; set; }
     }
 
@@ -111,7 +112,9 @@ namespace Medcenter.Service.Model.Operations
     [Route("/survey/save", "POST")]
     public class SurveySave : IReturn<SurveySaveResponse>
     {
-        public Survey Survey { get; set; }
+        //public Survey Survey { get; set; }
+        public int SurveyId { get; set; }
+        public ObservableCollection<Phrase> Phrases { get; set; }
     }
 
     public class SurveySaveResponse : IHasResponseStatus
@@ -123,7 +126,7 @@ namespace Medcenter.Service.Model.Operations
 
         public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
-        public int SurveyId { get; set; }
+        public ObservableCollection<Phrase> Phrases { get; set; }
     }
 
     #endregion
