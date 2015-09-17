@@ -61,10 +61,10 @@ namespace Medcenter.Service.Model.Types
                 //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Paraphrases"));
             }
         }
-        private List<Paraphrase> _paraphrases;
+        private ObservableCollection<Paraphrase> _paraphrases;
         private List<Paraphrase> _paraphrasesBase;
 
-        public List<Paraphrase> Paraphrases
+        public ObservableCollection<Paraphrase> Paraphrases
         {
             get { return _paraphrases; }
             set
@@ -85,7 +85,7 @@ namespace Medcenter.Service.Model.Types
         }
         public void FilterPhrases(int positionId)
         {
-            Paraphrases = ParaphrasesBase.FindAll(d => d.PositionId == positionId);
+            Paraphrases = new ObservableCollection<Paraphrase>(ParaphrasesBase.FindAll(d => d.PositionId == positionId));
         }
         public void AddParaphrase(Paraphrase paraphrase)
         {

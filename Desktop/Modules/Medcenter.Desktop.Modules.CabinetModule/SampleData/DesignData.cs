@@ -1215,7 +1215,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 2,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
-                    Paraphrases = new List<Paraphrase>
+                    Paraphrases = new ObservableCollection<Paraphrase>
                     {
                         _paraphrase1, _paraphrase2, _paraphrase3
                     },

@@ -32,7 +32,7 @@ namespace Medcenter.Desktop.Infrastructure
                 //default:
                 //    return new SolidColorBrush(Colors.White);
                 case 0:
-                    return Colors.White.ToString();
+                    return Colors.AntiqueWhite.ToString();
                 case 1:
                     return Colors.BurlyWood.ToString();
                 case 2:

@@ -268,6 +268,21 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
        
         #endregion
 
+        #region Phrases
+
+        private Phrase _currentPhrase;
+
+        public Phrase CurrentPhrase
+        {
+            get { return _currentPhrase; }
+            set
+            {
+                SetProperty(ref _currentPhrase, value);
+            }
+        }
+        
+        #endregion
+
         #region Others
 
         public bool IsCopying
@@ -326,6 +341,11 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                     Schedules = new List<Schedule>();
                     throw ex;
                 });
+        }
+
+        private void SetParaphrase(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void ChangedPhrase(Phrase obj)
@@ -497,9 +517,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         
         #region Phrases
         
-        private void ChoosePhrase(object obj)
+        private void ChoosePhrase(object phrase)
         {
-            CurrentSurvey.FilterPhrases(obj == null ? 0 : ((Phrase) obj).PositionId);
+            CurrentPhrase = (Phrase) phrase;
+            CurrentSurvey.FilterPhrases(phrase == null ? 0 : ((Phrase)phrase).PositionId);
         }
 
         private void NormPhrase(Phrase obj)
@@ -507,15 +528,18 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             //obj.CutPhrase();
         }
 
-        private void RemovePhrase(Phrase obj)
+        private void RemovePhrase(Phrase phrase)
         {
-            if (obj.Id == 0)
+            var phrases = CurrentSurvey.Phrases.Where(p => p.PositionId == phrase.PositionId).ToList();
+            if (phrases.Count > 1)
             {
-                CurrentSurvey.Phrases.Remove(obj);
-                RefreshPhrases();
+                if (phrases[phrases.Count - 1].Id == 0)
+                    CurrentSurvey.Phrases.Remove(phrases[phrases.Count - 1]);
+                else
+                    phrases[phrases.Count - 1].Status = 3;
             }
             else
-                obj.RemovePhrase();
+                phrases[phrases.Count - 1].Text = "";
         }
 
         private void InsertPhrase(Phrase phrase)
@@ -534,22 +558,14 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             }
             return CurrentSurvey.Phrases.Count-1;
         }
-        private void RefreshPhrases()
-        {
-            CurrentSurvey.Phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.OrderBy(x => x.ShowOrder).ToList());
-            for (int i = 0; i < CurrentSurvey.Phrases.Count; i++)
-            {
-                CurrentSurvey.Phrases[i].ShowOrder = i;
-            }
-        }
-
-
         #endregion
         
         #region Paraphrase
         private void ChooseParaphrase(object obj)
         {
-            throw new NotImplementedException();
+            var paraphrase = (Paraphrase) obj;
+            CurrentPhrase.Text = paraphrase.Text;
+            CurrentPhrase.ParaphraseId = paraphrase.Id;
         }
         private void SaveParaphrase(Phrase obj)
         {

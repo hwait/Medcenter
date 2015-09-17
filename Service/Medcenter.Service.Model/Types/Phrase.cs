@@ -34,6 +34,7 @@ namespace Medcenter.Service.Model.Types
                 _text = value;
                 if (isNotLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
+                ParaphraseId = 0;
                 if (PropertyChanged != null)
                 {
                     PropertyChanged(this, new PropertyChangedEventArgs("Text"));
