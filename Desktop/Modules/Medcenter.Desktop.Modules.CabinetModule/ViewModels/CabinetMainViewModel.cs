@@ -369,13 +369,13 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Surveys = rs.Surveys;
-                    //foreach (var survey in Surveys)
-                    //{
-                    //    foreach (var phrase in survey.Phrases)
-                    //    {
-                    //        phrase.IsLoaded = true;
-                    //    }
-                    //}
+                    foreach (var survey in Surveys)
+                    {
+                        foreach (var phrase in survey.Phrases)
+                        {
+                            phrase.IsLoaded = true;
+                        }
+                    }
                 })
                 .Error(ex =>
                 {
@@ -565,6 +565,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             var paraphrase = (Paraphrase) obj;
             CurrentPhrase.Text = paraphrase.Text;
+            CurrentPhrase.V1 = paraphrase.V1;
+            CurrentPhrase.V2 = paraphrase.V2;
+            CurrentPhrase.V3 = paraphrase.V3;
             CurrentPhrase.ParaphraseId = paraphrase.Id;
         }
         private void SaveParaphrase(Phrase obj)
@@ -591,7 +594,19 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
 
         private void SavePatient(object obj)
         {
-
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.PostAsync(new PatientClarify { Patient = CurrentPatient })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    r.Message.Message = string.Format(r.Message.Message, CurrentPatient.Surname, CurrentPatient.FirstName, CurrentPatient.SecondName);
+                    _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+                })
+                .Error(ex =>
+                {
+                    Schedules = new List<Schedule>();
+                    throw ex;
+                });
         }
 
         private void SetButtonsActive()

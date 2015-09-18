@@ -66,7 +66,22 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
         public int PatientId { get; set; }
     }
+    [RequiresAnyRole("Admin", "Manager","Nurse")]
+    [Route("/patient/clarify", "POST")]
+    public class PatientClarify : IReturn<PatientClarifyResponse>
+    {
+        public Patient Patient { get; set; }
+    }
 
+    public class PatientClarifyResponse : IHasResponseStatus
+    {
+        public PatientClarifyResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+    }
     [RequiresAnyRole("Admin", "Manager")]
     [Route("/patient/delete/{PatientId}", "GET")]
     public class PatientDelete : IReturn<PatientDeleteResponse>

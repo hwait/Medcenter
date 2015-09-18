@@ -211,13 +211,42 @@ namespace Medcenter.Service.Interface.Services
 
 		private Survey SurveyFillValues(Survey survey, int did, int iid)
 		{
-			survey.Phrases = new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = survey.Id }));
+			
+
+			survey.Phrases = GetPhrases(survey.Id);
 			//if (rows[0].Phrases.Count == 0)
 			//    rows[0].Phrases.Add(new Phrase(0));
-			survey.ParaphrasesBase = Db.SqlList<Paraphrase>("EXEC sp_Paraphrases_Select @DoctorId,@InspectionId", new { DoctorId = did, InspectionId = iid });
+			survey.ParaphrasesBase = Db.SqlList<Paraphrase>("EXEC sp_Paraphrases_Select @DoctorId, @InspectionId", new { DoctorId = did, InspectionId = iid });
 			survey.DoctorId = did;
 			survey.InspectionId = iid;
 			return survey;
+		}
+
+		private ObservableCollection<Phrase> GetPhrases(int id)
+		{
+			var patternPhrases = Db.SqlList<Phrase>("EXEC sp_PatternPhrases_Select @SurveyId", new { SurveyId = id });
+			var phrases = Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = id });
+			var result = new ObservableCollection<Phrase>();
+			var isFound = false;
+			foreach (var patternPhrase in patternPhrases)
+			{
+				isFound = false;
+				foreach (var phrase in phrases)
+				{
+					if (phrase.PositionId == patternPhrase.PositionId)
+					{
+						isFound = true;
+						phrase.PositionName = patternPhrase.PositionName;
+						phrase.Type = patternPhrase.Type;
+						phrase.ShowOrder = patternPhrase.ShowOrder;
+						phrase.DecorationType = patternPhrase.DecorationType;
+						result.Add(phrase);
+					}
+				}
+				if (!isFound)
+					result.Add(patternPhrase);
+			}
+			return new ObservableCollection<Phrase>(result.OrderBy(p => p.PositionId));
 		}
 		public SurveySaveResponse Post(SurveySave req)
 		{
@@ -272,7 +301,7 @@ namespace Medcenter.Service.Interface.Services
 		   
 			return new SurveySaveResponse
 			{
-				Phrases=new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_Phrases_Select @SurveyId", new { SurveyId = req.SurveyId }))
+				Phrases=GetPhrases(req.SurveyId)
 			};
 		}
 		#endregion

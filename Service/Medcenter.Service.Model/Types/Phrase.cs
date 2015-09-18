@@ -84,17 +84,58 @@ namespace Medcenter.Service.Model.Types
                 var isNotLoaded = _positionName == null;
                 _positionName = value;
                 if (isNotLoaded) return;
-                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if ((Status < 2 || Status > 3)) Status = 1;
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("PositionName"));
             }
         }
 
         [DataMember]
-        public int V1 { get; set; }
+        public int V1
+        {
+            get { return _v1; }
+            set
+            {
+                _v1 = value;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("V1"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
+
         [DataMember]
-        public int V2 { get; set; }
+        public int V2
+        {
+            get { return _v2; }
+            set
+            {
+                _v2 = value;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("V2"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
+
         [DataMember]
-        public int V3 { get; set; }
+        public int V3
+        {
+            get { return _v3; }
+            set
+            {
+                _v3 = value;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("V3"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                }
+            }
+        }
 
         [DataMember]
         public int Type
@@ -237,6 +278,10 @@ namespace Medcenter.Service.Model.Types
             Status = Status == 3 ? _oldStatus < 3 ? _oldStatus : (byte) 1 : (byte)3;
         }
         private byte _oldStatus ;
+        private int _v1;
+        private int _v2;
+        private int _v3;
+
         [DataMember]
         public byte Status
         {

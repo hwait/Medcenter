@@ -17,7 +17,7 @@ namespace Medcenter.Service.Interface.Services
 
         public PatientsSelectResponse Get(PatientsSelect req)
         {
-            var rows = Db.SqlList<Patient>("EXEC sp_Patients_Select_BySurname  @Text", new {Text = req.Text});
+            var rows = Db.SqlList<Patient>("EXEC sp_Patients_Select_BySurname @Text", new {Text = req.Text});
             return new PatientsSelectResponse {Patients = new List<Patient>(rows)};
         }
 
@@ -99,7 +99,36 @@ namespace Medcenter.Service.Interface.Services
                 Message = _message
             };
         }
-
+        public PatientClarifyResponse Post(PatientClarify req)
+        {
+            int id = 0;
+            ResultMessage _message;
+            try
+            {
+                id =
+                    Db.Single<int>(
+                        "EXEC sp_Patients_Clarify @Id, @Surname, @FirstName, @SecondName, @BirthDate",
+                        new
+                        {
+                            Id = req.Patient.Id,
+                            Surname = req.Patient.Surname,
+                            FirstName = req.Patient.FirstName,
+                            SecondName = req.Patient.SecondName,
+                            BirthDate = req.Patient.BirthDate
+                        });
+                _message = new ResultMessage(0, "Уточнение данных пациента", OperationResults.PatientSave);
+            }
+            catch (Exception e)
+            {
+                _message = new ResultMessage(2, e.Source, OperationErrors.PatientSave);
+                Logger.Log("PatientClarifyResponse.Saving ", e);
+                throw;
+            }
+            return new PatientClarifyResponse
+            {
+                Message = _message
+            };
+        }
         public PatientDeleteResponse Get(PatientDelete req)
         {
             ResultMessage _message;
