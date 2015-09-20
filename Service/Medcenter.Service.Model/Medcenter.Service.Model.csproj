@@ -106,6 +106,7 @@
     <Compile Include="Types\Payment.cs" />
     <Compile Include="Types\Permissions.cs" />
     <Compile Include="Types\Phrase.cs" />
+    <Compile Include="Types\Position.cs" />
     <Compile Include="Types\Reception.cs" />
     <Compile Include="Types\Roles.cs" />
     <Compile Include="Types\Schedule.cs" />

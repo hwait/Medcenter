@@ -39,6 +39,12 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         public InteractionRequest<IConfirmation> ConfirmationRequest { get; private set; }
         private readonly DelegateCommand<Phrase> _insertPhraseCommand;
         private readonly DelegateCommand<Phrase> _removePhraseCommand;
+        private readonly DelegateCommand<Phrase> _choosePhraseCommand;
+        private readonly DelegateCommand<Paraphrase> _addParaphraseCommand;
+        private readonly DelegateCommand<Paraphrase> _removeParaphraseCommand;
+        private readonly DelegateCommand<Paraphrase> _paraphraseUpCommand;
+        private readonly DelegateCommand<Paraphrase> _paraphraseDownCommand;
+        private readonly DelegateCommand<object> _saveParaphrasesCommand;
         private readonly DelegateCommand<Phrase> _cutPhraseCommand;
         private readonly DelegateCommand<Phrase> _toggleLastParagraphCommand;
         private readonly DelegateCommand<Phrase> _toggleFirstParagraphCommand;
@@ -60,6 +66,31 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         public ICommand CopySurveyCommand
         {
             get { return this._copySurveyCommand; }
+        }
+
+        public ICommand SaveParaphrasesCommand
+        {
+            get { return this._saveParaphrasesCommand; }
+        }
+        public ICommand ParaphraseUpCommand
+        {
+            get { return this._paraphraseUpCommand; }
+        }
+        public ICommand ParaphraseDownCommand
+        {
+            get { return this._paraphraseDownCommand; }
+        }
+        public ICommand RemoveParaphraseCommand
+        {
+            get { return this._removeParaphraseCommand; }
+        }
+        public ICommand AddParaphraseCommand
+        {
+            get { return this._addParaphraseCommand; }
+        }
+        public ICommand ChoosePhraseCommand
+        {
+            get { return this._choosePhraseCommand; }
         }
         public ICommand InsertPhraseCommand
         {
@@ -137,7 +168,27 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 _newSurveyCommand.RaiseCanExecuteChanged();
             }
         }
+        private Doctor _sourceDoctor;
 
+        public Doctor SourceDoctor
+        {
+            get { return _sourceDoctor; }
+            set
+            {
+                SetProperty(ref _sourceDoctor, value);
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+                _jsonClient.GetAsync(new InspectionsInDoctorSelect { DoctorId = _sourceDoctor.Id })
+                .Success(r =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    SourceInspections = r.Inspections;
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+            }
+        }
         #endregion
 
         #region Inspections
@@ -149,7 +200,13 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             get { return _inspections; }
             set { SetProperty(ref _inspections, value); }
         }
+        private List<Inspection> _sourceInspections;
 
+        public List<Inspection> SourceInspections
+        {
+            get { return _sourceInspections; }
+            set { SetProperty(ref _sourceInspections, value); }
+        }
         private Inspection _currentInspection;
 
         public Inspection CurrentInspection
@@ -159,6 +216,17 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             {
                 SetProperty(ref _currentInspection, value);
                 SurveyReload();
+            }
+        }
+        private Inspection _sourceInspection;
+
+        public Inspection SourceInspection
+        {
+            get { return _sourceInspection; }
+            set
+            {
+                SetProperty(ref _sourceInspection, value);
+                PositionsSourceReload();
             }
         }
 
@@ -188,8 +256,67 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         #endregion
         
+        #region Paraphrases
+
+        private List<Paraphrase> _paraphrases;
+
+        public List<Paraphrase> Paraphrases
+        {
+            get { return _paraphrases; }
+            set { SetProperty(ref _paraphrases, value); }
+        }
+        private List<Paraphrase> _paraphrasesBase;
+
+        public List<Paraphrase> ParaphrasesBase
+        {
+            get { return _paraphrasesBase; }
+            set { SetProperty(ref _paraphrasesBase, value); }
+        }
+        private Paraphrase _currentParaphrase;
+
+        public Paraphrase CurrentParaphrase
+        {
+            get { return _currentParaphrase; }
+            set
+            {
+                SetProperty(ref _currentParaphrase, value);
+            }
+        }
+
+        #endregion
+        
         #region Others
 
+        private List<Position> _positions;
+
+        public List<Position> Positions
+        {
+            get { return _positions; }
+            set { SetProperty(ref _positions, value); }
+        }
+
+        private Position _currentPosition;
+
+        public Position CurrentPosition
+        {
+            get { return _currentPosition; }
+            set
+            {
+                SetProperty(ref _currentPosition, value);
+                if (_currentPosition!=null) SurveySourceReload();
+            }
+        }
+
+        private Phrase _currentPhrase;
+
+        public Phrase CurrentPhrase
+        {
+            get { return _currentPhrase; }
+            set
+            {
+                SetProperty(ref _currentPhrase, value);
+            }
+        }
         public bool IsCopying
         {
             get { return _isCopying; }
@@ -225,6 +352,14 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             _insertPhraseCommand = new DelegateCommand<Phrase>(InsertPhrase);
             _removePhraseCommand = new DelegateCommand<Phrase>(RemovePhrase);
             _cutPhraseCommand = new DelegateCommand<Phrase>(CutPhrase);
+
+            _choosePhraseCommand = new DelegateCommand<Phrase>(ChoosePhrase);
+            _addParaphraseCommand = new DelegateCommand<Paraphrase>(AddParaphrase);
+            _removeParaphraseCommand = new DelegateCommand<Paraphrase>(RemoveParaphrase);
+            _paraphraseUpCommand = new DelegateCommand<Paraphrase>(ParaphraseUp);
+            _paraphraseDownCommand = new DelegateCommand<Paraphrase>(ParaphraseDown);
+            _saveParaphrasesCommand = new DelegateCommand<object>(SaveParaphrases);
+
             _toggleFirstParagraphCommand = new DelegateCommand<Phrase>(ToggleFirstParagraph);
             _toggleLastParagraphCommand = new DelegateCommand<Phrase>(ToggleLastParagraph);
             _toggleShowPositionCommand = new DelegateCommand<Phrase>(ToggleShowPosition);
@@ -245,6 +380,89 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             });
         }
 
+        #region Paraphrases
+
+        private void SaveParaphrases(object obj)
+        {
+            throw new NotImplementedException();
+        }
+        private void ParaphraseUp(Paraphrase obj)
+        {
+            CurrentSurvey.MoveParaphraseUp(obj);
+        }
+
+        private void ParaphraseDown(Paraphrase obj)
+        {
+            CurrentSurvey.MoveParaphraseDown(obj);
+        }
+        private void RemoveParaphrase(Paraphrase obj)
+        {
+            if (obj.Id>0)
+                obj.Status = 3;
+            else
+                CurrentSurvey.ParaphrasesBase.Remove(obj);
+            CurrentSurvey.FilterParaphrases(obj.PositionId);
+        }
+        private void AddParaphrases()
+        {
+            foreach (var p in Paraphrases)
+            {
+                var paraphrase = new Paraphrase(p)
+                {
+                    ShowOrder = CurrentSurvey.Paraphrases.Count,
+                    PositionId = CurrentPosition.Id
+                };
+                CurrentSurvey.ParaphrasesBase.Add(paraphrase);
+            }
+            CurrentSurvey.FilterParaphrases(CurrentPhrase.PositionId);
+        }
+        private void AddParaphrase(Paraphrase obj)
+        {
+            var paraphrase = new Paraphrase(obj)
+            {
+                ShowOrder = CurrentSurvey.Paraphrases.Count,
+                PositionId = CurrentPhrase.PositionId
+            };
+            CurrentSurvey.ParaphrasesBase.Add(paraphrase);
+            CurrentSurvey.FilterParaphrases(CurrentPhrase.PositionId);
+        }
+
+        private void ChoosePhrase(Phrase phrase)
+        {
+            CurrentPhrase = phrase;
+            CurrentSurvey.FilterParaphrases(phrase == null ? 0 : (phrase).PositionId);
+        }
+        private void PositionsSourceReload()
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new PositionSelect { DoctorId = _sourceDoctor.Id, InspectionId = _sourceInspection.Id })
+            .Success(r =>
+            {
+                _jsonClient.GetAsync(new ParaphraseSelect { DoctorId = _sourceDoctor.Id, InspectionId = _sourceInspection.Id })
+                .Success(p =>
+                {
+                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                    ParaphrasesBase = p.Paraphrases;
+                    foreach (var paraphrase in ParaphrasesBase)
+                        paraphrase.IsLoaded = true;
+                })
+                .Error(ex =>
+                {
+                    throw ex;
+                });
+                Positions = r.Positions;
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
+        private void SurveySourceReload()
+        {
+            Paraphrases = ParaphrasesBase.FindAll(d => d.PositionId == CurrentPosition.Id).OrderBy(i => i.ShowOrder).ToList();
+        }
+        #endregion
+        
         #region CanExecute
 
         private bool CanNewSurvey(Survey arg)
@@ -277,8 +495,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         }
 
         #endregion
-
-
+        
         private void SurveyReload()
         {
             
@@ -293,10 +510,9 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 {
                     IsCopying = false;
                     foreach (var phrase in CurrentSurvey.Phrases)
-                    {
-                        //phrase.Status = 0;
                         phrase.IsLoaded = true;
-                    }
+                    foreach (var paraphrase in CurrentSurvey.ParaphrasesBase)
+                        paraphrase.IsLoaded = true;
                 }
                 SetButtonsActive();
             })

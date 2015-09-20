@@ -155,7 +155,6 @@ namespace Medcenter.Service.Model.Operations
     
     #endregion
 
-
     #region Paraphrase
 
     #region ParaphrasesSelect
@@ -174,12 +173,28 @@ namespace Medcenter.Service.Model.Operations
         {
             ResponseStatus = new ResponseStatus();
         }
-
         public ResultMessage Message { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         public List<Paraphrase> Paraphrases { get; set; }
     }
+    [RequiresAnyRole("Admin", "Manager", "Nurse")]
+    [Route("/positions/{InspectionId}/{DoctorId}", "GET")]
+    public class PositionSelect : IReturn<PositionSelectResponse>
+    {
+        public int InspectionId { get; set; }
+        public int DoctorId { get; set; }
+    }
 
+    public class PositionSelectResponse : IHasResponseStatus
+    {
+        public PositionSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResultMessage Message { get; set; }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<Position> Positions { get; set; }
+    }
     #endregion
 
     #region ParaphraseSave

@@ -716,8 +716,77 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.SampleData
                         _phrase9,_phrase10,_phrase11,_phrase12,_phrase13,_phrase14,_phrase15,_phrase16,
                         _phrase17,_phrase18,_phrase19,_phrase20,_phrase31,_phrase32,_phrase33,_phrase34,
                         _phrase35,_phrase36,_phrase37,_phrase38,_phrase39,_phrase40,_phrase41
-                    }
+                    },
+                    Paraphrases = new ObservableCollection<Paraphrase> { _paraphrase1, _paraphrase2, _paraphrase3 }
                 };
+            }
+        }
+
+
+        #region Paraphrases
+
+        private Paraphrase _paraphrase1
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " однородная. ",
+                    Norm = "Стенка АО",
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    Status = 1,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        private Paraphrase _paraphrase2
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " неоднородная, с включениями диаметром {0}-{1} мм. ",
+                    Norm = "Стенка АО",
+                    V1 = 3,
+                    V2 = 5,
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    Status = 2,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        private Paraphrase _paraphrase3
+        {
+            get
+            {
+                return new Paraphrase
+                {
+                    Id = 2,
+                    Text = " в структуре определяется объёмное образование размерами {0}x{1}x{2} мм. ",
+                    Norm = "Створки АОК",
+                    V1 = 7,
+                    V2 = 15,
+                    V3 = 8,
+                    PositionId = 1,
+                    ShowOrder = 1,
+                    Status = 3,
+                    FormulesAffected = new List<int>(),
+                };
+            }
+        }
+
+        #endregion
+        public List<Paraphrase> Paraphrases
+        {
+            get
+            {
+                return new List<Paraphrase> { _paraphrase1, _paraphrase2, _paraphrase3 };
             }
         }
         public Survey CurrentSurvey

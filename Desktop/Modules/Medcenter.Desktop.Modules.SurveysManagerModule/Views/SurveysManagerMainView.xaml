@@ -20,12 +20,49 @@
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
 		<BooleanToVisibilityConverter x:Key="BoolToVis"/>
 		<ds:DesignData x:Key="DesignData"/>
+		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
 		<Style TargetType="ListBox">
 			<Style.Resources>
 				<SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFFFB733" />
 				<SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#FFFFB733"/>
 			</Style.Resources>
 		</Style>
+		<Style x:Key="ParaphrasesButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle" Stroke="White" StrokeThickness="1">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="5">
+								<ContentPresenter.Resources>
+									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource WrappingStyle}"/>
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		
 		<DataTemplate x:Key="ErrorMessageTemplate">
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="{Binding Source}" Foreground="Red" FontSize="13.333" FontWeight="Bold"/>
@@ -40,12 +77,23 @@
 					</Rectangle.Fill>
 				</Rectangle>
 				<StackPanel Orientation="Horizontal" Margin="5,0,0,0">
-					<TextBlock Text="{Binding ShowOrder}" Margin="0,0,10,0"/>
-					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Position}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleShowPositionTag}" Height="30" Width="30"/>
+				<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Position}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleShowPositionCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleShowPositionTag}" Height="30" Width="30"/>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Paragraph}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleFirstParagraphCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleFirstParagraphTag}" Height="30" Width="30"/>
-					<TextBox Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="300"/>
+					<TextBox Text="{Binding PositionName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="220">
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="GotFocus">
+								<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</TextBox>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Center" Margin="5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CopyToRightCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
-					<TextBox Text="{Binding Text}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" MinWidth="400" Margin="0"/>
+					<TextBox Text="{Binding Text}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="360" Margin="0">
+						<i:Interaction.Triggers>
+							<i:EventTrigger EventName="GotFocus">
+								<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />
+							</i:EventTrigger>
+						</i:Interaction.Triggers>
+					</TextBox>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Paragraph}" HorizontalAlignment="Center" Margin="5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ToggleLastParagraphCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="{Binding ToggleLastParagraphTag}" Height="30" Width="30"/>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cut}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CutPhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Cross}" HorizontalAlignment="Center" Margin="0,0,5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.RemovePhraseCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Delete" Height="30" Width="30"/>
@@ -63,13 +111,76 @@
 				</StackPanel>
 			</Grid>
 		</DataTemplate>
+		<DataTemplate x:Key="TargetParaphraseTemplate">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="25"/>
+					<RowDefinition Height="25"/>
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="90"/>
+				</Grid.ColumnDefinitions>
+				<Rectangle x:Name="rectangle" Grid.ColumnSpan="3" Grid.RowSpan="2">
+					<Rectangle.Fill>
+						<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+					</Rectangle.Fill>
+				</Rectangle>
+				<TextBox Text="{Binding PresetId}" Width="Auto"/>
+				<TextBox Text="{Binding Text}" TextWrapping="Wrap" MinLines="2" Grid.Column="1" Grid.RowSpan="2" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+				<StackPanel Orientation="Horizontal" Grid.Column="2">
+					<TextBox Text="{Binding V1}" Width="30" Height="25"/>
+					<TextBox Text="{Binding V2}" Width="30" Height="25"/>
+					<TextBox Text="{Binding V3}" Width="30" Height="25"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left">
+					<Button x:Name="b1" Command="{Binding DataContext.ParaphraseUpCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ''}" HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="22" RenderTransformOrigin="0.5,0.5" Margin="5,0,0,0">
+						<Button.RenderTransform>
+							<TransformGroup>
+								<ScaleTransform/>
+								<SkewTransform/>
+								<RotateTransform Angle="-90"/>
+								<TranslateTransform/>
+							</TransformGroup>
+						</Button.RenderTransform>
+						<Button.Background>
+							<ImageBrush ImageSource="../Assets/Right.png"/>
+						</Button.Background>
+					</Button>
+					<Button x:Name="b2" Command="{Binding DataContext.ParaphraseDownCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ''}" HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="22" RenderTransformOrigin="0.5,0.5" Margin="5,0,0,0">
+						<Button.RenderTransform>
+							<TransformGroup>
+								<ScaleTransform/>
+								<SkewTransform/>
+								<RotateTransform Angle="90"/>
+								<TranslateTransform/>
+							</TransformGroup>
+						</Button.RenderTransform>
+						<Button.Background>
+							<ImageBrush ImageSource="../Assets/Right.png"/>
+						</Button.Background>
+					</Button>
+					<Button x:Name="b3" Command="{Binding DataContext.RemoveParaphraseCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding ''}" HorizontalAlignment="Right" VerticalAlignment="Top" Height="22" Width="22" Margin="5,0,0,0">
+						<Button.Background>
+							<ImageBrush ImageSource="../Assets/Delete.png"/>
+						</Button.Background>
+					</Button>
+				</StackPanel>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="SourceParaphraseTemplate">
+			<StackPanel Orientation="Horizontal">
+				<Button Content="{Binding Text}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.AddParaphraseCommand}"  CommandParameter="{Binding }" Height="Auto" Style="{DynamicResource ParaphrasesButtonStyle}"/>
+			</StackPanel>
+		</DataTemplate>
 	</UserControl.Resources>
 	<i:Interaction.Triggers>
 		<prism:InteractionRequestTrigger SourceObject="{Binding ConfirmationRequest, Mode=OneWay}">
 			<prism:PopupWindowAction IsModal="True" CenterOverAssociatedObject="True"/>
 		</prism:InteractionRequestTrigger>
 	</i:Interaction.Triggers>
-	<Grid Margin="40,40,40,0">
+	<Grid Margin="20,20,20,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="30"/>
@@ -79,16 +190,16 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition/>
-			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="230"/>
+			<ColumnDefinition Width="830"/>
+			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,5" VerticalAlignment="Center" Grid.ColumnSpan="2">
-			<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200"/>
-			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="10,0,0,0" MinWidth="400"/>
+		<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200" Margin="0,0,5,0"/>
+		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center">
+			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="0" MinWidth="400"/>
 			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Выберите Доктора и Исследование и нажмите Сохранить. " VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Foreground="#FF2CFD0B"  Visibility="{Binding IsCopying, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
 		</StackPanel>
-		<StackPanel Grid.Column="2" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
+		<StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Preview}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PreviewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Add}" HorizontalAlignment="Left" VerticalAlignment="Center" Command="{Binding NewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Margin="0,0,2,0"  Tag="New" Height="32" Width="32"/>
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Copy}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding CopySurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Copy" Height="32" Width="32"/>
@@ -96,15 +207,26 @@
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Save}" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Top" Command="{Binding SaveSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Save" Height="32" Width="32"/>
 		</StackPanel>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Название бланка:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="1" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Name}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBox Grid.Column="1" Height="23" Grid.Row="1" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Name}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Краткое название:" VerticalAlignment="Center" Grid.Row="2" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="2" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<TextBox Grid.Column="1" Height="23" Grid.Row="2" TextWrapping="Wrap" Text="{Binding CurrentSurvey.ShortName}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
 		<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Информация в заголовок:" VerticalAlignment="Center" Grid.Row="3" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
-		<TextBox Grid.ColumnSpan="2" Grid.Column="1" Height="23" Grid.Row="3" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Header}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
-		<ScrollViewer Grid.Row="4" Grid.ColumnSpan="3"  Margin="0,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-			<ItemsControl ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" HorizontalContentAlignment="Stretch" Margin="0,10,0,0"/>
+		<TextBox Grid.Column="1" Height="23" Grid.Row="3" TextWrapping="Wrap" Text="{Binding CurrentSurvey.Header}" VerticalAlignment="Center" FontSize="14.667" Margin="0,0,10,0" Visibility="{Binding CurrentSurvey, Converter={StaticResource ObjectToVisibility}}"/>
+		<ScrollViewer Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Top" Margin="0,10,0,0">
+			<ItemsControl ItemTemplate="{DynamicResource PhraseTemplate}" ItemsSource="{Binding CurrentSurvey.Phrases}" HorizontalContentAlignment="Stretch"/>
 		</ScrollViewer>
+		<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding SourceDoctor}" Grid.Column="2" Grid.Row="1" VerticalAlignment="Center" FontSize="13.333" MinWidth="200" Margin="5,0"/>
+		<ComboBox ItemsSource="{Binding SourceInspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding SourceInspection}" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" FontSize="13.333" Margin="5,0" MinWidth="400"/>
+		<ComboBox ItemsSource="{Binding Positions}" Width="Auto" DisplayMemberPath="Name" SelectedValue="{Binding CurrentPosition}" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" FontSize="13.333" Margin="5,0" MinWidth="400"/>
+		<StackPanel Grid.Column="2" Orientation="Vertical" Grid.Row="4" Margin="5,0">
+			<ListBox Height="Auto" ItemTemplate="{DynamicResource SourceParaphraseTemplate}" ItemsSource="{Binding Paraphrases}" Margin="0,10,0,0"/>
+			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="{Binding CurrentPhrase.PositionName}" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Visibility="{Binding CurrentPhrase, Converter={StaticResource ObjectToVisibility}}"/>
+			<ScrollViewer VerticalAlignment="Top" Margin="0,10,0,0">
+				<ListBox Height="Auto" ItemTemplate="{DynamicResource TargetParaphraseTemplate}" ItemsSource="{Binding CurrentSurvey.Paraphrases}" HorizontalContentAlignment="Stretch"/>
+			</ScrollViewer>
+		</StackPanel>
 		<ListBox ItemTemplate="{DynamicResource ErrorMessageTemplate}" ItemsSource="{Binding Errors}" BorderBrush="{x:Null}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,5,0"/>
+	
 		
 	</Grid>
 </UserControl>

@@ -29,6 +29,7 @@ namespace Medcenter.Service.Interface.Services
 				survey.Phrases = new ObservableCollection<Phrase>(Db.SqlList<Phrase>("EXEC sp_PositionsAsPhrases_Select @PatternId", new { PatternId = survey.Id }));
 				if (survey.Phrases.Count == 0)
 					survey.Phrases.Add(new Phrase(0));
+				survey.ParaphrasesBase = Db.SqlList<Paraphrase>("EXEC sp_Paraphrases_Select @DoctorId, @InspectionId", new { DoctorId = req.DoctorId, InspectionId = req.InspectionId });
 			}
 			return new SurveyPatternSelectResponse { Survey = survey };
 		}
@@ -309,16 +310,42 @@ namespace Medcenter.Service.Interface.Services
 		#region Paraphrase
 		public ParaphraseSelectResponse Get(ParaphraseSelect req)
 		{
-			var rows = Db.SqlList<Paraphrase>(
-				"EXEC sp_Paraphrase_Select @InspectionId, @DoctorId", new
+			var rows=new List<Paraphrase>();
+			try
+			{
+				rows = Db.SqlList<Paraphrase>(
+				"EXEC sp_Paraphrases_Select @DoctorId,@InspectionId", new
 				{
 					InspectionId = req.InspectionId,
 					DoctorId = req.DoctorId
 				});
-
+				}
+			catch (Exception e)
+			{
+				Logger.Log("ParaphraseSelect", e);
+				throw;
+			}
 			return new ParaphraseSelectResponse { Paraphrases = rows };
 		}
-
+		public PositionSelectResponse Get(PositionSelect req)
+		{
+			var rows =new List<Position>();
+			try
+			{
+				rows = Db.SqlList<Position>(
+				"EXEC sp_Positions_Select  @DoctorId,@InspectionId", new
+				{
+					InspectionId = req.InspectionId,
+					DoctorId = req.DoctorId
+				});
+			}
+			catch (Exception e)
+			{
+				Logger.Log("PositionSelect", e);
+				throw;
+			} 
+			return new PositionSelectResponse { Positions = rows };
+		}
 		public ParaphraseSaveResponse Post(ParaphraseSave req)
 		{
 			ResultMessage message;

@@ -83,14 +83,43 @@ namespace Medcenter.Service.Model.Types
                 //if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("ParaphrasesBase"));
             }
         }
-        public void FilterPhrases(int positionId)
+
+        public void MoveParaphraseUp(Paraphrase paraphrase)
         {
-            Paraphrases = new ObservableCollection<Paraphrase>(ParaphrasesBase.FindAll(d => d.PositionId == positionId));
+            var so = paraphrase.ShowOrder;
+            var list =
+                ParaphrasesBase.FindAll(p => p.PositionId == paraphrase.PositionId && p.ShowOrder < so)
+                    .OrderByDescending(i => i.ShowOrder)
+                    .ToList();
+            if (list.Count == 0) return;
+            paraphrase.ShowOrder = list[0].ShowOrder;
+            list[0].ShowOrder = so;
+            paraphrase.Status = 1;
+            list[0].Status = 1;
+            FilterParaphrases(paraphrase.PositionId);
+        }
+        public void MoveParaphraseDown(Paraphrase paraphrase)
+        {
+            var so = paraphrase.ShowOrder;
+            var list =
+                ParaphrasesBase.FindAll(p => p.PositionId == paraphrase.PositionId && p.ShowOrder > so)
+                    .OrderBy(i => i.ShowOrder)
+                    .ToList();
+            if (list.Count == 0) return;
+            paraphrase.ShowOrder = list[0].ShowOrder;
+            list[0].ShowOrder = so;
+            paraphrase.Status = 1;
+            list[0].Status = 1;
+            FilterParaphrases(paraphrase.PositionId);
+        }
+        public void FilterParaphrases(int positionId)
+        {
+            Paraphrases = new ObservableCollection<Paraphrase>(ParaphrasesBase.FindAll(d => d.PositionId == positionId).OrderBy(i=>i.ShowOrder));
         }
         public void AddParaphrase(Paraphrase paraphrase)
         {
             ParaphrasesBase.Add(paraphrase);
-            FilterPhrases(paraphrase.PositionId);
+            FilterParaphrases(paraphrase.PositionId);
         }
         #endregion
 

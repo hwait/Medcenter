@@ -520,7 +520,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private void ChoosePhrase(object phrase)
         {
             CurrentPhrase = (Phrase) phrase;
-            CurrentSurvey.FilterPhrases(phrase == null ? 0 : ((Phrase)phrase).PositionId);
+            CurrentSurvey.FilterParaphrases(phrase == null ? 0 : ((Phrase)phrase).PositionId);
         }
 
         private void NormPhrase(Phrase obj)
@@ -573,6 +573,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private void SaveParaphrase(Phrase obj)
         {
             var paraphrase=new Paraphrase(obj);
+            paraphrase.ShowOrder = CurrentSurvey.Paraphrases.Max(p => p.ShowOrder);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new ParaphraseSave { Paraphrase = paraphrase, DoctorId = CurrentSchedule.DoctorId, SurveyId = CurrentSurvey.Id })
                 .Success(rs =>
