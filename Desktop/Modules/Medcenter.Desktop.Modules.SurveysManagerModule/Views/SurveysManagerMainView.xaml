@@ -195,9 +195,9 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<ComboBox ItemsSource="{Binding Doctors}" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentDoctor}" VerticalAlignment="Center" FontSize="13.333" MinWidth="200" Margin="0,0,5,0"/>
-		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Left" Margin="0,5" VerticalAlignment="Center">
+		<StackPanel Grid.Column="1" Orientation="Horizontal" Grid.Row="0" Margin="0,8.133" VerticalAlignment="Center" HorizontalAlignment="Left">
 			<ComboBox ItemsSource="{Binding Inspections}" Width="Auto" DisplayMemberPath="ShortName" SelectedValue="{Binding CurrentInspection}" VerticalAlignment="Center" FontSize="13.333" Margin="0" MinWidth="400"/>
-			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Выберите Доктора и Исследование и нажмите Сохранить. " VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28" Foreground="#FF2CFD0B"  Visibility="{Binding IsCopying, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
+			<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Выберите Доктора и Исследование и нажмите Сохранить. " VerticalAlignment="Center" Grid.Row="1" FontSize="14" FontWeight="Bold" Height="21.28" Foreground="#FF2CFD0B"  Visibility="{Binding IsCopying, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}"/>
 		</StackPanel>
 		<StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,10,5" VerticalAlignment="Center" Height="30" Width="Auto">
 			<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.Preview}" HorizontalAlignment="Right" Margin="0,0,2,0" VerticalAlignment="Top" Command="{Binding PreviewSurveyCommand}" Style="{DynamicResource ButtonMenuStyle}" Tag="Pay" Height="32" Width="32"/>

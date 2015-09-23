@@ -204,7 +204,7 @@ namespace Medcenter.Service.Model.Operations
     public class ParaphraseSave : IReturn<ParaphraseSaveResponse>
     {
         public int DoctorId { get; set; }
-        public int SurveyId { get; set; }
+        public int InspectionId { get; set; }
         public Paraphrase Paraphrase { get; set; }
     }
 

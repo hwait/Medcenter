@@ -49,8 +49,17 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                if (Type == 2) return 3;
-                if (Type == 3) return 1;
+               // if (Type == 2) return 3;
+                //if (Type == 3) return 1;
+                //if (Type == 1)
+                //{
+                //    if (string.IsNullOrEmpty(Text)) return 0;
+                //    return Text.Split('{').Length - 1;
+                //} else if (Type == 2)
+                //{
+                //    if (string.IsNullOrEmpty(Text)) return 0;
+                //    return Text.Split('{').Length - 1;
+                //}
                 if (string.IsNullOrEmpty(Text)) return 0;
                 return Text.Split('{').Length - 1;
             }
@@ -99,6 +108,7 @@ namespace Medcenter.Service.Model.Types
                 if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                 if (PropertyChanged != null)
                 {
+                    //if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
                     PropertyChanged(this, new PropertyChangedEventArgs("V1"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
@@ -113,9 +123,9 @@ namespace Medcenter.Service.Model.Types
             {
                 _v2 = value;
                 if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs("V2"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
             }
@@ -129,9 +139,11 @@ namespace Medcenter.Service.Model.Types
             {
                 _v3 = value;
                 if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
                 if (PropertyChanged != null)
                 {
-                    PropertyChanged(this, new PropertyChangedEventArgs("V3"));
+                    
+                    //PropertyChanged(this, new PropertyChangedEventArgs("V3"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
             }
@@ -147,7 +159,7 @@ namespace Medcenter.Service.Model.Types
                 if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Type"));
             }
-        } //0 - header, 1 - number, 2 - string, 3 - formula
+        } //0 - header, 1 - string, 2 - number, 3 - formula
 
         [DataMember]
         public int ShowOrder
@@ -295,6 +307,7 @@ namespace Medcenter.Service.Model.Types
         } // 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler ValueChanged;
 
         public Phrase()
         {
@@ -304,7 +317,7 @@ namespace Medcenter.Service.Model.Types
         public Phrase(int showOrder)
         {
             ShowOrder = showOrder;
-            Text = showOrder.ToString();
+            //Text = showOrder.ToString();
             Status = 2;
             Type = 2;
         }

@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -418,6 +419,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         }
         private void AddParaphrase(Paraphrase obj)
         {
+            if (CurrentPhrase==null) return;
             var paraphrase = new Paraphrase(obj)
             {
                 ShowOrder = CurrentSurvey.Paraphrases.Count,
@@ -496,31 +498,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         #endregion
         
-        private void SurveyReload()
-        {
-            
-            if (_currentInspection==null) return;
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
-            .Success(r =>
-            {
-                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                CurrentSurvey = r.Survey;
-                if (CurrentSurvey!=null)
-                {
-                    IsCopying = false;
-                    foreach (var phrase in CurrentSurvey.Phrases)
-                        phrase.IsLoaded = true;
-                    foreach (var paraphrase in CurrentSurvey.ParaphrasesBase)
-                        paraphrase.IsLoaded = true;
-                }
-                SetButtonsActive();
-            })
-            .Error(ex =>
-            {
-                throw ex;
-            });
-        }
+        
 
         private void SetButtonsActive()
         {
@@ -574,7 +552,8 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             List<Phrase> list = CurrentSurvey.Phrases.Where(p => p.Status==4).ToList();
             if (list.Count == 0)
             {
-                IncrementToEnd(obj.ShowOrder+1,1);
+                if (obj.ShowOrder < CurrentSurvey.Phrases.Count-1) 
+                    IncrementToEnd(obj.ShowOrder + 1, 1);
                 CurrentSurvey.Phrases.Add(new Phrase(obj.ShowOrder+1));
             }
             else
@@ -594,8 +573,9 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                     list[i].ShowOrder = n + i + 1;
                 }
                 CurrentSurvey.Phrases.AddRange(list);
+                RefreshPhrases();
             }
-            RefreshPhrases();
+            
         }
 
         private void RefreshPhrases()
@@ -619,6 +599,33 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
         #endregion
         
         #region Survey
+        private void SurveyReload()
+        {
+
+            if (_currentInspection == null || IsCopying) return;
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                CurrentSurvey = r.Survey;
+                if (CurrentSurvey != null)
+                {
+                    IsCopying = false;
+                    CurrentSurvey.DoctorId = CurrentDoctor.Id;
+                    CurrentSurvey.InspectionId = CurrentInspection.Id;
+                    foreach (var phrase in CurrentSurvey.Phrases)
+                        phrase.IsLoaded = true;
+                    foreach (var paraphrase in CurrentSurvey.ParaphrasesBase)
+                        paraphrase.IsLoaded = true;
+                }
+                SetButtonsActive();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
         private void PreviewSurvey(Survey obj)
         {
             throw new NotImplementedException();
@@ -639,14 +646,19 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
             Errors = CurrentSurvey.Validate();
             if (Errors.Count == 0)
             {
-                
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 if (IsCopying)
                 {
                     CurrentSurvey.Id = 0;
+                    CurrentSurvey.DoctorId = CurrentDoctor.Id;
+                    CurrentSurvey.InspectionId = CurrentInspection.Id;
                     foreach (var phrase in CurrentSurvey.Phrases)
                     {
                         phrase.Status = 5;
+                    }
+                    foreach (var paraphrase in CurrentSurvey.ParaphrasesBase)
+                    {
+                        paraphrase.Status = 5;
                     }
                 }
                 else

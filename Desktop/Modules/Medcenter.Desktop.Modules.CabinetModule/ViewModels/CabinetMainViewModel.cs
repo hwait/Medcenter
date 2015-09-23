@@ -334,7 +334,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Schedules = rs.Schedules;
-                    
                 })
                 .Error(ex =>
                 {
@@ -374,6 +373,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                         foreach (var phrase in survey.Phrases)
                         {
                             phrase.IsLoaded = true;
+                            phrase.ValueChanged += phrase_ValueChanged;
                         }
                     }
                 })
@@ -382,6 +382,11 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                     Schedules = new List<Schedule>();
                     throw ex;
                 });
+        }
+
+        void phrase_ValueChanged(object sender, PropertyChangedEventArgs e)
+        {
+           
         }
         private void ReceptionsReload()
         {
@@ -575,7 +580,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             var paraphrase=new Paraphrase(obj);
             paraphrase.ShowOrder = CurrentSurvey.Paraphrases.Max(p => p.ShowOrder);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.PostAsync(new ParaphraseSave { Paraphrase = paraphrase, DoctorId = CurrentSchedule.DoctorId, SurveyId = CurrentSurvey.Id })
+            _jsonClient.PostAsync(new ParaphraseSave { Paraphrase = paraphrase, DoctorId = CurrentSchedule.DoctorId, InspectionId = CurrentSurvey.InspectionId })
                 .Success(rs =>
                 {
                     _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);

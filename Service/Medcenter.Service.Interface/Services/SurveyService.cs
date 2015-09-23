@@ -96,7 +96,8 @@ namespace Medcenter.Service.Interface.Services
 								break;
 						}
 					}
-					message = new ResultMessage(0, "Сохранение исследования", OperationResults.SurveyPatternSave);
+					
+					message = new ResultMessage(0, "Сохранение бланка", OperationResults.SurveyPatternSave);
 					//Logger.Log("SurveyPatternSaveResponse.Saving");
 				}
 				catch (Exception e)
@@ -154,7 +155,61 @@ namespace Medcenter.Service.Interface.Services
 					throw;
 				}
 			}
-
+			try
+			{
+				foreach (var paraphrase in req.Survey.ParaphrasesBase)
+				{
+					if (paraphrase.Id == 0) paraphrase.Status = 2;
+					switch (paraphrase.Status)
+						// 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut, 5 - Copied from another Pattern
+					{
+						case 1:
+							Db.Single<int>(
+								"EXEC sp_Paraphrases_Update @Id, @Text,@PositionId,@V1,@V2,@V3,@PresetId,@ShowOrder", new
+								{
+									Id = paraphrase.Id,
+									Text = paraphrase.Text,
+									PositionId = paraphrase.PositionId,
+									V1 = paraphrase.V1,
+									V2 = paraphrase.V2,
+									V3 = paraphrase.V3,
+									PresetId = paraphrase.PresetId,
+									ShowOrder = paraphrase.ShowOrder
+								});
+							break;
+						case 2:
+						case 5:
+							paraphrase.Id =
+								Db.Single<int>(
+									"EXEC sp_Paraphrases_Insert @DoctorId, @InspectionId, @Text,@PositionId,@V1,@V2,@V3,@PresetId,@ShowOrder",
+									new
+									{
+										DoctorId = req.Survey.DoctorId,
+										InspectionId = req.Survey.InspectionId,
+										Text = paraphrase.Text,
+										PositionId = paraphrase.PositionId,
+										V1 = paraphrase.V1,
+										V2 = paraphrase.V2,
+										V3 = paraphrase.V3,
+										PresetId = paraphrase.PresetId,
+										ShowOrder = paraphrase.ShowOrder
+									});
+							break;
+						case 3:
+							Db.Single<int>("EXEC sp_Paraphrases_Delete @Id", new
+							{
+								Id = paraphrase.Id
+							});
+							break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				//message = new ResultMessage(2, e.Source, OperationErrors.SurveyPatternSave);
+				Logger.Log("SurveyPatternSaveResponse.Paraphrases", e);
+				throw;
+			}
 			return new SurveyPatternSaveResponse
 			{
 				SurveyId = id,
@@ -247,7 +302,8 @@ namespace Medcenter.Service.Interface.Services
 				if (!isFound)
 					result.Add(patternPhrase);
 			}
-			return new ObservableCollection<Phrase>(result.OrderBy(p => p.PositionId));
+			//return new ObservableCollection<Phrase>(result.OrderBy(p => p.PositionId));
+		    return result;
 		}
 		public SurveySaveResponse Post(SurveySave req)
 		{
@@ -354,10 +410,10 @@ namespace Medcenter.Service.Interface.Services
 			{
 				if (id == 0) //New Paraphrase
 				{
-					id = Db.Single<int>("EXEC sp_Paraphrases_Insert @DoctorId, @SurveyId, @Text, @PositionId, @V1, @V2, @V3, @PresetId, @ShowOrder", new
+					id = Db.Single<int>("EXEC sp_Paraphrases_Insert @DoctorId, @InspectionId, @Text, @PositionId, @V1, @V2, @V3, @PresetId, @ShowOrder", new
 					{
 						DoctorId=req.DoctorId,
-						SurveyId = req.SurveyId,
+						InspectionId = req.InspectionId,
 						Text = req.Paraphrase.Text,
 						PositionId = req.Paraphrase.PositionId,
 						V1 = req.Paraphrase.V1,
@@ -369,7 +425,7 @@ namespace Medcenter.Service.Interface.Services
 				}
 				else //Paraphrase Exists
 				{
-					Db.Single<int>("EXEC sp_Paraphrases_Update @DoctorId, @InspectionId, @Text, @PositionId, @V1, @V2, @V3, @PresetId, @ShowOrder", new
+					Db.Single<int>("EXEC sp_Paraphrases_Update @Id, @Text, @PositionId, @V1, @V2, @V3, @PresetId, @ShowOrder", new
 					{
 						Id = req.Paraphrase.Id,
 						Text = req.Paraphrase.Text,
