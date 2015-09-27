@@ -13,9 +13,9 @@ namespace Medcenter.Service.Model.Types
     {
         private string _text;
         private int _showOrder;
-        private int _v1;
-        private int _v2;
-        private int _v3;
+        private decimal _v1;
+        private decimal _v2;
+        private decimal _v3;
         public bool IsLoaded { get; set; }
         [DataMember]
         public int Id { get; set; }
@@ -23,7 +23,7 @@ namespace Medcenter.Service.Model.Types
         public int PositionId { get; set; }
 
         [DataMember]
-        public int V1
+        public decimal V1
         {
             get { return _v1; }
             set
@@ -36,7 +36,7 @@ namespace Medcenter.Service.Model.Types
         }
 
         [DataMember]
-        public int V2
+        public decimal V2
         {
             get { return _v2; }
             set
@@ -49,7 +49,7 @@ namespace Medcenter.Service.Model.Types
         }
 
         [DataMember]
-        public int V3
+        public decimal V3
         {
             get { return _v3; }
             set

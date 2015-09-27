@@ -98,6 +98,7 @@
     <Compile Include="Types\Inspection.cs" />
     <Compile Include="Types\Limit.cs" />
     <Compile Include="Types\LimitsTable.cs" />
+    <Compile Include="Types\Norm.cs" />
     <Compile Include="Types\Nurse.cs" />
     <Compile Include="Types\Package.cs" />
     <Compile Include="Types\PackageGroup.cs" />

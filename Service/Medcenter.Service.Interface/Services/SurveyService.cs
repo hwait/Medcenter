@@ -292,8 +292,11 @@ namespace Medcenter.Service.Interface.Services
 					if (phrase.PositionId == patternPhrase.PositionId)
 					{
 						isFound = true;
+						phrase.PrintName = patternPhrase.PrintName;
 						phrase.PositionName = patternPhrase.PositionName;
 						phrase.Type = patternPhrase.Type;
+						//if (phrase.Type == 2) phrase.Text = patternPhrase.PrintName;
+						phrase.NormTableId = patternPhrase.NormTableId;
 						phrase.ShowOrder = patternPhrase.ShowOrder;
 						phrase.DecorationType = patternPhrase.DecorationType;
 						result.Add(phrase);
@@ -303,7 +306,7 @@ namespace Medcenter.Service.Interface.Services
 					result.Add(patternPhrase);
 			}
 			//return new ObservableCollection<Phrase>(result.OrderBy(p => p.PositionId));
-		    return result;
+			return result;
 		}
 		public SurveySaveResponse Post(SurveySave req)
 		{
@@ -362,7 +365,40 @@ namespace Medcenter.Service.Interface.Services
 			};
 		}
 		#endregion
-		
+
+		#region Norm
+		public NormSelectResponse Get(NormSelect req)
+		{
+			/*
+				@TableId int,
+				@Name varchar(50),
+				@Gender tinyint,
+				@Age int,
+				@Value int
+			 */
+			Norm norm=new Norm();
+			try
+			{
+				var rows = Db.SqlList<Norm>(
+				"EXEC sp_Norm_Select @TableId,@Name,@Gender,@Age,@Value", new
+				{
+					TableId = req.TableId,
+					Name = req.Name,
+					Gender = req.Gender,
+					Age = req.Age,
+					Value = req.Value
+				});
+				if (rows.Count > 0) norm = rows[0];
+			}
+			catch (Exception e)
+			{
+				Logger.Log("ParaphraseSelect", e);
+				throw;
+			}
+			return new NormSelectResponse { Result = norm };
+		}
+		#endregion
+
 		#region Paraphrase
 		public ParaphraseSelectResponse Get(ParaphraseSelect req)
 		{

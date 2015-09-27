@@ -10,240 +10,275 @@ using ServiceStack;
 
 namespace Medcenter.Service.Model.Operations
 {
-    #region SurveyPattern
-    /*
-     SurveyPatternSelectResponse
-     SurveyPatternSaveResponse
-     SurveyPatternDeleteResponse
-     */
+	#region SurveyPattern
+	/*
+	 SurveyPatternSelectResponse
+	 SurveyPatternSaveResponse
+	 SurveyPatternDeleteResponse
+	 */
 
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/surveypattern/{DoctorId}/{InspectionId}", "GET")]
-    public class SurveyPatternSelect : IReturn<Operations.SurveyPatternSelectResponse>
-    {
-        public int DoctorId { get; set; }
-        public int InspectionId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/surveypattern/{DoctorId}/{InspectionId}", "GET")]
+	public class SurveyPatternSelect : IReturn<Operations.SurveyPatternSelectResponse>
+	{
+		public int DoctorId { get; set; }
+		public int InspectionId { get; set; }
+	}
 
-    public class SurveyPatternSelectResponse : IHasResponseStatus
-    {
-        public SurveyPatternSelectResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveyPatternSelectResponse : IHasResponseStatus
+	{
+		public SurveyPatternSelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public Survey Survey { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public Survey Survey { get; set; }
+	}
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/surveypattern/save", "POST")]
-    public class SurveyPatternSave : IReturn<Operations.SurveyPatternSaveResponse>
-    {
-        //public int DoctorId { get; set; }
-        //public int InspectionId { get; set; }
-        public Survey Survey { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/surveypattern/save", "POST")]
+	public class SurveyPatternSave : IReturn<Operations.SurveyPatternSaveResponse>
+	{
+		//public int DoctorId { get; set; }
+		//public int InspectionId { get; set; }
+		public Survey Survey { get; set; }
+	}
 
-    public class SurveyPatternSaveResponse : IHasResponseStatus
-    {
-        public SurveyPatternSaveResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveyPatternSaveResponse : IHasResponseStatus
+	{
+		public SurveyPatternSaveResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public int SurveyId { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public int SurveyId { get; set; }
+	}
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/surveypattern/delete/{PatternId}", "GET")]
-    public class SurveyPatternDelete : IReturn<Operations.SurveyPatternDeleteResponse>
-    {
-        public int PatternId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/surveypattern/delete/{PatternId}", "GET")]
+	public class SurveyPatternDelete : IReturn<Operations.SurveyPatternDeleteResponse>
+	{
+		public int PatternId { get; set; }
+	}
 
-    public class SurveyPatternDeleteResponse : IHasResponseStatus
-    {
-        public SurveyPatternDeleteResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveyPatternDeleteResponse : IHasResponseStatus
+	{
+		public SurveyPatternDeleteResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+	}
 
 
-    #endregion
+	#endregion
 
-    #region Survey
-    
-    #region SurveysSelect
+	#region Survey
+	
+	#region SurveysSelect
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/surveys", "POST")]
-    public class SurveySelect : IReturn<SurveySelectResponse>
-    {
-        public Reception Reception { get; set; }
-        public int DoctorId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/surveys", "POST")]
+	public class SurveySelect : IReturn<SurveySelectResponse>
+	{
+		public Reception Reception { get; set; }
+		public int DoctorId { get; set; }
+	}
 
-    public class SurveySelectResponse : IHasResponseStatus
-    {
-        public SurveySelectResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveySelectResponse : IHasResponseStatus
+	{
+		public SurveySelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public List<Survey> Surveys { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public List<Survey> Surveys { get; set; }
+	}
 
-    #endregion
-    
-    #region SurveySave
+	#endregion
+	
+	#region SurveySave
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/survey/save", "POST")]
-    public class SurveySave : IReturn<SurveySaveResponse>
-    {
-        //public Survey Survey { get; set; }
-        public int SurveyId { get; set; }
-        public ObservableCollection<Phrase> Phrases { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/survey/save", "POST")]
+	public class SurveySave : IReturn<SurveySaveResponse>
+	{
+		//public Survey Survey { get; set; }
+		public int SurveyId { get; set; }
+		public ObservableCollection<Phrase> Phrases { get; set; }
+	}
 
-    public class SurveySaveResponse : IHasResponseStatus
-    {
-        public SurveySaveResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveySaveResponse : IHasResponseStatus
+	{
+		public SurveySaveResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public ObservableCollection<Phrase> Phrases { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public ObservableCollection<Phrase> Phrases { get; set; }
+	}
 
-    #endregion
-    
-    #region SurveyDelete
+	#endregion
+	
+	#region SurveyDelete
 
-    [RequiresAnyRole("Admin", "Manager")]
-    [Route("/survey/delete/{SurveyId}", "GET")]
-    public class SurveyDelete : IReturn<SurveyDeleteResponse>
-    {
-        public int SurveyId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/survey/delete/{SurveyId}", "GET")]
+	public class SurveyDelete : IReturn<SurveyDeleteResponse>
+	{
+		public int SurveyId { get; set; }
+	}
 
-    public class SurveyDeleteResponse : IHasResponseStatus
-    {
-        public SurveyDeleteResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class SurveyDeleteResponse : IHasResponseStatus
+	{
+		public SurveyDeleteResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+	}
 
-    #endregion
-    
-    #endregion
+	#endregion
+	
+	#endregion
 
-    #region Paraphrase
+	#region Paraphrase
 
-    #region ParaphrasesSelect
+	#region ParaphrasesSelect
 
-    [RequiresAnyRole("Admin", "Manager", "Nurse")]
-    [Route("/paraphrases/{InspectionId}/{DoctorId}", "GET")]
-    public class ParaphraseSelect : IReturn<ParaphraseSelectResponse>
-    {
-        public int InspectionId { get; set; }
-        public int DoctorId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager", "Nurse")]
+	[Route("/paraphrases/{InspectionId}/{DoctorId}", "GET")]
+	public class ParaphraseSelect : IReturn<ParaphraseSelectResponse>
+	{
+		public int InspectionId { get; set; }
+		public int DoctorId { get; set; }
+	}
 
-    public class ParaphraseSelectResponse : IHasResponseStatus
-    {
-        public ParaphraseSelectResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public List<Paraphrase> Paraphrases { get; set; }
-    }
-    [RequiresAnyRole("Admin", "Manager", "Nurse")]
-    [Route("/positions/{InspectionId}/{DoctorId}", "GET")]
-    public class PositionSelect : IReturn<PositionSelectResponse>
-    {
-        public int InspectionId { get; set; }
-        public int DoctorId { get; set; }
-    }
+	public class ParaphraseSelectResponse : IHasResponseStatus
+	{
+		public ParaphraseSelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public List<Paraphrase> Paraphrases { get; set; }
+	}
+	[RequiresAnyRole("Admin", "Manager", "Nurse")]
+	[Route("/positions/{InspectionId}/{DoctorId}", "GET")]
+	public class PositionSelect : IReturn<PositionSelectResponse>
+	{
+		public int InspectionId { get; set; }
+		public int DoctorId { get; set; }
+	}
 
-    public class PositionSelectResponse : IHasResponseStatus
-    {
-        public PositionSelectResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public List<Position> Positions { get; set; }
-    }
-    #endregion
+	public class PositionSelectResponse : IHasResponseStatus
+	{
+		public PositionSelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public List<Position> Positions { get; set; }
+	}
+	#endregion
 
-    #region ParaphraseSave
+	#region ParaphraseSave
 
-    [RequiresAnyRole("Admin", "Manager", "Nurse")]
-    [Route("/paraphrase/save", "POST")]
-    public class ParaphraseSave : IReturn<ParaphraseSaveResponse>
-    {
-        public int DoctorId { get; set; }
-        public int InspectionId { get; set; }
-        public Paraphrase Paraphrase { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager", "Nurse")]
+	[Route("/paraphrase/save", "POST")]
+	public class ParaphraseSave : IReturn<ParaphraseSaveResponse>
+	{
+		public int DoctorId { get; set; }
+		public int InspectionId { get; set; }
+		public Paraphrase Paraphrase { get; set; }
+	}
 
-    public class ParaphraseSaveResponse : IHasResponseStatus
-    {
-        public ParaphraseSaveResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class ParaphraseSaveResponse : IHasResponseStatus
+	{
+		public ParaphraseSaveResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-        public int ParaphraseId { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public int ParaphraseId { get; set; }
+	}
 
-    #endregion
+	#endregion
 
-    #region ParaphraseDelete
+	#region ParaphraseDelete
 
-    [RequiresAnyRole("Admin", "Manager", "Nurse")]
-    [Route("/paraphrase/delete/{ParaphraseId}", "GET")]
-    public class ParaphraseDelete : IReturn<ParaphraseDeleteResponse>
-    {
-        public int ParaphraseId { get; set; }
-    }
+	[RequiresAnyRole("Admin", "Manager", "Nurse")]
+	[Route("/paraphrase/delete/{ParaphraseId}", "GET")]
+	public class ParaphraseDelete : IReturn<ParaphraseDeleteResponse>
+	{
+		public int ParaphraseId { get; set; }
+	}
 
-    public class ParaphraseDeleteResponse : IHasResponseStatus
-    {
-        public ParaphraseDeleteResponse()
-        {
-            ResponseStatus = new ResponseStatus();
-        }
+	public class ParaphraseDeleteResponse : IHasResponseStatus
+	{
+		public ParaphraseDeleteResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
 
-        public ResultMessage Message { get; set; }
-        public ResponseStatus ResponseStatus { get; set; }
-    }
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+	}
 
-    #endregion
+	#endregion
 
-    #endregion
+	#endregion
+
+	#region Norm
+	/*
+		@TableId int,
+		@Name varchar(50),
+		@Gender tinyint,
+		@Age int,
+		@Value int
+	 */
+	[RequiresAnyRole("Admin", "Manager", "Nurse")]
+	[Route("/norm/{TableId}/{Name}/{Value}/{Age}/{Gender}", "GET")]
+	public class NormSelect : IReturn<NormSelectResponse>
+	{
+		public int TableId { get; set; }
+		public string Name { get; set; }
+		public int Value { get; set; }
+		public int Age { get; set; }
+		public byte Gender { get; set; }
+
+	}
+
+	public class NormSelectResponse : IHasResponseStatus
+	{
+		public NormSelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public Norm Result { get; set; }
+	}
+	
+	#endregion
+
+
 }
 

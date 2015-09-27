@@ -87,7 +87,7 @@
 						</i:Interaction.Triggers>
 					</TextBox>
 					<Button infrastructure:ButtonExtender.Icon="{StaticResource IconButtons.ArrowRight}" HorizontalAlignment="Center" Margin="5,0" VerticalAlignment="Center" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CopyToRightCommand}" Style="{DynamicResource ButtonMenuStyle}"  CommandParameter="{Binding }" Tag="Default" Height="30" Width="30"/>
-					<TextBox Text="{Binding Text}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="360" Margin="0">
+					<TextBox Text="{Binding PrintName}" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="13.333" Width="360" Margin="0">
 						<i:Interaction.Triggers>
 							<i:EventTrigger EventName="GotFocus">
 								<i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChoosePhraseCommand}" CommandParameter="{Binding }" />

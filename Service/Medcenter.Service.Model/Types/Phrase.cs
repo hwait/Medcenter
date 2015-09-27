@@ -15,6 +15,9 @@ namespace Medcenter.Service.Model.Types
     {
         private byte _status;
         private string _text;
+        private string _resultV1;
+        private string _resultV2;
+        private string _resultV3;
         private string _positionName;
         private int _type;
         private int _showOrder;
@@ -27,12 +30,15 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Text
         {
-            get { return _text; }
+            get
+            {
+                
+                return _text;
+            }
             set
             {
-                var isNotLoaded = _text == null;
                 _text = value;
-                if (isNotLoaded) return;
+                if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
                 ParaphraseId = 0;
                 if (PropertyChanged != null)
@@ -45,22 +51,67 @@ namespace Medcenter.Service.Model.Types
             }
         }
 
+        [DataMember]
+        public string ResultV1
+        {
+            get { return _resultV1; }
+            set
+            {
+                _resultV1 = value;
+                SetText();
+                if (PropertyChanged != null&&IsLoaded)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                }
+            }
+        }
+
+        private void SetText()
+        {
+            if (Type == 2 && IsLoaded)
+                if (ValuesCount == 3)
+                    Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2, V3, ResultV3);
+                else if (ValuesCount == 2)
+                    Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2);
+                else if (ValuesCount == 1)
+                    Text = string.Format(PrintName, V1, ResultV1);
+        }
+
+        [DataMember]
+        public string ResultV2
+        {
+            get { return _resultV2; }
+            set
+            {
+                _resultV2 = value;
+                SetText();
+                if (PropertyChanged != null && IsLoaded)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                }
+            }
+        }
+        [DataMember]
+        public string ResultV3
+        {
+            get { return _resultV3; }
+            set
+            {
+                _resultV3 = value;
+                SetText();
+                if (PropertyChanged != null && IsLoaded)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                }
+            }
+        }
         public int ValuesCount
         {
             get
             {
-               // if (Type == 2) return 3;
-                //if (Type == 3) return 1;
-                //if (Type == 1)
-                //{
-                //    if (string.IsNullOrEmpty(Text)) return 0;
-                //    return Text.Split('{').Length - 1;
-                //} else if (Type == 2)
-                //{
-                //    if (string.IsNullOrEmpty(Text)) return 0;
-                //    return Text.Split('{').Length - 1;
-                //}
                 if (string.IsNullOrEmpty(Text)) return 0;
+                if (Type==2) 
+                    return (PrintName.Split('{').Length - 1)/2;
                 return Text.Split('{').Length - 1;
             }
         }
@@ -79,6 +130,10 @@ namespace Medcenter.Service.Model.Types
             }
             set { Text = value; }
         }
+        [DataMember]
+        public string PrintName { get; set; }
+        [DataMember]
+        public int NormTableId { get; set; }
         [DataMember]
         public int ParaphraseId { get; set; }
         [DataMember]
@@ -99,30 +154,31 @@ namespace Medcenter.Service.Model.Types
         }
 
         [DataMember]
-        public int V1
+        public decimal V1
         {
             get { return _v1; }
             set
             {
                 _v1 = value;
-                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (!IsLoaded) return;
+                if (Status < 2 || Status > 3) Status = 1;
+                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
                 if (PropertyChanged != null)
                 {
-                    //if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("V1"));
                     PropertyChanged(this, new PropertyChangedEventArgs("Status"));
                 }
             }
         }
 
         [DataMember]
-        public int V2
+        public decimal V2
         {
             get { return _v2; }
             set
             {
                 _v2 = value;
-                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (!IsLoaded) return;
+                if (Status < 2 || Status > 3) Status = 1;
                 if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
                 if (PropertyChanged != null)
                 {
@@ -132,13 +188,14 @@ namespace Medcenter.Service.Model.Types
         }
 
         [DataMember]
-        public int V3
+        public decimal V3
         {
             get { return _v3; }
             set
             {
                 _v3 = value;
-                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                if (!IsLoaded) return;
+                if (Status < 2 || Status > 3) Status = 1;
                 if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
                 if (PropertyChanged != null)
                 {
@@ -290,9 +347,9 @@ namespace Medcenter.Service.Model.Types
             Status = Status == 3 ? _oldStatus < 3 ? _oldStatus : (byte) 1 : (byte)3;
         }
         private byte _oldStatus ;
-        private int _v1;
-        private int _v2;
-        private int _v3;
+        private decimal _v1;
+        private decimal _v2;
+        private decimal _v3;
 
         [DataMember]
         public byte Status

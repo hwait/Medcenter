@@ -386,8 +386,62 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
 
         void phrase_ValueChanged(object sender, PropertyChangedEventArgs e)
         {
-           
+            var phrase = (Phrase) sender;
+            if(phrase.NormTableId==0) return;
+            string name = "";
+            string[] separator = {" | "},names;
+            names = phrase.PositionName.Split(separator, StringSplitOptions.None);
+            decimal val = 0;
+            switch (e.PropertyName)
+            {
+                case "V1":
+                    //phrase.ResultV1 = " (норма)";
+                    name = names[0];
+                    val = phrase.V1;
+                    break;
+                case "V2":
+                    //phrase.ResultV2 = " (норма)";
+                    name = names[1];
+                    val = phrase.V2;
+                    break;
+                case "V3":
+                    //phrase.ResultV3 = " (норма)";
+                    name = names[2];
+                    val = phrase.V3;
+                    break;
+            }
+            var age = (DateTime.Today - CurrentPatient.BirthDate).Days;
+            _jsonClient.GetAsync(new NormSelect
+            {
+                Gender = (byte)CurrentPatient.Gender,
+                Age=age,
+                Name=name,
+                TableId=phrase.NormTableId,
+                Value = (int)(val*100)
+            })
+            .Success(rr =>
+            {
+                //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                if (rr.Result.Name == null) return;
+                switch (e.PropertyName)
+                {
+                    case "V1":
+                        phrase.ResultV1 = rr.Result.Output;
+                        break;
+                    case "V2":
+                        phrase.ResultV2 = rr.Result.Output;
+                        break;
+                    case "V3":
+                        phrase.ResultV3 = rr.Result.Output;
+                        break;
+                }
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
         }
+
         private void ReceptionsReload()
         {
             Receptions = new List<Reception>();
@@ -578,7 +632,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private void SaveParaphrase(Phrase obj)
         {
             var paraphrase=new Paraphrase(obj);
-            paraphrase.ShowOrder = CurrentSurvey.Paraphrases.Max(p => p.ShowOrder);
+            paraphrase.ShowOrder = (CurrentSurvey.Paraphrases.Count>0)?CurrentSurvey.Paraphrases.Max(p => p.ShowOrder):0;
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             _jsonClient.PostAsync(new ParaphraseSave { Paraphrase = paraphrase, DoctorId = CurrentSchedule.DoctorId, InspectionId = CurrentSurvey.InspectionId })
                 .Success(rs =>
