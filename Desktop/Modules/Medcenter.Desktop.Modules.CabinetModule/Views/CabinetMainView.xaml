@@ -14,6 +14,7 @@
 			 mc:Ignorable="d" Margin="-7,0,0,0"
 			 >
 	<UserControl.Resources>
+		<infrastructure:ShortDateConverter x:Key="ShortDateConverter" />
 		<infrastructure:StatusToColorBrushConverter x:Key="StatusToColorBrush" />
 		<infrastructure:PathToImageConverter x:Key="ConvertPathToImage" />
 		<infrastructure:ObjectToVisibilityConverter x:Key="ObjectToVisibility"/>
@@ -65,9 +66,14 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<DataTemplate x:Key="LastSurveysButtonsTemplate">
+			<Grid Margin="3,0,0,0">
+				<Button Content="{Binding ShortName}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseLastSurveyCommand}"  CommandParameter="{Binding }" Height="24" Style="{DynamicResource SurveyButtonStyle}" Margin="0,0,18,0"/>
+			</Grid>
+		</DataTemplate>
 		<DataTemplate x:Key="SurveysButtonsTemplate">
 			<Grid Margin="3,0,0,0">
-				<Button Content="{Binding ShortName}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseSurveyCommand}"  CommandParameter="{Binding }" Height="24" Style="{DynamicResource SurveyButtonStyle}"/>
+				<Button Content="{Binding ShortName}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseSurveyCommand}"  CommandParameter="{Binding }" Height="24" Style="{DynamicResource SurveyButtonStyle}" Margin="0,0,18,0"/>
 			</Grid>
 		</DataTemplate>
 		<Style x:Key="SurveyButtonStyle" TargetType="{x:Type Button}">
@@ -80,6 +86,7 @@
 									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
 								</Rectangle.Fill>
 							</Rectangle>
+							<TextBlock Text="{Binding Date, Converter={StaticResource ShortDateConverter}, ConverterParameter=Date}" FontSize="10" FontWeight="Bold" Margin="0,0,0,3" HorizontalAlignment="Right" VerticalAlignment="Top"/>
 							<ContentPresenter Margin="5,0,0,0" HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 						</Grid>
 						<ControlTemplate.Triggers>
@@ -114,6 +121,7 @@
 									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
 								</Rectangle.Fill>
 							</Rectangle>
+							<TextBlock Text="{Binding Start, StringFormat='{}{0:HH:mm}'}" Margin="0" HorizontalAlignment="Right" VerticalAlignment="Top" FontFamily="Vrinda" FontWeight="Bold" Padding="0,0,3,0" FontSize="13.333"/>
 							<StackPanel Margin="5,0,0,0" Orientation="Vertical">
 								<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
 								<TextBlock Text="{Binding Text}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,5,3"/>
@@ -311,7 +319,7 @@
 		</StackPanel>
 		<StackPanel Margin="0,0,5,0" Orientation="Vertical" Grid.Column="1" Grid.Row="1">
 			<ScrollViewer Margin="0,10,5,0" >
-				<ItemsControl ItemsSource="{Binding Receptions}" ItemTemplate="{DynamicResource ReceptionsButtonsTemplate}" />
+				<ItemsControl ItemsSource="{Binding Receptions}" ItemTemplate="{DynamicResource ReceptionsButtonsTemplate}" MaxHeight="200" />
 			</ScrollViewer>
 			<StackPanel Margin="0,10,5,0" Orientation="Vertical" Visibility="{Binding CurrentReception, Converter={StaticResource ObjectToVisibility}}">
 				<StackPanel Margin="0,0,5,0" Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
@@ -328,9 +336,15 @@
 						</Button.Background>
 					</Button>
 				</StackPanel>
-				<ItemsControl ItemsSource="{Binding Surveys}" ItemTemplate="{DynamicResource SurveysButtonsTemplate}"/>
+				<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Текущие исследования:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28"/>
+				<ScrollViewer>
+					<ItemsControl ItemsSource="{Binding Surveys}" ItemTemplate="{DynamicResource SurveysButtonsTemplate}" MaxHeight="100" Width="390"/>
+				</ScrollViewer>
+				<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Прошлые исследования:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28"/>
+				<ScrollViewer>
+					<ItemsControl ItemsSource="{Binding LastSurveys}" ItemTemplate="{DynamicResource LastSurveysButtonsTemplate}" MaxHeight="100" Width="390"/>
+				</ScrollViewer>
 			</StackPanel>
-			
 			<ItemsControl ItemsSource="{Binding CurrentSurvey.Paraphrases}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>
 		</StackPanel>
 		

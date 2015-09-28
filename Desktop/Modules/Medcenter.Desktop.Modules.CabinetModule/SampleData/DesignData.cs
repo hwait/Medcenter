@@ -272,7 +272,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         #endregion
 
 
-        #region Receptions 2
+        #region Receptions
         
         private Payment _payment1
         {
@@ -1213,6 +1213,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     Header = "Header for ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
                     Status = 2,
+                    Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Month,10,30,0),
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
                     Paraphrases = new ObservableCollection<Paraphrase>
@@ -1272,6 +1273,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
+                    Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Month, 10, 30, 0),
                     Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,
@@ -1325,6 +1327,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Status = 1,
                     CurrentDoctor = CurrentDoctor,
                     CurrentPatient = CurrentReception.Patient,
+                    Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Month, 10, 30, 0),
                     Phrases = new ObservableCollection<Phrase>
                     {
                         _phrase1,
@@ -1364,7 +1367,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 };
             }
         }
-
+        
         private Survey _survey4
         {
             get
@@ -1373,6 +1376,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 1,
                     ShortName = "НСГ откр.род.",
+                    Status = 2,
                     Date = new DateTime(2015, 6, 6)
                 };
             }
@@ -1386,6 +1390,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 1,
                     ShortName = "НСГ откр.род.2",
+                    Status = 2,
                     Date = new DateTime(2015, 6, 8)
                 };
             }
@@ -1399,6 +1404,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 1,
                     ShortName = "НСГ откр.род.3",
+                    Status = 3,
                     Date = new DateTime(2015, 7, 16)
                 };
             }
@@ -1414,7 +1420,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
         {
             get { return new List<Survey> { _survey1, _survey2, _survey3 }; }
         }
-        public List<Survey> FormerSurveys
+        public List<Survey> LastSurveys
         {
             get { return new List<Survey> { _survey4, _survey5, _survey6 }; }
         }

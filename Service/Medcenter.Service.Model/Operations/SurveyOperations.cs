@@ -103,7 +103,45 @@ namespace Medcenter.Service.Model.Operations
 		public ResponseStatus ResponseStatus { get; set; }
 		public List<Survey> Surveys { get; set; }
 	}
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/lastsurveys/{ReceptionId}/{PatientId}", "GET")]
+	public class LastSurveysSelect : IReturn<LastSurveysSelectResponse>
+	{
+		public int ReceptionId { get; set; }
+		public int PatientId { get; set; }
+	}
 
+	public class LastSurveysSelectResponse : IHasResponseStatus
+	{
+		public LastSurveysSelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
+
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public List<Survey> Surveys { get; set; }
+	}
+	[RequiresAnyRole("Admin", "Manager")]
+	[Route("/lastsurvey", "POST")]
+	public class LastSurveySelect : IReturn<LastSurveySelectResponse>
+	{
+		public int InspectionId { get; set; }
+		public int DoctorId { get; set; }
+		public Survey Survey { get; set; }
+	}
+
+	public class LastSurveySelectResponse : IHasResponseStatus
+	{
+		public LastSurveySelectResponse()
+		{
+			ResponseStatus = new ResponseStatus();
+		}
+
+		public ResultMessage Message { get; set; }
+		public ResponseStatus ResponseStatus { get; set; }
+		public Survey Survey { get; set; }
+	}
 	#endregion
 	
 	#region SurveySave

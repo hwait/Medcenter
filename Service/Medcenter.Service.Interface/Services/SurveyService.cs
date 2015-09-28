@@ -240,6 +240,24 @@ namespace Medcenter.Service.Interface.Services
 		#endregion
 
 		#region Survey
+		public LastSurveySelectResponse Post(LastSurveySelect req)
+		{
+			return new LastSurveySelectResponse { Survey = SurveyFillValues(req.Survey, req.DoctorId, req.InspectionId) };
+		}
+		public LastSurveysSelectResponse Get(LastSurveysSelect req)
+		{
+			var rows=new List<Survey>();
+			try
+			{
+				rows = Db.SqlList<Survey>("EXEC sp_SurveyInPatient_Select @ReceptionId, @PatientId", new { PatientId = req.PatientId, ReceptionId = req.ReceptionId });
+			}
+			catch (Exception e)
+			{
+				Logger.Log("LastSurveysSelectResponse", e);
+				throw;
+			}
+			return new LastSurveysSelectResponse { Surveys = rows };
+		}
 		public SurveySelectResponse Post(SurveySelect req)
 		{
 			List<Survey> surveys=new List<Survey>();
@@ -314,6 +332,7 @@ namespace Medcenter.Service.Interface.Services
 			// Survey ALWAYS exists so we're saving PHRASES ONLY
 			try
 			{
+				Db.Single<int>("EXEC sp_Survey_UpdateDate @SurveyId", new { SurveyId = req.SurveyId });
 				foreach (var phrase in req.Phrases)
 				{
 					if (phrase.Id == 0) phrase.Status = 2;

@@ -49,6 +49,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Survey> _removeSurveyCommand;
         private readonly DelegateCommand<Survey> _saveSurveyCommand;
         private readonly DelegateCommand<Survey> _chooseSurveyCommand;
+        private readonly DelegateCommand<Survey> _chooseLastSurveyCommand;
         private readonly DelegateCommand<Reception> _chooseReceptionCommand;
         private readonly DelegateCommand<object> _chooseParaphraseCommand;
         private int _cabinetNumber = int.Parse(Utils.ReadSetting("CabinetNumber"));
@@ -92,6 +93,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         public ICommand PreviewSurveyCommand
         {
             get { return this._previewSurveyCommand; }
+        }
+        public ICommand ChooseLastSurveyCommand
+        {
+            get { return this._chooseLastSurveyCommand; }
         }
         public ICommand ChooseSurveyCommand
         {
@@ -213,6 +218,13 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         #endregion
 
         #region Surveys
+        private List<Survey> _lastSurveys;
+
+        public List<Survey> LastSurveys
+        {
+            get { return _lastSurveys; }
+            set { SetProperty(ref _lastSurveys, value); }
+        }
 
         private List<Survey> _surveys;
 
@@ -324,6 +336,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
             _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
             _chooseSurveyCommand = new DelegateCommand<Survey>(ChooseSurvey, CanChooseSurvey);
+            _chooseLastSurveyCommand = new DelegateCommand<Survey>(ChooseLastSurvey);
             _chooseReceptionCommand = new DelegateCommand<Reception>(ChooseReception);
             
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
@@ -366,7 +379,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _jsonClient.PostAsync(new SurveySelect {Reception = CurrentReception, DoctorId = CurrentSchedule.DoctorId})
                 .Success(rs =>
                 {
-                    _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                     Surveys = rs.Surveys;
                     foreach (var survey in Surveys)
                     {
@@ -376,6 +388,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                             phrase.ValueChanged += phrase_ValueChanged;
                         }
                     }
+                    _jsonClient.GetAsync(new LastSurveysSelect { ReceptionId = CurrentReception.Id, PatientId = CurrentReception.PatientId })
+                    .Success(r =>
+                    {
+                        _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                        LastSurveys = r.Surveys;
+                    })
+                    .Error(ex =>
+                    {
+                        throw ex;
+                    });
                 })
                 .Error(ex =>
                 {
@@ -465,7 +487,26 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             return true;
         }
-
+        private void ChooseLastSurvey(Survey obj)
+        {
+            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            _jsonClient.PostAsync(new LastSurveySelect { Survey = obj, DoctorId = CurrentSchedule.DoctorId, InspectionId = obj.InspectionId})
+            .Success(r =>
+            {
+                _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+                CurrentSurvey = r.Survey;
+                foreach (var phrase in CurrentSurvey.Phrases)
+                {
+                    phrase.IsLoaded = true;
+                    phrase.ValueChanged += phrase_ValueChanged;
+                }
+                SetButtonsActive();
+            })
+            .Error(ex =>
+            {
+                throw ex;
+            });
+        }
         private void ChooseSurvey(Survey obj)
         {
             CurrentSurvey = obj;
@@ -475,7 +516,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
 
             //if (_currentInspection==null) return;
-            _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //_eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
             //_jsonClient.GetAsync(new SurveyPatternSelect { DoctorId = _currentDoctor.Id, InspectionId = _currentInspection.Id })
             //.Success(r =>
             //{
@@ -516,7 +557,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             Errors = CurrentSurvey.Validate();
             if (Errors.Count == 0)
             {
-                var phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.Where(phrase => phrase.Status > 0 && phrase.Id==0).ToList());
+                //var phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.Where(phrase => phrase.Status > 0 && phrase.Id==0).ToList());
+                var phrases = new ObservableCollection<Phrase>(CurrentSurvey.Phrases.Where(phrase => phrase.Status > 0).ToList());
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
                 _jsonClient.PostAsync(new SurveySave { Phrases = phrases, SurveyId = CurrentSurvey.Id})
                     .Success(r =>

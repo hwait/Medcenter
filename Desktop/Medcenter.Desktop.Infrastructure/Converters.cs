@@ -81,6 +81,23 @@ namespace Medcenter.Desktop.Infrastructure
             return null;
         }
     }
+    public class ShortDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            DateTime dt = (DateTime) value;
+            if (dt.Year == DateTime.Today.Year && dt.Month == DateTime.Today.Month && dt.Day == DateTime.Today.Day) 
+                return "";
+            return ((DateTime)value).ToString("d MMMM yyyy г.", new CultureInfo("ru-RU"));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
     public class WeekDayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,
