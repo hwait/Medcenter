@@ -31,7 +31,9 @@ namespace Medcenter.Service.Model.Misc
         Header=0,
         String = 1,
         Number = 2,
-        Formula = 3
+        Formula = 3,
+        Drug = 4,
+        Picture = 5
     }
     
     public enum ReceptopnStatuses : byte

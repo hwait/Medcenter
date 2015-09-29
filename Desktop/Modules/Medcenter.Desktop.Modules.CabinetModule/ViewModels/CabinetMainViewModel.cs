@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Medcenter.Desktop.Infrastructure;
+using Medcenter.Desktop.Modules.CabinetModule.Views;
 using Medcenter.Service.Model.Messaging;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
@@ -539,7 +540,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         }
         private void PreviewSurvey(Survey obj)
         {
-            throw new NotImplementedException();
+            new CabinetSurveyPreviewView().Show();
         }
         private void NewSurvey(Survey obj)
         {

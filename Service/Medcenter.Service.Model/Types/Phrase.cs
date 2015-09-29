@@ -216,7 +216,7 @@ namespace Medcenter.Service.Model.Types
                 if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
                 if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Type"));
             }
-        } //0 - header, 1 - string, 2 - number, 3 - formula
+        } //0 - header, 1 - string, 2 - number, 3 - formula, 4 - drug, 5 - image
 
         [DataMember]
         public int ShowOrder

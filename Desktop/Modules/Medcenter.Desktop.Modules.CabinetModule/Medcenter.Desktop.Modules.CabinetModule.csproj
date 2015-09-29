@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Calculus.cs" />
+    <Compile Include="Model\PrintDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -116,9 +117,13 @@
     </Compile>
     <Compile Include="SampleData\DesignData.cs" />
     <Compile Include="CabinetModule.cs" />
+    <Compile Include="SampleData\PrintData.cs" />
     <Compile Include="ViewModels\CabinetMainViewModel.cs" />
     <Compile Include="Views\CabinetMainView.xaml.cs">
       <DependentUpon>CabinetMainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CabinetSurveyPreviewView.xaml.cs">
+      <DependentUpon>CabinetSurveyPreviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CabinetToolbarView.xaml.cs">
       <DependentUpon>CabinetToolbarView.xaml</DependentUpon>
@@ -154,12 +159,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\CabinetSurveyPreviewView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\CabinetToolbarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Pictures\NEURO1.jpg" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\IconSave.png" />
   </ItemGroup>

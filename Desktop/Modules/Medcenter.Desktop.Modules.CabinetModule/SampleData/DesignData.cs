@@ -546,6 +546,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 1,
                     PositionName = "ПАРЕНХИМА МОЗГА",
+                    PrintName = "ПАРЕНХИМА МОЗГА",
                     PositionId = 1,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 1,
@@ -563,6 +564,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 2,
                     PositionName = "Эхоструктура",
+                    PrintName = "Эхоструктура",
                     Text = " однородная. ",
                     ParaphraseId = 2,
                     PositionId = 2,
@@ -581,6 +583,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 3,
                     PositionName = "Расположение",
+                    PrintName = "Расположение",
                     Text = "Прилегает к кости. ",
                     ParaphraseId =3,
                     PositionId = 3,
@@ -599,6 +602,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 4,
                     PositionName = "Борозды",
+                    PrintName = "Борозды",
                     Text = " Рисунок  извилин и борозд четкий. Поясная борозда глубокая. ",
                     ParaphraseId = 4,
                     PositionId = 4,
@@ -617,6 +621,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 5,
                     PositionName = "Субкортикальные зоны:",
+                    PrintName = "Субкортикальные зоны:",
                     Text = " Справа эхогенность не изменена. Слева эхогенность не изменена. ",
                     ParaphraseId = 5,
                     PositionId = 5,
@@ -635,6 +640,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 6,
                     PositionName = "Перивентрикулярная область:",
+                    PrintName = "Перивентрикулярная область:",
                     Text = " не изменена. ",
                     ParaphraseId = 6,
                     PositionId = 6,
@@ -653,6 +659,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 7,
                     PositionName = "ЖЕЛУДОЧКОВАЯ СИСТЕМА",
+                    PrintName = "ЖЕЛУДОЧКОВАЯ СИСТЕМА",
                     ParaphraseId = 7,
                     PositionId = 7,
                     Type = (int)PhraseTypes.Header,
@@ -670,6 +677,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 8,
                     PositionName = "Боковые желудочки:",
+                    PrintName = "Боковые желудочки:",
                     Text = " полости свободны, анэхогенны. ",
                     ParaphraseId = 8,
                     PositionId = 8,
@@ -688,6 +696,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 9,
                     PositionName = "III желудочек",
+                    PrintName = "III желудочек",
                     Text = " не расширен. ",
                     ParaphraseId = 9,
                     PositionId = 9,
@@ -706,6 +715,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 10,
                     PositionName = "IV желудочек",
+                    PrintName = "IV желудочек",
                     Text = " в S0  не  расширен, треугольной формы. ",
                     ParaphraseId = 10,
                     PositionId = 10,
@@ -724,6 +734,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 11,
                     PositionName = "СОСУДИСТЫЕ СПЛЕТЕНИЯ",
+                    PrintName = "СОСУДИСТЫЕ СПЛЕТЕНИЯ",
                     PositionId = 11,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 11,
@@ -740,6 +751,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 12,
                     PositionName = "Форма",
+                    PrintName = "Форма",
                     Text = " Симметричные. ",
                     ParaphraseId = 12,
                     PositionId = 12,
@@ -758,6 +770,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 13,
                     PositionName = "Контуры справа",
+                    PrintName = "Контуры справа",
                     Text = " четкие, не ровные. ",
                     ParaphraseId = 13,
                     PositionId = 13,
@@ -776,6 +789,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 14,
                     PositionName = "Контуры слева",
+                    PrintName = "Контуры слева",
                     Text = " в структуре определяется объёмное образование размерами {0}x{1}x{2} мм. ",
                     V1 = 7,
                     V2 = 15,
@@ -797,6 +811,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 15,
                     PositionName = "Размеры:",
+                    PrintName = "Размеры:",
                     Text = " Ширина F6 справа {0} мм, слева {1} мм. ",
                     V1 = 3,
                     V2 = 4,
@@ -817,6 +832,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 16,
                     PositionName = "СРЕДИННЫЕ СТРУКТУРЫ МОЗГА:",
+                    PrintName = "СРЕДИННЫЕ СТРУКТУРЫ МОЗГА:",
                     PositionId = 16,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 16,
@@ -833,6 +849,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 17,
                     PositionName = "Смещение",
+                    PrintName = "Смещение",
                     Text = " отсутствует. ",
                     ParaphraseId = 17,
                     PositionId = 17,
@@ -851,12 +868,13 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 18,
                     PositionName = "Ножки мозга",
-                    Text = " Ножки мозга четкие, ровные симметричные, гипоэхогенные. ",
+                    PrintName = "Ножки мозга",
+                    Text = "ПМА Vs=78 см/с, ниже нормы (<80). ПМА Vd=26 см/с. ПМА RI=0,5, ниже нормы (<0,61).",
                     ParaphraseId = 18,
                     PositionId = 18,
-                    Type = (int)PhraseTypes.String,
+                    Type = (int)PhraseTypes.Number,
                     ShowOrder = 18,
-                    DecorationType = (int)DecorationTypes.InTextWithPosition,
+                    DecorationType = (int)DecorationTypes.StartsAndEndsWithNewParagraph,
                     FormulesAffected = new List<int>(),
                 };
             }
@@ -869,6 +887,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 19,
                     PositionName = "Водопровод мозга",
+                    PrintName = "Водопровод мозга",
                     Text = " в режиме  S0 = {0}-{1} мм. ",
                     V1 = 3,
                     V2 = 4,
@@ -889,6 +908,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 20,
                     PositionName = "Шишковидная железа",
+                    PrintName = "Шишковидная железа",
                     Text = " визуализируется. ",
                     ParaphraseId = 20,
                     PositionId = 20,
@@ -907,6 +927,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 31,
                     PositionName = "ЦИСТЕРНЫ МОЗГА В РЕЖИМЕ ТН0",
+                    PrintName = "ЦИСТЕРНЫ МОЗГА В РЕЖИМЕ ТН0",
                     PositionId = 31,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 31,
@@ -924,6 +945,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 32,
                     PositionName = "Вывороты",
+                    PrintName = "Вывороты",
                     Text = " Визуализация выворотов рисунка базальных цистерн достаточная, деформаций нет. ",
                     ParaphraseId = 32,
                     PositionId = 32,
@@ -942,6 +964,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 33,
                     PositionName = "Пульсация",
+                    PrintName = "Пульсация",
                     Text = " Пульсация рисунка базальных цистерн достаточная. ",
                     ParaphraseId = 33,
                     PositionId = 33,
@@ -960,6 +983,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 34,
                     PositionName = "Щель и зоны",
+                    PrintName = "Щель и зоны",
                     Text = " Зона Сильвиевой щели, хиазмально-селлярная, прехиазмальная зона не изменена. ",
                     ParaphraseId = 34,
                     PositionId = 34,
@@ -978,6 +1002,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 5,
                     PositionName = "Охватывающая цистерна:",
+                    PrintName = "Охватывающая цистерна:",
                     Text = " рисунок не изменен. без изменений. без  особенностей.. ",
                     ParaphraseId = 35,
                     PositionId = 35,
@@ -996,6 +1021,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 36,
                     PositionName = "Межножковая цистерна:",
+                    PrintName = "Межножковая цистерна:",
                     Text = " рисунок не изменен. без изменений. без  особенностей. ",
                     ParaphraseId = 36,
                     PositionId = 36,
@@ -1014,6 +1040,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 37,
                     PositionName = "ЗАКЛЮЧЕНИЕ:",
+                    PrintName = "ЗАКЛЮЧЕНИЕ:",
                     ParaphraseId = 37,
                     PositionId = 37,
                     Type = (int)PhraseTypes.Header,
@@ -1030,7 +1057,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Phrase
                 {
                     Id = 38,
-                    PositionName = "",
+                    PositionName = "ЗАКЛЮЧЕНИЕ",
+                    PrintName = "ЗАКЛЮЧЕНИЕ",
                     Text = " Лёгкие гипорезорбции в парасаггитальной области (транзитиорные). ",
                     ParaphraseId = 38,
                     PositionId = 37,
@@ -1048,7 +1076,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Phrase
                 {
                     Id = 39,
-                    PositionName = "",
+                    PositionName = "ЗАКЛЮЧЕНИЕ",
+                    PrintName = "ЗАКЛЮЧЕНИЕ",
                     Text = " Описание 2. ",
                     ParaphraseId = 39,
                     PositionId = 37,
@@ -1066,7 +1095,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Phrase
                 {
                     Id = 38,
-                    PositionName = "",
+                    PositionName = "ЗАКЛЮЧЕНИЕ",
+                    PrintName = "ЗАКЛЮЧЕНИЕ",
                     Text = " Описание 3. ",
                     ParaphraseId = 38,
                     PositionId = 38,
@@ -1086,6 +1116,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 40,
                     PositionName = "РЕКОМЕНДАЦИИ:",
+                    PrintName = "РЕКОМЕНДАЦИИ:",
                     PositionId = 40,
                     Type = (int)PhraseTypes.Header,
                     ShowOrder = 40,
@@ -1101,7 +1132,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Phrase
                 {
                     Id = 39,
-                    PositionName = "",
+                    PositionName = "РЕКОМЕНДАЦИИ",
+                    PrintName = "РЕКОМЕНДАЦИИ",
                     Text = "",
                     ParaphraseId = 0,
                     PositionId = 39,
@@ -1119,7 +1151,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new Phrase
                 {
                     Id = 39,
-                    PositionName = "",
+                    PositionName = "РЕКОМЕНДАЦИИ",
+                    PrintName = "РЕКОМЕНДАЦИИ",
                     Text = "",
                     ParaphraseId = 0,
                     PositionId = 39,
