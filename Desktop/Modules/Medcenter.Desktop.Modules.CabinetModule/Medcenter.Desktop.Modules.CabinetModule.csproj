@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\Calculus.cs" />
+    <Compile Include="Model\PhraseTemplateSelector.cs" />
     <Compile Include="Model\PrintDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -119,6 +120,7 @@
     <Compile Include="CabinetModule.cs" />
     <Compile Include="SampleData\PrintData.cs" />
     <Compile Include="ViewModels\CabinetMainViewModel.cs" />
+    <Compile Include="ViewModels\CabinetSurveyPreviewViewModel.cs" />
     <Compile Include="Views\CabinetMainView.xaml.cs">
       <DependentUpon>CabinetMainView.xaml</DependentUpon>
     </Compile>
@@ -184,6 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Turn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Print.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -86,6 +86,7 @@
     <Compile Include="Interfaces\IHasId.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="Months.cs" />
+    <Compile Include="ProgramPaginator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

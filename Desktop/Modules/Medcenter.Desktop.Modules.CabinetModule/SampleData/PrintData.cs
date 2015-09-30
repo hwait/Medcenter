@@ -40,7 +40,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
             {
                 return new PrintPhrase
                 {
-                    Header = "../Pictures/NEURO1.jpg",
+                    //Text = string.Format("{0}Pictures\\{1}", AppDomain.CurrentDomain.BaseDirectory, "NEURO1.jpg"),
+                    Text = @"c:\Users\Nikk\Documents\Projects\Medcenter\Desktop\Modules\Medcenter.Desktop.Modules.CabinetModule\Pictures\NEURO1.jpg",
                     Type = (int)PhraseTypes.Picture,
                     DecorationType = (int)DecorationTypes.HeaderOnly,
                 };
@@ -502,7 +503,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 return new PrintDocument
                 {
                     Id = 1,
-                    Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ",
+                    Name = "ТРАНСКРАНИАЛЬНАЯ УЛЬТРАСОНОГРАФИЯ С ДОППЛЕРОМЕТРИЕЙ СОСУДОВ",
                     Header = "С 03.004.003",
                     Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Month, 10, 30, 0),
                     Patient=_patient,
