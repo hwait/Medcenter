@@ -43,10 +43,12 @@ namespace Medcenter.Service.Interface.Services
 				id = req.Survey.Id;
 				try
 				{
-					Db.Single<int>("EXEC sp_PatternAsSurvey_UpdateHeader @PatternId, @Header", new
+					Db.Single<int>("EXEC sp_PatternAsSurvey_UpdateHeader @PatternId, @Header,@Picture,@PictureType", new
 					{
 						PatternId = req.Survey.Id,
-						Header = req.Survey.Header
+						Header = req.Survey.Header,
+						Picture=req.Survey.Picture,
+						PictureType=req.Survey.PictureType
 					});
 					foreach (var phrase in req.Survey.Phrases)
 					{
@@ -55,11 +57,11 @@ namespace Medcenter.Service.Interface.Services
 						{
 							case 1:
 							case 4:
-								Db.Single<int>("EXEC sp_PositionAsPhrase_Update @PatternId,@PositionId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
+								Db.Single<int>("EXEC sp_PositionAsPhrase_Update @PatternId,@PositionId, @PrintName,@PositionName,@ShowOrder,@DecorationType,@Type", new
 								{
 									PatternId = req.Survey.Id,
 									PositionId = phrase.Id,
-									Text = phrase.Text,
+									PrintName = phrase.PrintName,
 									PositionName = phrase.PositionName,
 									ShowOrder = phrase.ShowOrder,
 									DecorationType = phrase.DecorationType,
@@ -67,10 +69,10 @@ namespace Medcenter.Service.Interface.Services
 								});
 								break;
 							case 2:
-								phrase.Id = Db.Single<int>("EXEC sp_PositionAsPhrase_Insert @PatternId, @Text,@PositionName,@ShowOrder,@DecorationType,@Type", new
+								phrase.Id = Db.Single<int>("EXEC sp_PositionAsPhrase_Insert @PatternId, @PrintName,@PositionName,@ShowOrder,@DecorationType,@Type", new
 								{
 									PatternId = req.Survey.Id,
-									Text = phrase.Text,
+									PrintName = phrase.PrintName,
 									PositionName = phrase.PositionName,
 									ShowOrder = phrase.ShowOrder,
 									DecorationType = phrase.DecorationType,
@@ -111,10 +113,12 @@ namespace Medcenter.Service.Interface.Services
 			{
 				try
 				{
-					id=Db.Single<int>("EXEC sp_PatternAsSurvey_Insert @DoctorId,@InspectionId, @Header", new
+					id=Db.Single<int>("EXEC sp_PatternAsSurvey_Insert @DoctorId,@InspectionId,@Picture,@PictureType,@Header", new
 					{
 						DoctorId = req.Survey.DoctorId,
 						InspectionId = req.Survey.InspectionId,
+						Picture = req.Survey.Picture,
+						PictureType = req.Survey.PictureType,
 						Header = req.Survey.Header
 					});
 					foreach (var phrase in req.Survey.Phrases)

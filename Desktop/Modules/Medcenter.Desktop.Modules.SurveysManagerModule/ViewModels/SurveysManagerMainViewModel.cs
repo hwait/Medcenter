@@ -513,7 +513,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
 
         private void CopyToRight(Phrase obj)
         {
-            obj.Text = obj.PositionName;
+            obj.PrintName = obj.PositionName;
         }
 
         private void ToggleShowPosition(Phrase obj)

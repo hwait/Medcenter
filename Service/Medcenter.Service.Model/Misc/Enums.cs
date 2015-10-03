@@ -18,13 +18,14 @@ namespace Medcenter.Service.Model.Misc
     }
     public enum DecorationTypes : int
     {
+        // 0 - in text, 1 - first paragraph, 2 - 1 + last paragraph, +10 - with Position Name
         HeaderOnly=0,
         InText = 1,
         StartsWithNewParagraph = 2,
         StartsAndEndsWithNewParagraph = 3,
-        InTextWithPosition = 4,
-        StartsWithNewParagraphWithPosition = 5,
-        StartsAndEndsWithNewParagraphWithPosition = 6
+        InTextWithPosition = 11,
+        StartsWithNewParagraphWithPosition = 12,
+        StartsAndEndsWithNewParagraphWithPosition = 13
     }
     public enum PhraseTypes : int
     {

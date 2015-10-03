@@ -32,21 +32,19 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 };
             }
         }
-
-        #region PrintPhrases
-        private PrintPhrase _printPhrase0
+        private DocumentPicture _picture
         {
             get
             {
-                return new PrintPhrase
+                return new DocumentPicture
                 {
-                    //Text = string.Format("{0}Pictures\\{1}", AppDomain.CurrentDomain.BaseDirectory, "NEURO1.jpg"),
-                    Text = @"c:\Users\Nikk\Documents\Projects\Medcenter\Desktop\Modules\Medcenter.Desktop.Modules.CabinetModule\Pictures\NEURO1.jpg",
-                    Type = (int)PhraseTypes.Picture,
-                    DecorationType = (int)DecorationTypes.HeaderOnly,
+                    Path = @"c:\Users\Nikk\Documents\Projects\Medcenter\Desktop\Modules\Medcenter.Desktop.Modules.CabinetModule\Pictures\NEURO1.jpg",
+                    DecorationType = 0, //0 - Left, 1 - Center, 2 - Right
                 };
             }
         }
+        #region PrintPhrases
+        
         private PrintPhrase _printPhrase1
         {
             get
@@ -508,9 +506,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Date = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Month, 10, 30, 0),
                     Patient=_patient,
                     Signature = "Наиколлегиальнейше ______________ кмн Ацина С.В.",
+                    Picture = _picture,
                     PrintPhrases=new List<PrintPhrase>
                     {
-                        _printPhrase0,
                         _printPhrase1,
                         _printPhrase2,
                         _printPhrase3,

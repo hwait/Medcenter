@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Medcenter.Service.Model.Misc;
 
 namespace Medcenter.Service.Model.Types
 {
@@ -130,8 +131,20 @@ namespace Medcenter.Service.Model.Types
             }
             set { Text = value; }
         }
+
         [DataMember]
-        public string PrintName { get; set; }
+        public string PrintName
+        {
+            get { return _printName; }
+            set
+            {
+                _printName = value;
+                if (!IsLoaded) return;
+                if ((Status < 2 || Status > 3)) Status = 1;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("PrintName"));
+            }
+        }
+
         [DataMember]
         public int NormTableId { get; set; }
         [DataMember]
@@ -269,7 +282,10 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                var tag = (DecorationType == 0 || DecorationType == 10) ? "Default" : "Save";
+                var tag = ((DecorationTypes)DecorationType == DecorationTypes.StartsWithNewParagraph
+                    || (DecorationTypes)DecorationType == DecorationTypes.StartsWithNewParagraphWithPosition
+                    || (DecorationTypes)DecorationType == DecorationTypes.StartsAndEndsWithNewParagraph
+                    || (DecorationTypes)DecorationType == DecorationTypes.StartsAndEndsWithNewParagraphWithPosition) ? "Save" : "Default";
                 return tag;
             }
         }
@@ -277,7 +293,8 @@ namespace Medcenter.Service.Model.Types
         {
             get
             {
-                var tag = (DecorationType == 2 || DecorationType == 12) ? "Save" : "Default";
+                var tag = ((DecorationTypes)DecorationType == DecorationTypes.StartsAndEndsWithNewParagraph
+                    || (DecorationTypes)DecorationType == DecorationTypes.StartsAndEndsWithNewParagraphWithPosition) ? "Save" : "Default";
                 return tag;
             }
         }
@@ -285,21 +302,25 @@ namespace Medcenter.Service.Model.Types
 
         public void ToggleFirstParagraph()
         {
-            switch (DecorationType)
+            switch ((DecorationTypes)DecorationType)
             {
-                case 0:
-                    DecorationType = 1;
+                case DecorationTypes.InText:
+                    DecorationType = (int)DecorationTypes.StartsWithNewParagraph;
                     break;
-                case 1:
-                case 2:
-                    DecorationType = 0;
+                case DecorationTypes.StartsWithNewParagraph:
+                    DecorationType = (int)DecorationTypes.InText;
                     break;
-                case 10:
-                    DecorationType = 11;
+                case DecorationTypes.InTextWithPosition:
+                    DecorationType = (int)DecorationTypes.StartsWithNewParagraphWithPosition;
                     break;
-                case 11:
-                case 12:
-                    DecorationType = 10;
+                case DecorationTypes.StartsWithNewParagraphWithPosition:
+                    DecorationType = (int)DecorationTypes.InTextWithPosition;
+                    break;
+                case DecorationTypes.StartsAndEndsWithNewParagraph:
+                    DecorationType = (int)DecorationTypes.InText;
+                    break;
+                case DecorationTypes.StartsAndEndsWithNewParagraphWithPosition:
+                    DecorationType = (int)DecorationTypes.InTextWithPosition;
                     break;
             }
             if (PropertyChanged != null)
@@ -310,21 +331,25 @@ namespace Medcenter.Service.Model.Types
         }
         public void ToggleLastParagraph()
         {
-            switch (DecorationType)
+            switch ((DecorationTypes)DecorationType)
             {
-                case 0:
-                case 1:
-                    DecorationType = 2;
+                case DecorationTypes.InText:
+                    DecorationType = (int)DecorationTypes.StartsAndEndsWithNewParagraph;
                     break;
-                case 2:
-                    DecorationType = 1;
+                case DecorationTypes.StartsWithNewParagraph:
+                    DecorationType = (int)DecorationTypes.StartsAndEndsWithNewParagraph;
                     break;
-                case 12:
-                    DecorationType = 11;
+                case DecorationTypes.InTextWithPosition:
+                    DecorationType = (int)DecorationTypes.StartsAndEndsWithNewParagraphWithPosition;
                     break;
-                case 10:
-                case 11:
-                    DecorationType = 12;
+                case DecorationTypes.StartsWithNewParagraphWithPosition:
+                    DecorationType = (int)DecorationTypes.StartsAndEndsWithNewParagraphWithPosition;
+                    break;
+                case DecorationTypes.StartsAndEndsWithNewParagraph:
+                    DecorationType = (int)DecorationTypes.StartsWithNewParagraph;
+                    break;
+                case DecorationTypes.StartsAndEndsWithNewParagraphWithPosition:
+                    DecorationType = (int)DecorationTypes.StartsWithNewParagraphWithPosition;
                     break;
             }
             if (PropertyChanged != null)
@@ -350,6 +375,7 @@ namespace Medcenter.Service.Model.Types
         private decimal _v1;
         private decimal _v2;
         private decimal _v3;
+        private string _printName;
 
         [DataMember]
         public byte Status
@@ -370,6 +396,7 @@ namespace Medcenter.Service.Model.Types
         {
             Type = 2;
             Status = 0;
+            DecorationType = (int)DecorationTypes.InText;
         }
         public Phrase(int showOrder)
         {
@@ -377,6 +404,7 @@ namespace Medcenter.Service.Model.Types
             //Text = showOrder.ToString();
             Status = 2;
             Type = 2;
+            DecorationType = (int) DecorationTypes.InText;
         }
 
         public Phrase CloneIt()

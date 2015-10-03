@@ -103,6 +103,7 @@
     <Compile Include="Model\Calculus.cs" />
     <Compile Include="Model\PhraseTemplateSelector.cs" />
     <Compile Include="Model\PrintDocument.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

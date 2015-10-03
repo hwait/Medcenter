@@ -162,10 +162,15 @@
 						<ColumnDefinition Width="88"/>
 					</Grid.ColumnDefinitions>
 					<Rectangle x:Name="rectangle" Grid.ColumnSpan="9">
-					<Rectangle.Fill>
-						<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
-					</Rectangle.Fill>
-				</Rectangle>
+						<Rectangle.Fill>
+							<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+						</Rectangle.Fill>
+					</Rectangle>
+					<Rectangle x:Name="rectangle1">
+						<Rectangle.Fill>
+							<SolidColorBrush Color="#FFF9D7D7"/>
+						</Rectangle.Fill>
+					</Rectangle>
 					<TextBlock Grid.Column="0" Text="{Binding PositionName}" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="10.667" x:Name="header" Margin="5,0,0,0" FontWeight="Bold" Foreground="Black"/>
 					<TextBlock Grid.Column="1" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="13" x:Name="text1" Margin="5,0,0,0" Foreground="Black"/>
 					<TextBox x:Name="text" Margin="5,1,0,1" Grid.Column="1" Text="{Binding Text}" HorizontalAlignment="Stretch" VerticalAlignment="Top" FontSize="13.333" HorizontalContentAlignment="Stretch" TextWrapping="WrapWithOverflow" BorderBrush="{x:Null}">
@@ -258,6 +263,15 @@
 				<DataTrigger Binding="{Binding ValuesCount}" Value="2">
 					<Setter TargetName="v3" Property="Visibility" Value="Hidden" />
 				</DataTrigger>
+				<DataTrigger Binding="{Binding DecorationType}" Value="11">
+					<Setter TargetName="rectangle1" Property="Visibility" Value="Hidden" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding DecorationType}" Value="12">
+					<Setter TargetName="rectangle1" Property="Visibility" Value="Hidden" />
+				</DataTrigger>
+				<DataTrigger Binding="{Binding DecorationType}" Value="13">
+					<Setter TargetName="rectangle1" Property="Visibility" Value="Hidden" />
+				</DataTrigger>
 			</DataTemplate.Triggers>
 		</DataTemplate>
 		<DataTemplate x:Key="SchedulesDataTemplate">
@@ -341,8 +355,8 @@
 					<ItemsControl ItemsSource="{Binding Surveys}" ItemTemplate="{DynamicResource SurveysButtonsTemplate}" MaxHeight="100" Width="390"/>
 				</ScrollViewer>
 				<TextBlock HorizontalAlignment="Left" Margin="10,0" TextWrapping="Wrap" Text="Прошлые исследования:" VerticalAlignment="Center" Grid.Row="1" FontSize="16" FontWeight="Bold" Height="21.28"/>
-				<ScrollViewer>
-					<ItemsControl ItemsSource="{Binding LastSurveys}" ItemTemplate="{DynamicResource LastSurveysButtonsTemplate}" MaxHeight="100" Width="390"/>
+				<ScrollViewer MaxHeight="100">
+					<ItemsControl ItemsSource="{Binding LastSurveys}" ItemTemplate="{DynamicResource LastSurveysButtonsTemplate}" Width="390"/>
 				</ScrollViewer>
 			</StackPanel>
 			<ItemsControl ItemsSource="{Binding CurrentSurvey.Paraphrases}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>

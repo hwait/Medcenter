@@ -34,12 +34,13 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Doctors_Update @Id, @ShortName, @Name, @Color", new
+                    id = Db.Single<int>("EXEC sp_Doctors_Update @Id, @ShortName, @Name, @Color,@Signature", new
                     {
                         Id = req.Doctor.Id,
                         ShortName = req.Doctor.ShortName,
                         Name = req.Doctor.Name,
-                        Color = req.Doctor.Color
+                        Color = req.Doctor.Color,
+                        Signature=req.Doctor.Signature
                     });
                     _message = new ResultMessage(0, "Сохранение исследования", OperationResults.DoctorSave);
                     Logger.Log("DoctorSaveResponse.Saving");
@@ -55,11 +56,12 @@ namespace Medcenter.Service.Interface.Services
             {
                 try
                 {
-                    id = Db.Single<int>("EXEC sp_Doctors_Insert @ShortName, @Name, @Color", new
+                    id = Db.Single<int>("EXEC sp_Doctors_Insert @ShortName, @Name, @Color,@Signature", new
                     {
                         ShortName = req.Doctor.ShortName,
                         Name = req.Doctor.Name,
-                        Color = req.Doctor.Color
+                        Color = req.Doctor.Color,
+                        Signature = req.Doctor.Signature
                     });
                     _message = new ResultMessage(0, "Новое исследование", OperationResults.DoctorCreate);
                     Logger.Log("PackageSaveResponse.NewPackage");

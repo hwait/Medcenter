@@ -28,6 +28,12 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Header { get; set; }
         [DataMember]
+        public string Picture { get; set; }
+        [DataMember]
+        public string Signature { get; set; }
+        [DataMember]
+        public byte PictureType { get; set; }
+        [DataMember]
         public DateTime Date { get; set; }
         [DataMember]
         public Doctor CurrentDoctor { get; set; }

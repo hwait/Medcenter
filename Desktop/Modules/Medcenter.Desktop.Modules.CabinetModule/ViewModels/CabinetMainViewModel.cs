@@ -540,7 +540,8 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         }
         private void PreviewSurvey(Survey obj)
         {
-            new CabinetSurveyPreviewView().Show();
+            CurrentSurvey.CurrentPatient = CurrentPatient;
+            new CabinetSurveyPreviewView(CurrentSurvey).Show();
         }
         private void NewSurvey(Survey obj)
         {

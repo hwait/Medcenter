@@ -44,6 +44,8 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public string Color { get; set; }
         [DataMember]
+        public string Signature { get; set; }
+        [DataMember]
         public List<int> PackageIds { get; set; }
         [DataMember]
         public List<int> NurseIds { get; set; }
