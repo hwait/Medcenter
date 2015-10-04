@@ -664,6 +664,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.ViewModels
                 else
                 {
                     if (CurrentSurvey.Phrases!=null) CurrentSurvey.Phrases.Remove(x => x.Status == 0);
+                    if (CurrentSurvey.ParaphrasesBase != null) CurrentSurvey.ParaphrasesBase.RemoveAll(x => x.Status == 0);
                 }
                 _jsonClient.PostAsync(new SurveyPatternSave { Survey = CurrentSurvey })
                     .Success(r =>

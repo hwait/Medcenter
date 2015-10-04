@@ -60,22 +60,25 @@ namespace Medcenter.Service.Model.Types
             {
                 _resultV1 = value;
                 SetText();
-                if (PropertyChanged != null&&IsLoaded)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
-                }
+                //if (PropertyChanged != null&&IsLoaded)
+                //{
+                //    PropertyChanged(this, new PropertyChangedEventArgs("Text"));
+                //}
             }
         }
 
         private void SetText()
         {
-            if (Type == 2 && IsLoaded)
+            if ((Type == 2||Type==3) && IsLoaded)
                 if (ValuesCount == 3)
                     Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2, V3, ResultV3);
                 else if (ValuesCount == 2)
                     Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2);
                 else if (ValuesCount == 1)
+                {
+                    if (V1 < 0) V1 *= -1;
                     Text = string.Format(PrintName, V1, ResultV1);
+                }
         }
 
         [DataMember]
@@ -111,7 +114,7 @@ namespace Medcenter.Service.Model.Types
             get
             {
                 if (string.IsNullOrEmpty(Text)) return 0;
-                if (Type==2) 
+                if (Type==2||Type==3) 
                     return (PrintName.Split('{').Length - 1)/2;
                 return Text.Split('{').Length - 1;
             }

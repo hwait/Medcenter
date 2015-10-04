@@ -228,6 +228,7 @@
 				</Grid>
 			<DataTemplate.Triggers>
 				<DataTrigger Binding="{Binding Type}" Value="0">
+					<Setter TargetName="rectangle1" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="text" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="text1" Property="Visibility" Value="Hidden" />
 					<Setter TargetName="buttons" Property="Visibility" Value="Hidden" />

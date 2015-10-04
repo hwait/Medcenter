@@ -443,7 +443,7 @@ namespace Medcenter.Desktop.Modules.SurveysManagerModule.SampleData
                     PositionName = "Смещение",
                     ParaphraseId = 17,
                     PositionId = 17,
-                    Type = (int)PhraseTypes.String,
+                    Type = (int)PhraseTypes.Formula,
                     ShowOrder = 17,
                     DecorationType = (int)DecorationTypes.InTextWithPosition,
                     FormulesAffected = new List<int>(),

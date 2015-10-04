@@ -14,8 +14,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Medcenter.Desktop.Infrastructure;
+using Medcenter.Desktop.Modules.CabinetModule.Model;
 using Medcenter.Desktop.Modules.CabinetModule.Views;
 using Medcenter.Service.Model.Messaging;
+using Medcenter.Service.Model.Misc;
 using Medcenter.Service.Model.Operations;
 using Medcenter.Service.Model.Types;
 using Microsoft.Practices.Prism.Commands;
@@ -297,7 +299,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         #endregion
 
         #region Others
-
+        private Calculus _calc;
         public bool IsCopying
         {
             get { return _isCopying; }
@@ -323,6 +325,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _regionManager = regionManager;
             _jsonClient = jsonClient;
             _eventAggregator = eventAggregator;
+            _calc=new Calculus();
            
             _newSurveyCommand = new DelegateCommand<Survey>(NewSurvey, CanNewSurvey);
             _previewSurveyCommand = new DelegateCommand<Survey>(PreviewSurvey, CanPreviewSurvey);
@@ -387,6 +390,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                         {
                             phrase.IsLoaded = true;
                             phrase.ValueChanged += phrase_ValueChanged;
+                            if (phrase.Type == (int) PhraseTypes.Formula)
+                            {
+                                _calc.AddFormula(phrase);
+                            }
                         }
                     }
                     _jsonClient.GetAsync(new LastSurveysSelect { ReceptionId = CurrentReception.Id, PatientId = CurrentReception.PatientId })
@@ -410,7 +417,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         void phrase_ValueChanged(object sender, PropertyChangedEventArgs e)
         {
             var phrase = (Phrase) sender;
-            if(phrase.NormTableId==0) return;
+            
             string name = "";
             string[] separator = {" | "},names;
             names = phrase.PositionName.Split(separator, StringSplitOptions.None);
@@ -420,27 +427,35 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 case "V1":
                     //phrase.ResultV1 = " (норма)";
                     name = names[0];
-                    val = phrase.V1;
+                    val = phrase.V1*100;
                     break;
                 case "V2":
                     //phrase.ResultV2 = " (норма)";
                     name = names[1];
-                    val = phrase.V2;
+                    val = phrase.V2*100;
                     break;
                 case "V3":
                     //phrase.ResultV3 = " (норма)";
                     name = names[2];
-                    val = phrase.V3;
+                    val = phrase.V3*100;
                     break;
             }
             var age = (DateTime.Today - CurrentPatient.BirthDate).Days;
+
+            if (phrase.Type==2)_calc.TryToCalc(name,val);
+            if (phrase.Type == 3)
+            {
+                name = phrase.PositionName.Split(separator, StringSplitOptions.None)[0];
+                val = phrase.V1 * 100;
+            }
+            if (phrase.NormTableId == 0) return;
             _jsonClient.GetAsync(new NormSelect
             {
                 Gender = (byte)CurrentPatient.Gender,
                 Age=age,
                 Name=name,
                 TableId=phrase.NormTableId,
-                Value = (int)(val*100)
+                Value = (int)(val)
             })
             .Success(rr =>
             {
@@ -500,6 +515,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 {
                     phrase.IsLoaded = true;
                     phrase.ValueChanged += phrase_ValueChanged;
+                    if (phrase.Type == (int)PhraseTypes.Formula)
+                    {
+                        _calc.AddFormula(phrase);
+                    }
                 }
                 SetButtonsActive();
             })

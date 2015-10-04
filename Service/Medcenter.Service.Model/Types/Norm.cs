@@ -23,17 +23,26 @@ namespace Medcenter.Service.Model.Types
             {
                 decimal vmin = ((decimal)ValueMin) / 100;
                 decimal vmax = ((decimal)ValueMax) / 100;
-                if (ValueMin == 0)
+                if (ValueMin ==0)
                 {
                     vmax = ((decimal) ValueMax+1) / 100;
-                    return string.Format(", {0} (<{1})", Name, vmax);
+                    return string.Format("{0} (<{1})", Name, vmax);
+                }
+                if (ValueMin == -1000000)
+                {
+                    vmax = ((decimal)ValueMax + 1) / 100*-1;
+                    return string.Format("{0} (>{1})", Name, vmax);
                 }
                 if (ValueMax == 1000000)
                 {
                     vmin = ((decimal)ValueMin-1) / 100;
-                    return string.Format(", {0} (>{1})", Name, vmin);
+                    return string.Format("{0} (>{1})", Name, vmin);
                 }
-                return string.Format(", {0} ({1}-{2})", Name, vmin, vmax);
+                if (ValueMin < 0)
+                {
+                    return string.Format("{0} (0-{1})", Name, vmax);
+                }
+                return string.Format("{0} ({1}-{2})", Name, vmin, vmax);
             }
         }
 

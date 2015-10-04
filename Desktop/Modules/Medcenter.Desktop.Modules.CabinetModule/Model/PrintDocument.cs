@@ -34,7 +34,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.Model
             Patient = survey.CurrentPatient;
             Picture = new DocumentPicture(survey.Picture, survey.PictureType);
             PrintPhrases = PhrasesTransform(survey.Phrases);
-            //Signature = survey.Signature;
+            Signature = survey.Signature;
         }
 
         private List<PrintPhrase> PhrasesTransform(ObservableCollection<Phrase> phrases)
@@ -90,8 +90,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.Model
                             case DecorationTypes.StartsWithNewParagraphWithPosition:
                                 printPhrases.Add(printPhrase);
                                 printPhrase = new PrintPhrase(1);
-                                printPhrase.Header = phrase.PrintName;
-                                printPhrase.Text = text;
+                                //printPhrase.Header = phrase.PrintName;
+                                printPhrase.Text += phrase.PrintName;
+                                printPhrase.Text += text;
                                 break;
                             case DecorationTypes.StartsAndEndsWithNewParagraph:
                                 printPhrases.Add(printPhrase);
@@ -103,8 +104,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.Model
                             case DecorationTypes.StartsAndEndsWithNewParagraphWithPosition:
                                 printPhrases.Add(printPhrase);
                                 printPhrase = new PrintPhrase(1);
-                                printPhrase.Header = phrase.PrintName;
-                                printPhrase.Text = text;
+                                //printPhrase.Header = phrase.PrintName;
+                                printPhrase.Text += phrase.PrintName;
+                                printPhrase.Text += text;
                                 printPhrases.Add(printPhrase);
                                 printPhrase = new PrintPhrase(1);
                                 break;
