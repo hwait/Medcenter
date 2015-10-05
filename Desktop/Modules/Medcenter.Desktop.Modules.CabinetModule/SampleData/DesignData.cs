@@ -35,7 +35,13 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 };
             }
         }
-
+        public List<string> ParaphrasesPresets
+        {
+            get
+            {
+                return new List<string> { "НОРМ", "ЗАБ1", "ЗАБ2", "ЗАБ3", "ЗАБ4", "ЗАБ5", "ЗАБ6", "ЗАБ7", "ЗАБ8", "ЗАБ9", "ЗАБ12" };
+            }
+        }
         public List<ResultMessage> Errors
         {
             get
@@ -1182,6 +1188,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                 {
                     Id = 2,
                     Text = " однородная. ",
+                    PresetId = "NORM",
                     PositionId = 1,
                     ShowOrder = 1,
                     FormulesAffected = new List<int>(),
@@ -1199,6 +1206,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     Text = " неоднородная, с включениями диаметром {0}-{1} мм. ",
                     V1 = 3,
                     V2 = 5,
+                    PresetId="NORM",
                     PositionId = 1,
                     ShowOrder = 1,
                     FormulesAffected = new List<int>(),
@@ -1217,6 +1225,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
                     V1 = 7,
                     V2 = 15,
                     V3 = 8,
+                    PresetId = "NORM",
                     PositionId = 1,
                     ShowOrder = 1,
                     FormulesAffected = new List<int>(),

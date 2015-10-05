@@ -30,6 +30,11 @@
 				<Button Content="{Binding Text}" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseParaphraseCommand}"  CommandParameter="{Binding }" Height="Auto" Style="{DynamicResource ParaphrasesButtonStyle}"/>
 			</Grid>
 		</DataTemplate>
+		<DataTemplate x:Key="ParaphrasesPresetsButtonsTemplate">
+			<Grid Margin="3,0,0,0">
+				<Button Content="{Binding }" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.ChooseParaphrasePresetCommand}"  CommandParameter="{Binding }" Height="Auto" Style="{DynamicResource ParaphrasesPresetButtonStyle}" Width="50"/>
+			</Grid>
+		</DataTemplate>
 		<Style TargetType="{x:Type TextBlock}" x:Key="WrappingStyle">
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
@@ -41,6 +46,39 @@
 							<Rectangle x:Name="rectangle" Stroke="White" StrokeThickness="1">
 								<Rectangle.Fill>
 									<SolidColorBrush Color="{Binding Status, Converter={StaticResource StatusToColorBrush}, Mode=OneWay}"/>
+								</Rectangle.Fill>
+							</Rectangle>
+							<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="5">
+								<ContentPresenter.Resources>
+									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource WrappingStyle}"/>
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsFocused" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsDefaulted" Value="True"/>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFADFF2F"/>
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter Property="Fill" TargetName="rectangle" Value="#FFEE5634"/>
+							</Trigger>
+							<Trigger Property="IsEnabled" Value="False"/>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="ParaphrasesPresetButtonStyle" TargetType="{x:Type Button}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Rectangle x:Name="rectangle" Stroke="White" StrokeThickness="1">
+								<Rectangle.Fill>
+									<SolidColorBrush Color="#FFACEACB"/>
 								</Rectangle.Fill>
 							</Rectangle>
 							<ContentPresenter HorizontalAlignment="Left" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="5">
@@ -360,6 +398,13 @@
 					<ItemsControl ItemsSource="{Binding LastSurveys}" ItemTemplate="{DynamicResource LastSurveysButtonsTemplate}" Width="390"/>
 				</ScrollViewer>
 			</StackPanel>
+			<ItemsControl ItemsSource="{Binding ParaphrasesPresets}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesPresetsButtonsTemplate}">
+				<ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+			</ItemsControl>
 			<ItemsControl ItemsSource="{Binding CurrentSurvey.Paraphrases}" Margin="0,10,5,0" ItemTemplate="{DynamicResource ParaphrasesButtonsTemplate}"/>
 		</StackPanel>
 		

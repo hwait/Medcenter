@@ -43,7 +43,6 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Phrase> _removePhraseCommand;
         private readonly DelegateCommand<Phrase> _normPhraseCommand;
         private readonly DelegateCommand<Phrase> _changedPhraseCommand;
-        
         private readonly DelegateCommand<object> _choosePhraseCommand;
         private readonly DelegateCommand<Phrase> _saveParaphraseCommand;
         private readonly DelegateCommand<object> _savePatientCommand;
@@ -55,6 +54,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         private readonly DelegateCommand<Survey> _chooseLastSurveyCommand;
         private readonly DelegateCommand<Reception> _chooseReceptionCommand;
         private readonly DelegateCommand<object> _chooseParaphraseCommand;
+        private readonly DelegateCommand<string> _chooseParaphrasePresetCommand;
         private int _cabinetNumber = int.Parse(Utils.ReadSetting("CabinetNumber"));
         
         #endregion
@@ -63,6 +63,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         public ICommand ChooseParaphraseCommand
         {
             get { return this._chooseParaphraseCommand; }
+        }
+        public ICommand ChooseParaphrasePresetCommand
+        {
+            get { return this._chooseParaphrasePresetCommand; }
         }
         public ICommand InsertPhraseCommand
         {
@@ -314,7 +318,15 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-
+        private List<string> _paraphrasesPresets;
+        public List<string> ParaphrasesPresets
+        {
+            get { return _paraphrasesPresets; }
+            set
+            {
+                SetProperty(ref _paraphrasesPresets, value);
+            }
+        }
         #endregion
 
         #endregion
@@ -339,6 +351,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _saveParaphraseCommand = new DelegateCommand<Phrase>(SaveParaphrase);
             _savePatientCommand = new DelegateCommand<object>(SavePatient);
             _chooseParaphraseCommand = new DelegateCommand<object>(ChooseParaphrase);
+            _chooseParaphrasePresetCommand = new DelegateCommand<string>(ChooseParaphrasePreset);
             _chooseSurveyCommand = new DelegateCommand<Survey>(ChooseSurvey, CanChooseSurvey);
             _chooseLastSurveyCommand = new DelegateCommand<Survey>(ChooseLastSurvey);
             _chooseReceptionCommand = new DelegateCommand<Reception>(ChooseReception);
@@ -520,6 +533,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                         _calc.AddFormula(phrase);
                     }
                 }
+                MakeParaphrasesPresets();
                 SetButtonsActive();
             })
             .Error(ex =>
@@ -527,9 +541,21 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                 throw ex;
             });
         }
+
+        private void MakeParaphrasesPresets()
+        {
+            _paraphrasesPresets=new List<string>();
+            foreach (var p in CurrentSurvey.ParaphrasesBase)
+            {
+                if (!_paraphrasesPresets.Contains(p.PresetId)) _paraphrasesPresets.Add(p.PresetId);
+            }
+            this.OnPropertyChanged(() => this.ParaphrasesPresets);
+        }
+
         private void ChooseSurvey(Survey obj)
         {
             CurrentSurvey = obj;
+            MakeParaphrasesPresets();
             SetButtonsActive();
         }
         private void SurveyReload()
@@ -691,6 +717,10 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             CurrentPhrase.V2 = paraphrase.V2;
             CurrentPhrase.V3 = paraphrase.V3;
             CurrentPhrase.ParaphraseId = paraphrase.Id;
+        }
+        private void ChooseParaphrasePreset(string obj)
+        {
+            CurrentSurvey.SetPresettedParaphrases(obj);
         }
         private void SaveParaphrase(Phrase obj)
         {

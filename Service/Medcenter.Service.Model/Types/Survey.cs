@@ -122,6 +122,20 @@ namespace Medcenter.Service.Model.Types
         {
             Paraphrases = new ObservableCollection<Paraphrase>(ParaphrasesBase.FindAll(d => d.PositionId == positionId).OrderBy(i=>i.ShowOrder));
         }
+        public void SetPresettedParaphrases(string preset)
+        {
+            foreach (var phrase in Phrases)
+            {
+                if (phrase.Type!=1) continue;
+                var paraphrase = (preset=="") ? new Paraphrase() : ParaphrasesBase.FirstOrDefault(d => d.PositionId == phrase.PositionId&&d.PresetId==preset);
+                if (paraphrase==null) continue;
+                phrase.Text = paraphrase.Text;
+                if (paraphrase.V1 > 0) phrase.V1 = paraphrase.V1;
+                if (paraphrase.V2 > 0) phrase.V2 = paraphrase.V2;
+                if (paraphrase.V3 > 0) phrase.V3 = paraphrase.V3;
+                phrase.ParaphraseId = paraphrase.Id;
+            }
+        }
         public void AddParaphrase(Paraphrase paraphrase)
         {
             ParaphrasesBase.Add(paraphrase);

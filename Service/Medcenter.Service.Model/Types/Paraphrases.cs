@@ -16,6 +16,8 @@ namespace Medcenter.Service.Model.Types
         private decimal _v1;
         private decimal _v2;
         private decimal _v3;
+        private string _presetId;
+        private byte _status;
         public bool IsLoaded { get; set; }
         [DataMember]
         public int Id { get; set; }
@@ -92,13 +94,36 @@ namespace Medcenter.Service.Model.Types
 
         [DataMember]
         public int IsolationType { get; set; }
+
         [DataMember]
-        public int PresetId { get; set; }
+        public string PresetId
+        {
+            get { return _presetId; }
+            set
+            {
+                _presetId = value;
+                if ((Status < 2 || Status > 3) && IsLoaded) Status = 1;
+                //if (PropertyChanged != null)
+                //    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+            }
+        }
+
         [DataMember]
         public List<int> FormulesAffected { get; set; }
         public bool IsChanged { get; set; }
+
         [DataMember]
-        public byte Status { get; set; }
+        public byte Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                if (PropertyChanged != null && IsLoaded)
+                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+            }
+        }
+
         public Paraphrase()
         {
             FormulesAffected=new List<int>();

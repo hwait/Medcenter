@@ -178,11 +178,7 @@ namespace Medcenter.Service.Model.Types
                 _v1 = value;
                 if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
-                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
+                if ((Type == 2 || Type == 3) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
             }
         }
 
@@ -195,11 +191,8 @@ namespace Medcenter.Service.Model.Types
                 _v2 = value;
                 if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
-                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
-                if (PropertyChanged != null)
-                {
-                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
+                if ((Type==2||Type==3)&&ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
+
             }
         }
 
@@ -212,13 +205,7 @@ namespace Medcenter.Service.Model.Types
                 _v3 = value;
                 if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
-                if (ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
-                if (PropertyChanged != null)
-                {
-                    
-                    //PropertyChanged(this, new PropertyChangedEventArgs("V3"));
-                    PropertyChanged(this, new PropertyChangedEventArgs("Status"));
-                }
+                if ((Type == 2 || Type == 3) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
             }
         }
 
@@ -388,7 +375,7 @@ namespace Medcenter.Service.Model.Types
             {
                 _oldStatus = _status;
                 _status = value;
-                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Status"));
+                if (PropertyChanged != null && IsLoaded) PropertyChanged(this, new PropertyChangedEventArgs("Status"));
             }
         } // 1 - Changed, 2 - New, 3 - To Delete, 4 - Cut
 
