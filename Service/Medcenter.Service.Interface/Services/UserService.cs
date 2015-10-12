@@ -64,6 +64,11 @@ namespace Medcenter.Service.Interface.Services
 
             return new UsersSelectResponse { Users = new ObservableCollection<User>(rows) };
         }
+        public UsersByRoleSelectResponse Get(UsersByRoleSelect req)
+        {
+            var rows = Db.SqlList<User>(string.Format("select Id as UserId, DisplayName from UserAuth where Roles like '%{0}%'", req.Role));
+            return new UsersByRoleSelectResponse { Agents = rows };
+        }
         public UserSelectResponse Get(UserSelect req)
         {
             List<User> users;

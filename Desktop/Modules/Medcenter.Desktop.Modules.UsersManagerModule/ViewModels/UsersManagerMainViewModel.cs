@@ -152,8 +152,6 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             
         }
 
-       
-
         private bool CanAddUser(object arg)
         {
             return CurrentUser == null || CurrentUser.UserId != 0;

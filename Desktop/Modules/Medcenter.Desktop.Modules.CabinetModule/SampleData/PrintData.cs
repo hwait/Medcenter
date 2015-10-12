@@ -17,7 +17,7 @@ namespace Medcenter.Desktop.Modules.CabinetModule.SampleData
             {
                 return new Patient
                 {
-                    Id = 0,
+                    Id = 456,
                     Surname = "Петров",
                     FirstName = "Вениамин",
                     SecondName = "Адольфович",

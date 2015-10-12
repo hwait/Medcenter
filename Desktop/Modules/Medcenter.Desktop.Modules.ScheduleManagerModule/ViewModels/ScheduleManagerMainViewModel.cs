@@ -89,6 +89,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private DateTime _currentDate, _startDate, _endDate;
         private ObservableCollection<Doctor> _doctors;
         private ObservableCollection<Schedule> _schedules;
+        private List<Schedule> _schedulesToSave;
         private Schedule _currentSchedule;
         private ObservableCollection<ScheduleDay> _currentWeek;
         private List<ResultMessage> _errors;
@@ -130,6 +131,11 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         {
             get { return _schedules; }
             set { SetProperty(ref _schedules, value); }
+        }
+        public List<Schedule> SchedulesToSave
+        {
+            get { return _schedulesToSave; }
+            set { SetProperty(ref _schedulesToSave, value); }
         }
 
         public Schedule CurrentSchedule
@@ -173,6 +179,7 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             _saveScheduleCommand = new DelegateCommand<Schedule>(SaveSchedule);
             _showNurseCommand = new DelegateCommand<object>(ShowNurse);
             _isDoctorsShow = false;
+            _schedulesToSave=new List<Schedule>();
             ShowNurse(null);
             this.ConfirmationRequest = new InteractionRequest<IConfirmation>();
 
@@ -340,30 +347,30 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             }
         }
 
-        private ScheduleCabinet TimeRuler(DateTime startDate)
-        {
-            ScheduleCabinet cabinet=new ScheduleCabinet();
-            for (int i = _startHour; i <= _endHour; i++)
-            {
-                cabinet.Schedules.Add(
-                    new Schedule
-                    {
-                        Id = 0,
-                        CurrentDoctor = new Doctor {Id = 0, Name = "", ShortName = "", Color = Colors.Black.ToString()},
-                        Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 0, 0),
-                        End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0)
-                    });
-                cabinet.Schedules.Add(
-                    new Schedule
-                    {
-                        Id = 0,
-                        CurrentDoctor = new Doctor (i.ToString()),
-                        Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0),
-                        End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 59, 0)
-                    });
-            }
-            return cabinet;
-        }
+        //private ScheduleCabinet TimeRuler(DateTime startDate)
+        //{
+        //    ScheduleCabinet cabinet=new ScheduleCabinet();
+        //    for (int i = _startHour; i <= _endHour; i++)
+        //    {
+        //        cabinet.Schedules.Add(
+        //            new Schedule
+        //            {
+        //                Id = 0,
+        //                CurrentDoctor = new Doctor {Id = 0, Name = "", ShortName = "", Color = Colors.Black.ToString()},
+        //                Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 0, 0),
+        //                End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0)
+        //            });
+        //        cabinet.Schedules.Add(
+        //            new Schedule
+        //            {
+        //                Id = 0,
+        //                CurrentDoctor = new Doctor (i.ToString()),
+        //                Start = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 1, 0),
+        //                End = new DateTime(startDate.Year, startDate.Month, startDate.Day, i, 59, 0)
+        //            });
+        //    }
+        //    return cabinet;
+        //}
 
         private ObservableCollection<Schedule> FilterSchedules(DateTime time, int cabinet)
         {
@@ -425,13 +432,14 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
 
         private void CopyScheduleToNextWeek(object obj)
         {
-            _recursiveId = Schedules.Count - 1;
-            CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
-            //foreach (var schedule in Schedules)
-            //{
-            //    CopyScheduleToWeekday(schedule, schedule.Start.AddDays(7));
-            //}
-            //_currentDate = _currentDate.AddDays(7);
+            //_recursiveId = Schedules.Count - 1;
+            //CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
+            foreach (var schedule in Schedules)
+            {
+                CopyScheduleToWeekday(schedule, schedule.Start.AddDays(7));
+            }
+            _currentDate = _currentDate.AddDays(7);
+            SaveScheduleToDB();
             //SchedulesReload();
         }
 
@@ -440,90 +448,128 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
         private void SaveSchedule(Schedule schedule)
         {
             //CurrentSchedule = schedule;
-            bool isNew = (_recursiveId >= 0) || schedule.Id <= 0;
-            schedule.NurseId = schedule.CurrentNurse == null ? 0 : schedule.CurrentNurse.Id;
-            schedule.DoctorId = schedule.CurrentDoctor == null ? 0 : schedule.CurrentDoctor.Id;
-            Errors = schedule.Validate();
+            bool isNew = (_schedulesToSave.Count==0);
+            if (isNew)
+            {
+                if (schedule.Monday || schedule.Thursday || schedule.Wednesday || schedule.Tuesday || schedule.Friday ||
+                    schedule.Saturday || schedule.Sunday)
+                {
+                    //Multiple Saving
+                    CopyScheduleToWeekdays(schedule);
+                }
+                else
+                {
+                    _schedulesToSave.Add(schedule);
+                }
+            }
+            SaveScheduleToDB();
+            //schedule.NurseId = schedule.CurrentNurse == null ? 0 : schedule.CurrentNurse.Id;
+            //schedule.DoctorId = schedule.CurrentDoctor == null ? 0 : schedule.CurrentDoctor.Id;
+            //Errors = _schedulesToSave[0].Validate();
+            //if (Errors.Count == 0)
+            //{
+            //    _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
+            //    _jsonClient.PostAsync(new ScheduleSave { Schedule = _schedulesToSave[0] })
+            //        .Success(r =>
+            //        {
+            //            _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
+            //            _schedulesToSave.RemoveAt(0);
+            //            if (_schedulesToSave.Count>0) 
+            //            if (isNew)
+            //            {
+            //                if (_recursiveId < 0)
+            //                {
+            //                    if (CurrentSchedule == null)
+            //                        CurrentSchedule = schedule;
+            //                    CurrentSchedule.Id = r.ScheduleId;
+            //                    schedule.Id = r.ScheduleId;
+
+            //                    CopyScheduleToWeekdays(schedule);
+            //                    schedule.ResetFlags();
+            //                    Schedules.Add(schedule);
+            //                }
+            //            }
+            //            else
+            //            {
+            //                if (CurrentSchedule.ReplaceEverywhere)
+            //                {
+            //                    if (_oldDoctorId != schedule.CurrentDoctor.Id)
+            //                    {
+            //                        ObservableCollection<Schedule> schedules = FilterSchedulesByDoctorId(_oldDoctorId);
+            //                        foreach (var s in schedules)
+            //                        {
+            //                            s.CurrentDoctor = schedule.CurrentDoctor;
+            //                            SaveSchedule(s);
+            //                        }
+            //                        _oldDoctorId = schedule.CurrentDoctor.Id;
+            //                    }
+            //                    //if (_oldNurseId != schedule.CurrentNurse.Id)
+            //                    //{
+            //                    //    ObservableCollection<Schedule> schedules = FilterSchedulesByNurseId(_oldNurseId);
+            //                    //    foreach (var s in schedules)
+            //                    //    {
+            //                    //        s.CurrentNurse = schedule.CurrentNurse;
+            //                    //        SaveSchedule(s);
+            //                    //    }
+            //                    //    _oldNurseId = schedule.CurrentNurse.Id;
+            //                    //}
+            //                }
+
+            //            }
+            //            r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
+            //                schedule.Start.ToString("D"), schedule.Start.ToString("t"), schedule.End.ToString("t"), schedule.CurrentDoctor.ShortName);
+            //            _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
+            //            if (_recursiveId == 0)
+            //            {
+            //                _currentDate = _currentDate.AddDays(7);
+            //                SchedulesReload();
+            //            }
+            //            else if (_recursiveId < 0)
+            //            {
+            //                CurrentSchedule.ShowName = _isDoctorsShow ? CurrentSchedule.CurrentDoctor.ShortName : CurrentSchedule.CurrentNurse.ShortName;
+            //                MakeCurrentWeek();
+            //                CurrentSchedule = new Schedule();
+            //            }
+            //            else
+            //            {
+            //                _recursiveId--;
+            //                CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
+            //            }
+            //        })
+            //        .Error(ex =>
+            //        {
+            //            throw ex;
+            //        });
+            //}
+        }
+
+        private void SaveScheduleToDB()
+        {
+            Errors = _schedulesToSave[0].Validate();
             if (Errors.Count == 0)
             {
                 _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-                _jsonClient.PostAsync(new ScheduleSave {Schedule = schedule})
+                _jsonClient.PostAsync(new ScheduleSave {Schedule = _schedulesToSave[0]})
                     .Success(r =>
                     {
                         _eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
-                        if (isNew)
-                        {
-                            if (_recursiveId < 0)
-                            {
-                                if (CurrentSchedule == null)
-                                    CurrentSchedule = schedule;
-                                CurrentSchedule.Id = r.ScheduleId;
-                                schedule.Id = r.ScheduleId;
-
-                                CopyScheduleToWeekdays(schedule);
-                                schedule.ResetFlags();
-                                Schedules.Add(schedule);
-                            }
-                        }
+                        _schedulesToSave.RemoveAt(0);
+                        if (_schedulesToSave.Count > 0)
+                            SaveScheduleToDB();
                         else
-                        {
-                            if (CurrentSchedule.ReplaceEverywhere)
-                            {
-                                if (_oldDoctorId != schedule.CurrentDoctor.Id)
-                                {
-                                    ObservableCollection<Schedule> schedules = FilterSchedulesByDoctorId(_oldDoctorId);
-                                    foreach (var s in schedules)
-                                    {
-                                        s.CurrentDoctor = schedule.CurrentDoctor;
-                                        SaveSchedule(s);
-                                    }
-                                    _oldDoctorId = schedule.CurrentDoctor.Id;
-                                }
-                                //if (_oldNurseId != schedule.CurrentNurse.Id)
-                                //{
-                                //    ObservableCollection<Schedule> schedules = FilterSchedulesByNurseId(_oldNurseId);
-                                //    foreach (var s in schedules)
-                                //    {
-                                //        s.CurrentNurse = schedule.CurrentNurse;
-                                //        SaveSchedule(s);
-                                //    }
-                                //    _oldNurseId = schedule.CurrentNurse.Id;
-                                //}
-                            }
-
-                        }
-                        r.Message.Message = string.Format(r.Message.Message, schedule.CabinetId,
-                            schedule.Start.ToString("D"), schedule.Start.ToString("t"), schedule.End.ToString("t"), schedule.CurrentDoctor.ShortName);
-                        _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
-                        if (_recursiveId == 0)
-                        {
-                            _currentDate = _currentDate.AddDays(7);
                             SchedulesReload();
-                        }
-                        else if (_recursiveId < 0)
-                        {
-                            CurrentSchedule.ShowName = _isDoctorsShow ? CurrentSchedule.CurrentDoctor.ShortName : CurrentSchedule.CurrentNurse.ShortName;
-                            MakeCurrentWeek();
-                            CurrentSchedule = new Schedule();
-                        }
-                        else
-                        {
-                            _recursiveId--;
-                            CopyScheduleToWeekday(Schedules[_recursiveId], Schedules[_recursiveId].Start.AddDays(7));
-                        }
                     })
                     .Error(ex =>
                     {
                         throw ex;
                     });
-
-
-
             }
         }
 
         private void CopyScheduleToWeekdays(Schedule schedule)
         {
+            schedule.NurseId = schedule.CurrentNurse == null ? 0 : schedule.CurrentNurse.Id;
+            schedule.DoctorId = schedule.CurrentDoctor == null ? 0 : schedule.CurrentDoctor.Id;
             if (schedule.Monday) CopyScheduleToWeekday(schedule, _startDate);
             if (schedule.Tuesday) CopyScheduleToWeekday(schedule, _startDate.AddDays(1));
             if (schedule.Wednesday) CopyScheduleToWeekday(schedule, _startDate.AddDays(2));
@@ -541,11 +587,14 @@ namespace Medcenter.Desktop.Modules.ScheduleManagerModule.ViewModels
             if (Schedules.Any(s =>
                 ((s.Start >= newSchedule.Start && s.Start < newSchedule.End) ||
                 (s.End > newSchedule.Start && s.End <= newSchedule.End) ||
-                (s.Start <= newSchedule.Start && s.End >= newSchedule.End)) && s.CabinetId == newSchedule.CabinetId)
-                || (schedule.Start == newSchedule.Start && schedule.End == newSchedule.End)) 
+                (s.Start <= newSchedule.Start && s.End >= newSchedule.End)) && s.CabinetId == newSchedule.CabinetId))
+                //|| (schedule.Start == newSchedule.Start && schedule.End == newSchedule.End)) 
                 return;
             newSchedule.CurrentDoctor = schedule.CurrentDoctor;
-            SaveSchedule(newSchedule);
+            newSchedule.NurseId = schedule.NurseId;
+            newSchedule.DoctorId = schedule.DoctorId;
+            _schedulesToSave.Add(newSchedule);
+            //SaveSchedule(newSchedule);
         }
 
         private void RemoveSchedule(object obj)

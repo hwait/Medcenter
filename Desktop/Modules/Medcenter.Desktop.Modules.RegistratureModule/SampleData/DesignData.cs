@@ -426,6 +426,50 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.SampleData
         }
         #endregion
 
+        #region Agents
+
+        public List<User> Agents
+        {
+            get
+            {
+                return new List<User>
+                {
+                    _agent1,
+                    _agent2
+                };
+            }
+        }
+
+        public User CurrentAgent
+        {
+            get { return _agent1; }
+        }
+
+        private User _agent1
+        {
+            get
+            {
+                return new User
+                {
+                    UserId = 100,
+                    DisplayName = "User Agent 1"
+                };
+            }
+        }
+
+        private User _agent2
+        {
+            get
+            {
+                return new User
+                {
+                    UserId = 100,
+                    DisplayName = "User Agent 2"
+                };
+            }
+        }
+
+        #endregion
 
 
         #region Receptions 1

@@ -72,6 +72,20 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
         public List<string> Roles { get; set; }
     }
+    [Route("/users/byrole/{Role}", "GET")]
+    public class UsersByRoleSelect : IReturn<UsersByRoleSelectResponse>
+    {
+        public string Role { get; set; }
+    }
+    public class UsersByRoleSelectResponse : IHasResponseStatus
+    {
+        public UsersByRoleSelectResponse()
+        {
+            ResponseStatus = new ResponseStatus();
+        }
+        public ResponseStatus ResponseStatus { get; set; }
+        public List<User> Agents { get; set; }
+    }
     [Authenticate]
     [Route("/users/permissions", "GET")]
     public class PermissionsSelect : IReturn<PermissionsSelectResponse>

@@ -278,6 +278,26 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         }
         #endregion
 
+        #region Agents
+
+        private List<User> _agents;
+
+        public List<User> Agents
+        {
+            get { return _agents; }
+            set { SetProperty(ref _agents, value); }
+        }
+
+        private User _currentAgent;
+
+        public User CurrentAgent
+        {
+            get { return _currentAgent; }
+            set { SetProperty(ref _currentAgent, value); }
+        }
+
+        #endregion
+        
         #region Others
 
         private int _startHour, _endHour;
@@ -309,6 +329,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                 SetProperty(ref _currentWeek, value);
             }
         }
+       
 
         private bool _isNewPatientPanelVisible;
         private bool _isSearchPatientPanelVisible;
@@ -341,7 +362,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             get { return _errors; }
             set { SetProperty(ref _errors, value); }
         }
-
+        
         #endregion
 
         #endregion
@@ -389,21 +410,31 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             CurrentDate=DateTime.Today;
             //CurrentWeek = new Week(_currentDate);
             _eventAggregator.GetEvent<IsBusyEvent>().Publish(true);
-            _jsonClient.GetAsync(new CitiesSelect())
-            .Success(ri =>
+            _jsonClient.GetAsync(new UsersByRoleSelect {Role="Agent"})
+            .Success(ra =>
             {
-                Cities = ri.Cities;
-                //SchedulesReload();
-                _jsonClient.GetAsync(new PackageGroupsSelect())
-                .Success(pg =>
-                {
-                    РackageGroupsRows = GetРackageGroupsRows(pg.PackageGroups, int.Parse(Utils.ReadSetting("PackageGroupRowNumber")));
+                Agents = ra.Agents;
 
-                    _jsonClient.GetAsync(new PackagesSelect())
-                    .Success(p =>
+                _jsonClient.GetAsync(new CitiesSelect())
+                .Success(ri =>
+                {
+                    Cities = ri.Cities;
+                    //SchedulesReload();
+                    _jsonClient.GetAsync(new PackageGroupsSelect())
+                    .Success(pg =>
                     {
-                        PackagesBase=p.Packages;
-                        MakeDiscounts();
+                        РackageGroupsRows = GetРackageGroupsRows(pg.PackageGroups, int.Parse(Utils.ReadSetting("PackageGroupRowNumber")));
+
+                        _jsonClient.GetAsync(new PackagesSelect())
+                        .Success(p =>
+                        {
+                            PackagesBase=p.Packages;
+                            MakeDiscounts();
+                        })
+                        .Error(ex =>
+                        {
+                            throw ex;
+                        });
                     })
                     .Error(ex =>
                     {

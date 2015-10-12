@@ -23,7 +23,8 @@ namespace Medcenter.Service.Model.Types
                 new Role {Key = "Manager", Value = "Менеджер", IsChecked = false},
                 new Role {Key = "Nurse", Value = "Медсестра", IsChecked = false},
                 new Role {Key = "Owner", Value = "Владелец", IsChecked = false},
-                new Role {Key = "Doctor", Value = "Доктор", IsChecked = false}
+                new Role {Key = "Doctor", Value = "Доктор", IsChecked = false},
+                new Role {Key = "Agent", Value = "Агент", IsChecked = false}
             };
             SetCheckedAll(keys);
         }
