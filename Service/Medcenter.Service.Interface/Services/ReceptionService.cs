@@ -217,7 +217,7 @@ namespace Medcenter.Service.Interface.Services
                                 ReceptionId = req.Payment.ReceptionId,
                                 DiscountId = req.Payment.DiscountId,
                                 Cost = req.Payment.Cost*100,
-                                FinalCost = req.Payment.FinalCost
+                                FinalCost = req.Payment.FinalCost*100
                             });
                     _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
                 }
@@ -240,7 +240,7 @@ namespace Medcenter.Service.Interface.Services
                                 ReceptionId = req.Payment.ReceptionId,
                                 DiscountId = req.Payment.DiscountId,
                                 Cost = req.Payment.Cost*100,
-                                FinalCost = req.Payment.FinalCost
+                                FinalCost = req.Payment.FinalCost*100
                             });
                     _message = new ResultMessage(0, "Платёж", OperationResults.PaymentCreate);
                 }

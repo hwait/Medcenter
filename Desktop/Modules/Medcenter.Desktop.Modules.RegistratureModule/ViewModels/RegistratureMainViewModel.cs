@@ -293,7 +293,11 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
         public User CurrentAgent
         {
             get { return _currentAgent; }
-            set { SetProperty(ref _currentAgent, value); }
+            set
+            {
+                SetProperty(ref _currentAgent, value);
+                CurrentReception.RefererId = _currentAgent.UserId;
+            }
         }
 
         #endregion
@@ -571,6 +575,7 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             {
                 case "Search":
                     IsSearchPatientPanelVisible = true;
+                    IsReceptionPanelVisible = true;
                     break;
                 case "Patient":
                     IsNewPatientPanelVisible = true;
@@ -1046,7 +1051,10 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                 payment.ActuateProperties();
                 payment.OldCost = payment.FinalCost;
             }
-            MakePanelVisible("Reception");
+            //MakePanelVisible("Reception");
+            CurrentReception.Status = (byte)ReceptopnStatuses.Paid;
+            ClearReceptionForms();
+            MakeCurrentDayReceptions();
         }
 
         private void PrintReception(Visual obj)

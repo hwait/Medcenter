@@ -216,6 +216,7 @@ namespace Medcenter.Service.Model.Types
                 dur += package.Duration;
             }
             Duration = MaxDuration < dur ? MaxDuration : dur;
+            ActuateProperties();
         }  
         public Reception()
         {

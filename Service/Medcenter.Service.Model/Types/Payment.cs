@@ -69,7 +69,7 @@ namespace Medcenter.Service.Model.Types
         private Discount _discount;
         private int _discountId;
         private int _finalCost;
-
+        [DataMember]
         public Discount Discount
         {
             get { return _discount; }
