@@ -18,18 +18,20 @@ namespace Medcenter.Service.Model.Operations
 
     public class MainTablesSyncResponse
     {
-        public Dictionary<int,int> Ids { get; set; }
+        public List<SyncId> Ids { get; set; }
     }
 
     [Route("/sync/relations", "POST")]
     public class RelationsSync : IReturn<RelationsSyncResponse>
     {
         public int Cid { get; set; }
+        public byte[] Rv { get; set; }
         public List<SyncRelationsStructure> SyncStructures { get; set; }
     }
 
     public class RelationsSyncResponse
     {
+        public byte[] Rv { get; set; }
         public List<SyncStructure> SyncStructures { get; set; }
         public List<SyncRelationsStructure> SyncRelationsStructures { get; set; }
     }

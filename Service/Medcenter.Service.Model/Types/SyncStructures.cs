@@ -90,7 +90,12 @@ namespace Medcenter.Service.Model.Types
         public int Id1 { get; set; }
         [DataMember]
         public int Id2 { get; set; }
-
+        [DataMember]
+        public int P0 { get; set; }
+        [DataMember]
+        public int P1 { get; set; }
+        [DataMember]
+        public int P2 { get; set; }
         public SyncRelationsStructure()
         {
 
@@ -103,6 +108,28 @@ namespace Medcenter.Service.Model.Types
             int.TryParse(row["id0"].ToString(), out id0);
             int.TryParse(row["id1"].ToString(), out id1);
             int.TryParse(row["id2"].ToString(), out id2);
+        }
+    }
+    [DataContract]
+    public class SyncId
+    {
+        [DataMember]
+        public int TableType { get; set; }
+        [DataMember]
+        public int Id { get; set; }
+        [DataMember]
+        public int Sid { get; set; }
+
+        public SyncId()
+        {
+
+        }
+
+        public SyncId(SyncStructure row, int sid)
+        {
+            TableType = row.TableType;
+            Id = row.Id;
+            Sid = sid;
         }
     }
 }
