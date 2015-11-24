@@ -38,6 +38,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\ServiceStack.4.0.40\lib\net40\ServiceStack.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.Client">
+      <HintPath>..\..\packages\ServiceStack.Client.4.0.40\lib\net40\ServiceStack.Client.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Common">
       <HintPath>..\..\..\Libs\Servicestack\4.0.40\ServiceStack.Common.dll</HintPath>
     </Reference>
@@ -72,6 +75,7 @@
     <Compile Include="Services\SurveyService.cs" />
     <Compile Include="Services\SyncService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Syncronizier.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

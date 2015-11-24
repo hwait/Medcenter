@@ -13,26 +13,33 @@ namespace Medcenter.Service.Model.Operations
     public class MainTablesSync : IReturn<MainTablesSyncResponse>
     {
         public int Cid { get; set; }
+        public SyncLog OldSyncLog { get; set; }
         public List<SyncStructure> SyncStructures { get; set; }
+        public List<SyncRelationsStructure> SyncRelationsStructures { get; set; }
+        public List<RemoveItem> SyncRemoveItems { get; set; }
     }
 
     public class MainTablesSyncResponse
     {
         public List<SyncId> Ids { get; set; }
+        public List<SyncStructure> MainStructures { get; set; }
+        public byte[] Srv { get; set; }
+        public int DurGet { get; set; }
+        public int DurPut { get; set; }
     }
 
     [Route("/sync/relations", "POST")]
     public class RelationsSync : IReturn<RelationsSyncResponse>
     {
         public int Cid { get; set; }
-        public byte[] Rv { get; set; }
-        public List<SyncRelationsStructure> SyncStructures { get; set; }
+        public byte[] Srv { get; set; }
+        public List<SyncRelationsStructure> SyncRelationsStructures { get; set; }
     }
 
     public class RelationsSyncResponse
     {
-        public byte[] Rv { get; set; }
-        public List<SyncStructure> SyncStructures { get; set; }
         public List<SyncRelationsStructure> SyncRelationsStructures { get; set; }
+        public int DurGet { get; set; }
+        public int DurPut { get; set; }
     }
 }
