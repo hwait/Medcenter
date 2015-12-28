@@ -63,7 +63,7 @@ namespace Medcenter.Service.Model.Messaging
         }
         public static void Log(string caller, Exception e, string message)
         {
-            var log = new LogMessage(caller, e);
+            var log = new LogMessage(caller, e, message);
             SaveLog(log);
         }
 

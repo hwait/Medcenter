@@ -25,29 +25,29 @@ namespace Medcenter.Service.Interface
             // 1.1
             var rows = Db.SqlList<SyncLog>("EXEC synco_rv");
             _prevSyncLog = (rows.Count > 0) ? rows[0] : new SyncLog();
-            _syncLog.Crv = Db.SqlList<ulong>("EXEC synco_rv")[0];
+            //_syncLog.Crv = Db.SqlList<ulong>("EXEC synco_rv")[0];
             
             // 1.2
             _dt = DateTime.Now;
-            var syncStructures = Db.SqlList<SyncStructure>("EXEC synco_Main @rv",
-                new { rv = _prevSyncLog.Crv });
+            //var syncStructures = Db.SqlList<SyncStructure>("EXEC synco_Main @rv",
+            //    new { rv = _prevSyncLog.Crv });
             _syncLog.ClientMainGetDuration = (DateTime.Now - _dt).Milliseconds;
             _dt = DateTime.Now;
 
             // 1.3
 
-            var mts = new MainTablesSync { Cid = 1, OldSyncLog = _prevSyncLog, SyncStructures = syncStructures };
+            //var mts = new MainTablesSync { Cid = 1, OldSyncLog = _prevSyncLog, SyncStructures = syncStructures };
             //_syncLog.ClientMainSendBytes = mts.ToJson().Length;
 
             // 1.4
 
-            var r = _cli.Post(mts);
+            //var r = _cli.Post(mts);
             _syncLog.AllMainDuration = (DateTime.Now - _dt).Milliseconds;
             //_syncLog.ClientMainGetBytes = r.ToJson().Length;
             
-            _syncLog.ServerMainGetDuration = r.DurGet;
-            _syncLog.ServerMainPutDuration = r.DurPut;
-            _syncLog.Srv = r.Srv;
+            //_syncLog.ServerMainGetDuration = r.DurGet;
+            //_syncLog.ServerMainPutDuration = r.DurPut;
+            //_syncLog.Srv = r.Srv;
             //_cli.PostAsync(mts).Success(r =>
             //        {
             //            // 3.1

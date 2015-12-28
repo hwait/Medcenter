@@ -23,9 +23,12 @@ namespace Medcenter.Service.Model.Operations
     {
         public List<SyncId> Ids { get; set; }
         public List<SyncStructure> MainStructures { get; set; }
-        public byte[] Srv { get; set; }
-        public int DurGet { get; set; }
-        public int DurPut { get; set; }
+        public List<SyncRelationsStructure> RelationsStructures { get; set; }
+        public List<RemoveItem> RemoveStructures { get; set; }
+        public int MainGetDur { get; set; }
+        public int MainPutDur { get; set; }
+        public int RelGetDur { get; set; }
+        public int RelPutDur { get; set; }
     }
 
     [Route("/sync/relations", "POST")]

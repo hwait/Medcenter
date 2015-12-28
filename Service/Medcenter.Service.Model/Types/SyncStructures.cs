@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Medcenter.Service.Model.Types
 {
@@ -12,7 +13,7 @@ namespace Medcenter.Service.Model.Types
     public class SyncStructure
     {
         [DataMember]
-        public int TableType { get; set; }
+        public int Tt { get; set; }
         [DataMember]
         public int Id { get; set; }
         [DataMember]
@@ -57,7 +58,7 @@ namespace Medcenter.Service.Model.Types
 
         public SyncStructure(SqlDataReader row)
         {
-            TableType = (int) row["tt"];
+            Tt = (int) row["tt"];
             Id = (int) row["Id"];
             int sid=0;
             int.TryParse(row["Sid"].ToString(), out sid);
@@ -84,7 +85,7 @@ namespace Medcenter.Service.Model.Types
     public class SyncRelationsStructure
     {
         [DataMember]
-        public int TableType { get; set; }
+        public int Tt { get; set; }
         [DataMember]
         public int Id0 { get; set; }
         [DataMember]
@@ -104,7 +105,7 @@ namespace Medcenter.Service.Model.Types
 
         public SyncRelationsStructure(SqlDataReader row)
         {
-            TableType = (int)row["tt"];
+            Tt = (int)row["tt"];
             int id0,id1,id2;
             int.TryParse(row["id0"].ToString(), out id0);
             int.TryParse(row["id1"].ToString(), out id1);
@@ -121,7 +122,7 @@ namespace Medcenter.Service.Model.Types
     public class SyncId
     {
         [DataMember]
-        public int TableType { get; set; }
+        public int Tt { get; set; }
         [DataMember]
         public int Id { get; set; }
         [DataMember]
@@ -134,7 +135,7 @@ namespace Medcenter.Service.Model.Types
 
         public SyncId(SyncStructure row, int sid)
         {
-            TableType = row.TableType;
+            Tt = row.Tt;
             Id = row.Id;
             Sid = sid;
         }
@@ -142,10 +143,10 @@ namespace Medcenter.Service.Model.Types
     [DataContract]
     public class SyncLog
     {
-        [DataMember]
-        public ulong Crv { get; set; }
-        [DataMember]
-        public byte[] Srv { get; set; }
+        //[DataMember]
+        //public ulong Crv { get; set; }
+        //[DataMember]
+        //public byte[] Srv { get; set; }
         [DataMember]
         public int ClientMainGetDuration { get; set; }
         [DataMember]
@@ -179,8 +180,8 @@ namespace Medcenter.Service.Model.Types
 
         public SyncLog(SqlDataReader row)
         {
-            Crv = (ulong) row["crv"];
-            Srv = (byte[]) row["srv"];
+            //Crv = (ulong) row["crv"];
+            //Srv = (byte[]) row["srv"];
             ClientMainGetDuration = (int)row["ClientMainGetDuration"];
             ClientRelationsGetDuration = (int)row["ClientRelationsGetDuration"]; ;
             ClientMainIdsUpdateDuration = (int)row["ClientMainIdsUpdateDuration"]; ;
@@ -200,7 +201,12 @@ namespace Medcenter.Service.Model.Types
         public SyncLog()
         {
             //Crv=new byte[8];
-            Srv = new byte[8];
+            //Srv = new byte[8];
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
     [DataContract]
@@ -209,7 +215,7 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public byte TableNameId { get; set; }
+        public int TableNameId { get; set; }
         [DataMember]
         public int Sid0 { get; set; }
         [DataMember]
