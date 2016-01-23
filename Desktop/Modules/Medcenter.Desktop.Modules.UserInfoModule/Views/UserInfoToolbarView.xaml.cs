@@ -33,6 +33,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.Views
         private readonly JsonServiceClient _jsonClient;
         private IRegionManager _regionManager;
         private User _currentUser;
+
         [ImportingConstructor]
         public UserInfoToolbarView(IRegionManager regionManager, JsonServiceClient jsonClient, IEventAggregator eventAggregator)
         {
@@ -64,7 +65,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.Views
                 image.BeginInit();
                 image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                 image.CacheOption = BitmapCacheOption.OnLoad;
-                image.UriSource = new Uri(GetUserFotoPath(_currentUser.UserId), UriKind.Absolute);
+                image.UriSource = new Uri(GetUserFotoPath(_currentUser.UserName), UriKind.Absolute);
                 image.EndInit();
                 UserImage.Source = image;
             }
@@ -95,13 +96,15 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.Views
             _eventAggregator.GetEvent<UserInfoEvent>().Publish(_currentUser);
         }
 
-        private string GetUserFotoPath(int userId)
+        private string GetUserFotoPath(string userName)
         {
-            string path = (userId == 0) ? Utils.GetUserFotoPath("NoUserFoto.png") : Utils.GetUserFotoPath(userId);
+            //string path = (userId == 0) ? Utils.GetUserFotoPath("NoUserFoto.png") : Utils.GetUserFotoPath(userId);
+            string path = (userName == "") ? Utils.GetUserFotoPath("NoUserFoto.png") : Utils.GetUserFotoPath(userName);
 
             if (!File.Exists(path))
             {
-                _jsonClient.GetAsync(new UserFotoDownload {UserId = userId})
+                path = Utils.GetUserFotoPath("NoUserFoto.png");
+                _jsonClient.GetAsync(new UserFotoDownload {UserName = userName})
                     .Success(r =>
                     {
                         if (r.FotoStream != null)
@@ -109,7 +112,8 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.Views
                     })
                     .Error(ex =>
                     {
-                        throw ex;
+                        path = Utils.GetUserFotoPath("NoUserFoto.png");
+                        //throw ex;
                     });
             }
             return path;

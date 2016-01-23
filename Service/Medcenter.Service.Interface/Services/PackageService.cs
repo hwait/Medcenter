@@ -236,6 +236,7 @@ namespace Medcenter.Service.Interface.Services
             {
                 r.PackageGroupIds = Db.SqlList<int>("EXEC sp_Package_SelectGroups @PackageId", new {PackageId = r.Id});
                 r.Cost = r.Cost/100;
+                r.DoctorIds= Db.SqlList<int>("EXEC sp_Package_SelectDoctors @Id", new { Id = r.Id });
             }
             return new PackagesSelectResponse {Packages = new List<Package>(rows)};
         }

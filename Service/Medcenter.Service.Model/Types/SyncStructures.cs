@@ -93,6 +93,12 @@ namespace Medcenter.Service.Model.Types
         [DataMember]
         public int Id2 { get; set; }
         [DataMember]
+        public int Sid0 { get; set; }
+        [DataMember]
+        public int Sid1 { get; set; }
+        [DataMember]
+        public int Sid2 { get; set; }
+        [DataMember]
         public string P0 { get; set; }
         [DataMember]
         public string P1 { get; set; }
@@ -113,6 +119,13 @@ namespace Medcenter.Service.Model.Types
             Id0 = id0;
             Id1 = id1;
             Id2 = id2;
+            int sid0, sid1, sid2;
+            int.TryParse(row["sid0"].ToString(), out sid0);
+            int.TryParse(row["sid1"].ToString(), out sid1);
+            int.TryParse(row["sid2"].ToString(), out sid2);
+            Sid0 = sid0;
+            Sid1 = sid1;
+            Sid2 = sid2;
             P0 = row["p0"].ToString();
             P1 = row["p1"].ToString();
             P2 = row["p2"].ToString();

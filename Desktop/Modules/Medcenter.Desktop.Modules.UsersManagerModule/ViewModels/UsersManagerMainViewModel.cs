@@ -240,7 +240,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
         void UsersFiltered_CurrentChanged(object sender, EventArgs e)
         {
             CurrentUser = UsersFiltered.CurrentItem != null ? (User)UsersFiltered.CurrentItem : new User();
-            ShowUserFoto(CurrentUser.UserId);
+            ShowUserFoto(CurrentUser.UserName);
         }
          private void UserFotoChoose(object obj)
         {
@@ -252,7 +252,7 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
             {
                 using (var fileStream = File.OpenRead(openFileDialog.FileName))
                 {
-                    var r=_jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserId = CurrentUser.UserId });
+                    var r = _jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserName = CurrentUser.UserName });
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     using (var file = File.Create(path))
                     {
@@ -261,15 +261,15 @@ namespace Medcenter.Desktop.Modules.UsersManagerModule.ViewModels
                     }
                 }
             }
-             ShowUserFoto(CurrentUser.UserId);
+            ShowUserFoto(CurrentUser.UserName);
         }
-        private void ShowUserFoto(int userId)
+         private void ShowUserFoto(string userName)
         {
-            string path = Utils.GetUserFotoPath(userId);
-            if (userId == 0) return;
+            string path = Utils.GetUserFotoPath(userName);
+            if (userName == "") return;
             if (!File.Exists(path))
             {
-                _jsonClient.GetAsync(new UserFotoDownload { UserId = userId })
+                _jsonClient.GetAsync(new UserFotoDownload { UserName = userName })
                 .Success(r =>
                 {
                     if (r.FotoStream != null)

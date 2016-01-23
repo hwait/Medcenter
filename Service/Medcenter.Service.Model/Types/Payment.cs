@@ -94,7 +94,7 @@ namespace Medcenter.Service.Model.Types
             Date=DateTime.Now;
             Cost = toPay;
             Discounts = discounts;
-            DiscountId = 1;
+            DiscountId = (Discounts==null)?0:Discounts.OrderBy(p => p.Id).FirstOrDefault().Id;
             
             
             if (PropertyChanged != null)

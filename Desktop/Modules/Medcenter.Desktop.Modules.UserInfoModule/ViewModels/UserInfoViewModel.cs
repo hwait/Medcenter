@@ -169,7 +169,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
             {
                 using (var fileStream = File.OpenRead(openFileDialog.FileName))
                 {
-                    var r = _jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserId = CurrentUser.UserId });
+                    var r = _jsonClient.PostFileWithRequest<UserFotoUploadResponse>(fileStream, "none", new UserFotoUpload { UserName = CurrentUser.UserName });
                     _eventAggregator.GetEvent<OperationResultEvent>().Publish(r.Message);
                     using (var file = File.Create(path))
                     {
@@ -187,7 +187,7 @@ namespace Medcenter.Desktop.Modules.UserInfoModule.ViewModels
             if (CurrentUser.UserId == 0) return;
             if (!File.Exists(path))
             {
-                _jsonClient.GetAsync(new UserFotoDownload { UserId = CurrentUser.UserId })
+                _jsonClient.GetAsync(new UserFotoDownload { UserName = CurrentUser.UserName })
                 .Success(r =>
                 {
                     if (r.FotoStream != null)

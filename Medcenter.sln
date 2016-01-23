@@ -52,6 +52,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "Tasks\TaskMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Medcenter.Service.Local", "Service\Medcenter.Service.Local\Medcenter.Service.Local.csproj", "{7BC107FF-0C45-4F19-BA1F-9100AF6C21D2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{6CCC7361-2FB1-4797-9C2A-711C93BFC9AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUtils", "Utils\DBUtils\DBUtils.csproj", "{96EE21A7-CBF1-4362-8757-E291358F43B5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +138,10 @@ Global
 		{7BC107FF-0C45-4F19-BA1F-9100AF6C21D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BC107FF-0C45-4F19-BA1F-9100AF6C21D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BC107FF-0C45-4F19-BA1F-9100AF6C21D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96EE21A7-CBF1-4362-8757-E291358F43B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96EE21A7-CBF1-4362-8757-E291358F43B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96EE21A7-CBF1-4362-8757-E291358F43B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96EE21A7-CBF1-4362-8757-E291358F43B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,5 +167,6 @@ Global
 		{37BE682A-CCAF-4C3C-9780-EA6B7B11A4DB} = {F0F723AC-FFB1-40C9-B5FC-369B0477AAEA}
 		{9CDE4F24-2445-4170-868E-7685ED8F0808} = {E6DB430C-9ED0-4A7D-8F59-B706D7FA5A07}
 		{B9FD3835-6629-4BCB-B130-4D94B2CD9685} = {E6DB430C-9ED0-4A7D-8F59-B706D7FA5A07}
+		{96EE21A7-CBF1-4362-8757-E291358F43B5} = {6CCC7361-2FB1-4797-9C2A-711C93BFC9AB}
 	EndGlobalSection
 EndGlobal

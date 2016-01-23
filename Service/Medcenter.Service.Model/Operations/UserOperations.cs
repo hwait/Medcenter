@@ -13,10 +13,10 @@ using ServiceStack.Web;
 
 namespace Medcenter.Service.Model.Operations
 {
-    [Route("/users/{UserId}/foto", "POST")]
+    [Route("/users/{UserName}/foto", "POST")]
     public class UserFotoUpload : IReturn<UserFotoUploadResponse>
     {
-        public int UserId { get; set; }
+        public string UserName { get; set; }
     }
     public class UserFotoUploadResponse : IHasResponseStatus
     {
@@ -28,10 +28,11 @@ namespace Medcenter.Service.Model.Operations
         public ResponseStatus ResponseStatus { get; set; }
     }
 
-    [Route("/users/{UserId}/foto", "GET")]
+    [Route("/users/{UserName}/foto", "GET")]
     public class UserFotoDownload : IReturn<UserFotoDownloadResponse>
     {
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
+        public string UserName { get; set; }
     }
     public class UserFotoDownloadResponse : IHasResponseStatus
     {

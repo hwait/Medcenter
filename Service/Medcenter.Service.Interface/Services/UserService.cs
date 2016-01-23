@@ -222,7 +222,7 @@ namespace Medcenter.Service.Interface.Services
         {
             ResultMessage _message;
             string curop = "Загрузка фото";
-            string path = GetFotosPath(request.UserId);
+            string path = GetFotosPath(request.UserName);
             if (Request.Files == null || Request.Files.Length == 0)
                 _message = new ResultMessage(1, curop, OperationErrors.UserFotoIsMissing);
 
@@ -241,9 +241,9 @@ namespace Medcenter.Service.Interface.Services
             return new UserFotoUploadResponse { Message = _message };
         }
 
-        private string GetFotosPath(int userId)
+        private string GetFotosPath(string userName)
         {
-            return string.Format("{0}Resources\\Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory,userId);
+            return string.Format("{0}Resources\\Fotos\\{1}.jpg", AppDomain.CurrentDomain.BaseDirectory, userName);
         }
 
         public UserFotoDownloadResponse Get(UserFotoDownload request)
@@ -251,7 +251,7 @@ namespace Medcenter.Service.Interface.Services
             byte[] fileStream;
             try
             {
-                string path = GetFotosPath(request.UserId);
+                string path = GetFotosPath(request.UserName);
                 if (File.Exists(path))
                 {
                     fileStream = File.ReadAllBytes(path);

@@ -48,7 +48,7 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _currentDoctor = value;
-                Nurses = NurseBase == null
+                Nurses = (NurseBase == null || _currentDoctor==null)
                     ? new List<Nurse>()
                     : NurseBase.Select(n => n).Where(n => n.DoctorIds.Contains(_currentDoctor.Id)).ToList();
             }

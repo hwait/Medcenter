@@ -143,12 +143,12 @@ namespace Medcenter.Service.Interface.Services
                                 Start = req.Reception.Start,
                                 RefererId = rid
                             });
-                    Db.Single<int>(
-                            "EXEC sp_PackagesInReception_Delete @ReceptionId",
-                            new
-                            {
-                                ReceptionId = id
-                            });
+                    //Db.Single<int>(
+                    //        "EXEC sp_PackagesInReception_Delete @ReceptionId",
+                    //        new
+                    //        {
+                    //            ReceptionId = id
+                    //        });
                     foreach (var package in req.Reception.Packages)
                     {
                         Db.Single<int>(
