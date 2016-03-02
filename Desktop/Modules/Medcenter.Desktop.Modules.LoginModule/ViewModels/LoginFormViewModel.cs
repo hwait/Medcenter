@@ -42,8 +42,10 @@ namespace Medcenter.Desktop.Modules.LoginModule.ViewModels
             
 
             LoginCommand = new DelegateCommand<object>(TryLogin, CanLogin);
+            
+            JsonClient = new JsonServiceClient(Utils.ReadSetting("uri"));
             //JsonClient = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.MVC5/api/");
-            JsonClient = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.Local/");
+            //JsonClient = new JsonServiceClient("http://Nikk-PC:8080/api/");
 
             RefreshData();
         }

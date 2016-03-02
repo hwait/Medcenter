@@ -84,7 +84,8 @@ namespace Medcenter.Service.Model.Types
             set
             {
                 _packages = value;
-                ActuateProperties();
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs("Packages"));
+                //ActuateProperties();
             }
         }
 
@@ -222,6 +223,7 @@ namespace Medcenter.Service.Model.Types
         {
             Packages = new ObservableCollection<Package>();
             Payments=new ObservableCollection<Payment>();
+            RefererId = 0;
         }
 
         public Reception(int scheduleId,DateTime start, int duration)
@@ -254,6 +256,7 @@ namespace Medcenter.Service.Model.Types
                 PropertyChanged(this, new PropertyChangedEventArgs("FinalPayment"));
                 PropertyChanged(this, new PropertyChangedEventArgs("Discount"));
                 PropertyChanged(this, new PropertyChangedEventArgs("Patient"));
+                PropertyChanged(this, new PropertyChangedEventArgs("Packages"));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

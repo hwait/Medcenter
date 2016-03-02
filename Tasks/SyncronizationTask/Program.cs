@@ -19,7 +19,8 @@ namespace SyncronizationTask
         private static SyncLog _prevSyncLog;
         static private SqlConnection _conn;
         static DateTime _dt;
-        static JsonServiceClient _cli = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.MVC5/api/");
+        //static JsonServiceClient _cli = new JsonServiceClient("http://Nikk-PC/Medcenter.Service.MVC5/api/");
+        static JsonServiceClient _cli = new JsonServiceClient("http://nikk-pc:8080/api/");
 
         private static void Main(string[] args)
         {

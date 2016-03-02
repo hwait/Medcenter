@@ -160,6 +160,7 @@ namespace Medcenter.Service.Model.Types
             }
             _isActive = !_isActive;
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Survey(int doctorId, int inspectionId)

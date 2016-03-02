@@ -881,7 +881,10 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
 
         private void ClearReceptionForms()
         {
+            CurrentAgent=new User();
             CurrentReception = new Reception();
+            CurrentReception.ActuateProperties();
+            Packages=new ListCollectionView(new List<Package>());
             Patients = new ListCollectionView(new List<Patient>());
             CurrentPatient=new Patient();
             PatientSearchText = "";
@@ -931,7 +934,6 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
                                     Receptions.Remove(CurrentReception);
                                     r.Message.Message = string.Format(r.Message.Message, CurrentReception.Start.ToString("hh:mm"));
                                     MakeCurrentDayReceptions();
-                                    CurrentReception = new Reception();
                                     ClearReceptionForms();
                                 })
                                 .Error(ex =>
@@ -944,16 +946,28 @@ namespace Medcenter.Desktop.Modules.RegistratureModule.ViewModels
             else
             {
                 MakeCurrentDayReceptions();
-                CurrentReception = new Reception();
+                ClearReceptionForms();
             }
         }
         private void ReceptionChoose(Reception obj)
         {
-            CurrentReception = obj;
-            CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
-            CurrentReception.ActuateProperties();
-            if (_isPaymentsPanelVisible) ConfirmPayment(null);
-            MakePanelVisible("Reception");
+            if (CurrentReception == obj)
+            {
+                MakeCurrentDayReceptions();
+                ClearReceptionForms();
+            }
+            else
+            {
+                CurrentReception = obj;
+                CurrentAgent= Agents
+                    .Where(x => x.UserId == CurrentReception.RefererId)
+                    .DefaultIfEmpty(new User())
+                    .Single();
+                CurrentReception.MaxDuration = GetMaxDuration(CurrentReception);
+                CurrentReception.ActuateProperties();
+                if (_isPaymentsPanelVisible) ConfirmPayment(null);
+                MakePanelVisible("Reception");
+            }
         }
 
         private int GetMaxDuration(Reception currentReception)

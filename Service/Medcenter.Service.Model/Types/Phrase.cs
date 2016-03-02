@@ -40,7 +40,7 @@ namespace Medcenter.Service.Model.Types
             {
                 _text = value;
                 if (!IsLoaded) return;
-                if (Status < 2 || Status > 3) Status = 1;
+                if ((Status < 2 || Status > 3)&&Type!=(int)PhraseTypes.Number) Status = 1;
                 ParaphraseId = 0;
                 if (PropertyChanged != null)
                 {
@@ -69,8 +69,9 @@ namespace Medcenter.Service.Model.Types
 
         private void SetText()
         {
-            if ((Type == 2||Type==3) && IsLoaded)
-                if (ValuesCount == 3)
+            //if ((Type == (int)PhraseTypes.Number||Type == (int)PhraseTypes.Formula) && IsLoaded)
+                if ((Type == (int)PhraseTypes.Number || Type == (int)PhraseTypes.Formula) )
+                    if (ValuesCount == 3)
                     Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2, V3, ResultV3);
                 else if (ValuesCount == 2)
                     Text = string.Format(PrintName, V1, ResultV1, V2, ResultV2);
@@ -114,8 +115,9 @@ namespace Medcenter.Service.Model.Types
             get
             {
                 if (string.IsNullOrEmpty(Text)) return 0;
-                if (Type==2||Type==3) 
-                    return (PrintName.Split('{').Length - 1)/2;
+                //if (Type == (int)PhraseTypes.Number||Type == (int)PhraseTypes.Formula)
+                if (Type == (int)PhraseTypes.Number)
+                        return (PrintName.Split('{').Length - 1)/2;
                 return Text.Split('{').Length - 1;
             }
         }
@@ -177,8 +179,9 @@ namespace Medcenter.Service.Model.Types
             {
                 _v1 = value;
                 if (!IsLoaded) return;
-                if (Status < 2 || Status > 3) Status = 1;
-                if ((Type == 2 || Type == 3) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
+                //if (Status < 2 || Status > 3) Status = 1;
+                if ((Status < 2 || Status > 3) && Type != (int)PhraseTypes.Formula) Status = 1;
+                if ((Type == (int)PhraseTypes.Number || Type == (int)PhraseTypes.Formula) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V1"));
             }
         }
 
@@ -191,7 +194,7 @@ namespace Medcenter.Service.Model.Types
                 _v2 = value;
                 if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
-                if ((Type==2||Type==3)&&ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
+                if ((Type == (int)PhraseTypes.Number||Type == (int)PhraseTypes.Formula)&&ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V2"));
 
             }
         }
@@ -205,7 +208,7 @@ namespace Medcenter.Service.Model.Types
                 _v3 = value;
                 if (!IsLoaded) return;
                 if (Status < 2 || Status > 3) Status = 1;
-                if ((Type == 2 || Type == 3) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
+                if ((Type == (int)PhraseTypes.Number || Type == (int)PhraseTypes.Formula) && ValueChanged != null) ValueChanged(this, new PropertyChangedEventArgs("V3"));
             }
         }
 

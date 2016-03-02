@@ -8,10 +8,10 @@ namespace Medcenter.Service.Model.Misc
 {
     public static class Calculations
     {
-        public static decimal Calc(string formuleName, Dictionary<string, decimal> ps)
+        public static decimal Calc(string formulaName, Dictionary<string, decimal> ps)
         {
             decimal result = 0;
-            switch (formuleName)
+            switch (formulaName)
             {
                 case "Смещение":
                     decimal vs, vd;

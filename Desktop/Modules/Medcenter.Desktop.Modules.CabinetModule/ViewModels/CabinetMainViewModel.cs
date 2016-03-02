@@ -431,32 +431,40 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             var phrase = (Phrase) sender;
             
+            ValuesGenerateOutput(phrase, e.PropertyName);
+        }
+
+        private void ValuesGenerateOutput(Phrase phrase, string propertyName)
+        {
             string name = "";
-            string[] separator = {" | "},names;
+            string[] separator = { " | " }, names;
             names = phrase.PositionName.Split(separator, StringSplitOptions.None);
             decimal val = 0;
-            switch (e.PropertyName)
+            switch (propertyName)
             {
                 case "V1":
                     //phrase.ResultV1 = " (норма)";
                     name = names[0];
-                    val = phrase.V1*100;
+                    val = phrase.V1 * 100;
+                    phrase.ResultV1 = "";
                     break;
                 case "V2":
                     //phrase.ResultV2 = " (норма)";
                     name = names[1];
-                    val = phrase.V2*100;
+                    val = phrase.V2 * 100;
+                    phrase.ResultV2 = "";
                     break;
                 case "V3":
                     //phrase.ResultV3 = " (норма)";
                     name = names[2];
-                    val = phrase.V3*100;
+                    val = phrase.V3 * 100;
+                    phrase.ResultV3 = "";
                     break;
             }
             var age = (DateTime.Today - CurrentPatient.BirthDate).Days;
 
-            if (phrase.Type==2)_calc.TryToCalc(name,val);
-            if (phrase.Type == 3)
+            if (phrase.Type == (int)PhraseTypes.Number) _calc.TryToCalc(name, val);
+            if (phrase.Type == (int)PhraseTypes.Formula)
             {
                 name = phrase.PositionName.Split(separator, StringSplitOptions.None)[0];
                 val = phrase.V1 * 100;
@@ -465,16 +473,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
             _jsonClient.GetAsync(new NormSelect
             {
                 Gender = (byte)CurrentPatient.Gender,
-                Age=age,
-                Name=name,
-                TableId=phrase.NormTableId,
+                Age = age,
+                Name = name,
+                TableId = phrase.NormTableId,
                 Value = (int)(val)
             })
             .Success(rr =>
             {
                 //_eventAggregator.GetEvent<IsBusyEvent>().Publish(false);
                 if (rr.Result.Name == null) return;
-                switch (e.PropertyName)
+                switch (propertyName)
                 {
                     case "V1":
                         phrase.ResultV1 = rr.Result.Output;
@@ -533,15 +541,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
                         _calc.AddFormula(phrase);
                     }
                 }
-                MakeParaphrasesPresets();
-                SetButtonsActive();
+                ChooseSurvey(CurrentSurvey);
+                //MakeParaphrasesPresets();
+                //SetButtonsActive();
             })
             .Error(ex =>
             {
                 throw ex;
             });
         }
-
+        
         private void MakeParaphrasesPresets()
         {
             _paraphrasesPresets=new List<string>();
@@ -556,6 +565,16 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
         {
             CurrentSurvey = obj;
             MakeParaphrasesPresets();
+            foreach (var phrase in CurrentSurvey.Phrases)
+            {
+                if (phrase.Type == (int)PhraseTypes.Number)
+                {
+                    if (phrase.V1 > 0) ValuesGenerateOutput(phrase, "V1");
+                    if (phrase.V2 > 0) ValuesGenerateOutput(phrase, "V2");
+                    if (phrase.V3 > 0) ValuesGenerateOutput(phrase, "V3");
+                }
+                //phrase.IsLoaded = true;
+            }
             SetButtonsActive();
         }
         private void SurveyReload()
@@ -692,7 +711,9 @@ namespace Medcenter.Desktop.Modules.CabinetModule.ViewModels
 
         private void InsertPhrase(Phrase phrase)
         {
-            CurrentSurvey.Phrases.Insert(GetPhraseIndex(phrase)+1, phrase.CloneIt());
+            int index = GetPhraseIndex(phrase) + 1;
+            CurrentSurvey.Phrases.Insert(index, phrase.CloneIt());
+            CurrentPhrase = CurrentSurvey.Phrases[index];
             CurrentSurvey.ActuateProperties();
             //this.OnPropertyChanged(() => this.CurrentSurvey);
         }

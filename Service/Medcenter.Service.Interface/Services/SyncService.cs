@@ -144,6 +144,7 @@ namespace Medcenter.Service.Interface.Services
                         case 24:
                             sid0 = (ss.P0 != "0") ? int.Parse(ss.P0) : GetSidFromIds(ids, 6, ss.P5);
                             sid1 = (ss.P4 != "0") ? int.Parse(ss.P4) : GetSidFromIds(ids, 28, ss.P6);
+                            Logger.Log(String.Format("synci_Schedules @Sid={0},@Cid={1}, @P0={2} (id={7}, sid={9}), @P1={3}, @P2={4}, @P3={5}, @P4={6} (id={8}, sid={10}): ", ss.Sid, req.Cid, sid0, ss.P1, ss.P2, ss.P3, sid1, ss.P5, ss.P6, ss.P0, ss.P4), JsonConvert.SerializeObject(ids));
                             sid = GetScalar(Db.SqlList<int>(
                                 "EXEC synci_Schedules @Sid,@Cid, @P0, @P1, @P2, @P3, @P4", new
                                 {
